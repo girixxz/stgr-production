@@ -54,8 +54,8 @@
                                         request()->is('owner/manage-products') ||
                                         request()->routeIs('owner.manage-wo') ||
                                         request()->is('owner/manage-wo') ||
-                                        request()->routeIs('owner.users-sales.*') ||
-                                        request()->is('owner/users-sales*');
+                                        request()->routeIs('manage-users-sales') ||
+                                        request()->is('owner/manage-users-sales');
                                 @endphp
                                 <x-icons.manage-data class="{{ $mdActive ? 'text-green-700' : 'text-gray-500' }}" />
                                 <span class="ml-2 {{ $mdActive ? 'text-green-700' : '' }}">Manage Data</span>

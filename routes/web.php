@@ -51,9 +51,17 @@ Route::middleware(['auth'])->group(function () {
     })->middleware('role:owner')->name('owner.manage-wo');
 
     // Manage Users & Sales
-    Route::get('/owner/manage-users-sales', function () {
-        return view('pages.owner.manage-users-sales'); // resources/views/pages/owner/revenue.blade.php
-    })->middleware('role:owner')->name('owner.manage-users-sales');
+    Route::get('/owner/manage-users-sales', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'index'])->middleware('role:owner')->name('owner.manage-users-sales');
+
+    // Users CRUD
+    Route::post('/owner/users', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'storeUser'])->middleware('role:owner')->name('owner.users.store');
+    Route::put('/owner/users/{user}', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'updateUser'])->middleware('role:owner')->name('owner.users.update');
+    Route::delete('/owner/users/{user}', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'destroyUser'])->middleware('role:owner')->name('owner.users.destroy');
+
+    // Sales CRUD
+    Route::post('/owner/sales', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'storeSales'])->middleware('role:owner')->name('owner.sales.store');
+    Route::put('/owner/sales/{sale}', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'updateSales'])->middleware('role:owner')->name('owner.sales.update');
+    Route::delete('/owner/sales/{sale}', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'destroySales'])->middleware('role:owner')->name('owner.sales.destroy');
 
     /* ================= ADMIN ================= */
     // Admin Dashboard
