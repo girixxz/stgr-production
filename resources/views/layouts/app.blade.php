@@ -50,8 +50,6 @@
 
     <x-toast-notif />
 
-
-
 </body>
 
 </html>

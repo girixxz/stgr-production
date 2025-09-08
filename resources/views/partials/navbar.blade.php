@@ -49,7 +49,7 @@
                 ? (\Illuminate\Support\Str::startsWith($raw, ['http://', 'https://'])
                     ? $raw
                     : \Illuminate\Support\Facades\Storage::url($raw))
-                : 'https://i.pravatar.cc/40';
+                : 'https://i.pravatar.cc/40?u=' . urlencode(auth()->user()->id ?? auth()->user()->username);
         @endphp
         <div class="flex items-center space-x-4">
             <div x-data="{ open: false }" class="relative">

@@ -8,7 +8,9 @@
     <div x-data="{
         openModal: '{{ session('openModal') }}',
         editUser: {},
-        editSales: {}
+        editSales: {},
+        searchUser: '',
+        searchSales: ''
     }" class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
         {{-- ===================== USERS ===================== --}}
@@ -19,14 +21,14 @@
 
                 <div class="md:ml-auto flex items-center gap-2 w-full md:w-auto">
                     {{-- Search --}}
-                    <form action="#" method="GET" class="w-full md:w-72">
+                    <div class="w-full md:w-72">
                         <div class="relative">
                             <x-icons.search />
-                            <input type="text" placeholder="Search User"
+                            <input type="text" x-model="searchUser" placeholder="Search User"
                                 class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
                                       focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
                         </div>
-                    </form>
+                    </div>
 
                     {{-- Add Users --}}
                     <button @click="openModal = 'addUser'"
@@ -36,7 +38,7 @@
                 </div>
             </div>
 
-            {{-- Table --}}
+            {{-- Table Users --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-96 overflow-y-auto">
                     <table class="min-w-[900px] w-full text-sm">
@@ -47,15 +49,30 @@
                                 <th class="py-2 px-4 text-left">Username</th>
                                 <th class="py-2 px-4 text-left">Phone</th>
                                 <th class="py-2 px-4 text-left">Role</th>
-                                {{-- <th class="py-2 px-4 text-left">Created At</th> --}}
                                 <th class="py-2 px-4 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
-                                <tr class="border-t border-gray-200">
+                                <tr class="border-t border-gray-200"
+                                    x-show="
+                                        '{{ strtolower($user->fullname) }} {{ strtolower($user->username) }} {{ strtolower($user->phone_number) }} {{ strtolower($user->role) }}'
+                                        .includes(searchUser.toLowerCase())
+                                    ">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
-                                    <td class="py-2 px-4">{{ $user->fullname }}</td>
+                                    <td class="py-2 px-4">
+                                        <div class="flex items-center gap-3">
+                                            @php
+                                                $avatarUrl = !empty($user->img_url)
+                                                    ? $user->img_url
+                                                    : 'https://i.pravatar.cc/40?u=' .
+                                                        urlencode($user->id ?? $user->username);
+                                            @endphp
+                                            <img src="{{ $avatarUrl }}" alt="{{ $user->fullname }}"
+                                                class="w-8 h-8 rounded-full object-cover border" />
+                                            <span>{{ $user->fullname }}</span>
+                                        </div>
+                                    </td>
                                     <td class="py-2 px-4">{{ $user->username }}</td>
                                     <td class="py-2 px-4">{{ $user->phone_number }}</td>
                                     <td class="py-2 px-4">
@@ -64,10 +81,11 @@
                                             {{ ucfirst($user->role) }}
                                         </span>
                                     </td>
-                                    {{-- <td class="py-2 px-4">{{ $user->created_at->format('d M Y') }}</td> --}}
                                     <td class="py-2 px-4 text-right">
                                         <button @click="editUser = {{ $user->toJson() }}; openModal = 'editUser'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">Edit</button>
+                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
+                                            Edit
+                                        </button>
                                         <form action="{{ route('owner.users.destroy', $user) }}" method="POST"
                                             class="inline">
                                             @csrf
@@ -95,15 +113,14 @@
 
                 <div class="md:ml-auto flex items-center gap-2 w-full md:w-auto min-w-0">
                     {{-- Search --}}
-                    <form action="#" method="GET" class="flex-1">
+                    <div class="flex-1">
                         <div class="relative">
-
                             <x-icons.search />
-                            <input type="text" placeholder="Search Sales"
+                            <input type="text" x-model="searchSales" placeholder="Search Sales"
                                 class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
                                       focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
                         </div>
-                    </form>
+                    </div>
 
                     {{-- Add Sales --}}
                     <button @click="openModal = 'addSales'"
@@ -122,20 +139,25 @@
                                 <th class="py-2 px-4 text-left">No</th>
                                 <th class="py-2 px-4 text-left">Sales Name</th>
                                 <th class="py-2 px-4 text-left">Phone</th>
-                                {{-- <th class="py-2 px-4 text-left">Created At</th> --}}
                                 <th class="py-2 px-4 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($sales as $sale)
-                                <tr class="border-t border-gray-200">
+                                <tr class="border-t border-gray-200"
+                                    x-show="
+                                        '{{ strtolower($sale->sales_name) }} {{ strtolower($sale->phone_number) }}'
+                                        .includes(searchSales.toLowerCase())
+                                    ">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $sale->sales_name }}</td>
                                     <td class="py-2 px-4">{{ $sale->phone_number }}</td>
-                                    {{-- <td class="py-2 px-4">{{ $sale->created_at->format('d M Y') }}</td> --}}
+
                                     <td class="py-2 px-4 text-right">
                                         <button @click="editSales = {{ $sale->toJson() }}; openModal = 'editSales'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">Edit</button>
+                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
+                                            Edit
+                                        </button>
                                         <form action="{{ route('owner.sales.destroy', $sale) }}" method="POST"
                                             class="inline">
                                             @csrf
@@ -380,7 +402,7 @@
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Phone</label>
+                        <label class="block text-sm font-medium text-gray-700">Phone (optional)</label>
                         <input type="text" name="phone_number"
                             class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
                     </div>
@@ -433,7 +455,7 @@
                             class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
                     </div>
 
-                    <div class="flex justify-end gap-3 border-t pt-4">
+                    <div class="flex justify-end gap-3 pt-4">
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"

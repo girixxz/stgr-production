@@ -3,12 +3,15 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Owner\ManageUsersSalesController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SalesController;
 
-// Default index route
+/* ================= DEFAULT INDEX / LOGIN ================= */
+
 Route::get('/', function () {
     if (Auth::check()) {
         $user = Auth::user();
-
         switch ($user->role) {
             case 'owner':
                 return redirect()->route('owner.dashboard');
@@ -20,114 +23,65 @@ Route::get('/', function () {
                 return redirect()->route('karyawan.dashboard');
         }
     }
-
-    // kalau belum login, tampilkan login form
     return app(LoginController::class)->showLoginForm();
 })->name('login');
-Route::post('/', [LoginController::class, 'login'])->name('login.post'); // post input dan sumbit login
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout'); // logout
 
-// Role-based Dashboard Routes
+Route::post('/', [LoginController::class, 'login'])->name('login.post');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+/* ================= ROLE-BASED DASHBOARD ================= */
 Route::middleware(['auth'])->group(function () {
-    /* ================= OWNER ================= */
-    // Dashboard
-    Route::get('/owner/dashboard', function () {
-        return view('pages.owner.dashboard');
-    })->middleware('role:owner')->name('owner.dashboard');
 
-    // Revenue
-    Route::get('/owner/revenue', function () {
-        return view('pages.owner.revenue'); // resources/views/pages/owner/revenue.blade.php
-    })->middleware('role:owner')->name('owner.revenue');
+    /* ---------- OWNER ---------- */
+    Route::prefix('owner')->name('owner.')->middleware('role:owner')->group(function () {
+        // Dashboard
+        Route::get('dashboard', fn() => view('pages.owner.dashboard'))->name('dashboard');
 
-    // Manage Products
-    Route::get('/owner/manage-products', function () {
-        return view('pages.owner.manage-products'); // resources/views/pages/owner/revenue.blade.php
-    })->middleware('role:owner')->name('owner.manage-products');
+        // Revenue
+        Route::get('revenue', fn() => view('pages.owner.revenue'))->name('revenue');
 
-    // Manage Work Order
-    Route::get('/owner/manage-wo', function () {
-        return view('pages.owner.manage-wo'); // resources/views/pages/owner/revenue.blade.php
-    })->middleware('role:owner')->name('owner.manage-wo');
+        // Manage Products
+        Route::get('manage-products', fn() => view('pages.owner.manage-products'))->name('manage-products');
 
-    // Manage Users & Sales
-    Route::get('/owner/manage-users-sales', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'index'])->middleware('role:owner')->name('owner.manage-users-sales');
+        // Manage Work Order
+        Route::get('manage-wo', fn() => view('pages.owner.manage-wo'))->name('manage-wo');
 
-    // Users CRUD
-    Route::post('/owner/users', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'storeUser'])->middleware('role:owner')->name('owner.users.store');
-    Route::put('/owner/users/{user}', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'updateUser'])->middleware('role:owner')->name('owner.users.update');
-    Route::delete('/owner/users/{user}', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'destroyUser'])->middleware('role:owner')->name('owner.users.destroy');
+        // Page gabungan Users & Sales
+        Route::get('manage-users-sales', [ManageUsersSalesController::class, 'index'])->name('manage-users-sales');
 
-    // Sales CRUD
-    Route::post('/owner/sales', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'storeSales'])->middleware('role:owner')->name('owner.sales.store');
-    Route::put('/owner/sales/{sale}', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'updateSales'])->middleware('role:owner')->name('owner.sales.update');
-    Route::delete('/owner/sales/{sale}', [App\Http\Controllers\Owner\ManageUsersSalesController::class, 'destroySales'])->middleware('role:owner')->name('owner.sales.destroy');
+        // Users CRUD
+        Route::resource('users', UserController::class)->except(['create', 'edit']);
 
-    /* ================= ADMIN ================= */
-    // Admin Dashboard
-    Route::get('/admin/dashboard', function () {
-        return view('pages.admin.dashboard');
-    })->middleware('role:admin')->name('admin.dashboard');
+        // Sales CRUD
+        Route::resource('sales', SalesController::class)->except(['create', 'edit']);
+    });
 
-    // Orders
-    Route::get('/admin/orders', function () {
-        return view('pages.admin.orders');
-    })->middleware('role:admin')->name('admin.orders');
+    /* ---------- ADMIN ---------- */
+    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
+        Route::get('dashboard', fn() => view('pages.admin.dashboard'))->name('dashboard');
+        Route::get('orders', fn() => view('pages.admin.orders'))->name('orders');
+        Route::get('work-orders', fn() => view('pages.admin.work-orders'))->name('work-orders');
+        Route::get('payment-history', fn() => view('pages.admin.payment-history'))->name('payment-history');
+        Route::get('customers', fn() => view('pages.admin.customers'))->name('customers');
+    });
 
-    // Work Orders
-    Route::get('/admin/work-orders', function () {
-        return view('pages.admin.work-orders');
-    })->middleware('role:admin')->name('admin.work-orders');
+    /* ---------- PROJECT MANAGER ---------- */
+    Route::prefix('pm')->name('pm.')->middleware('role:pm')->group(function () {
+        Route::get('dashboard', fn() => view('pages.pm.dashboard'))->name('dashboard');
+        Route::get('manage-task', fn() => view('pages.pm.manage-task'))->name('manage-task');
+    });
 
-    // Payment History
-    Route::get('/admin/payment-history', function () {
-        return view('pages.admin.payment-history');
-    })->middleware('role:admin')->name('admin.payment-history');
+    /* ---------- KARYAWAN ---------- */
+    Route::prefix('karyawan')->name('karyawan.')->middleware('role:karyawan')->group(function () {
+        Route::get('dashboard', fn() => view('pages.karyawan.dashboard'))->name('dashboard');
+        Route::get('task', fn() => view('pages.karyawan.task'))->name('task');
+    });
 
-    // Customer
-    Route::get('/admin/customers', function () {
-        return view('pages.admin.customers');
-    })->middleware('role:admin')->name('admin.customers');
-
-    /* ================= PROJECT MANAGER ================= */
-    // PM DASHBOARD
-    Route::get('/pm/dashboard', function () {
-        return view('pages.pm.dashboard');
-    })->middleware('role:pm')->name('pm.dashboard');
-
-    // Manage Task
-    Route::get('/pm/manage-task', function () {
-        return view('pages.pm.manage-task');
-    })->middleware('role:pm')->name('pm.manage-task');
-
-    /* ================= KARYAWAN ================= */
-    // Karyawan Dashboard
-    Route::get('/karyawan/dashboard', function () {
-        return view('pages.karyawan.dashboard');
-    })->middleware('role:karyawan')->name('karyawan.dashboard');
-
-    Route::get('/karyawan/task', function () {
-        return view('pages.karyawan.task');
-    })->middleware('role:karyawan')->name('karyawan.task');
-
-    /* ================= ALL ROLE ================= */
-    // Highlights
-    Route::get('/highlights', function () {
-        return view('pages.highlights');
-    })->name('highlights');
-
-    // Calendar
-    Route::get('/calendar', function () {
-        return view('pages.calendar');
-    })->name('calendar');
-
-    // Calendar
-    Route::get('/profile', function () {
-        return view('pages.profile');
-    })->name('profile');
+    /* ---------- ALL ROLE ---------- */
+    Route::get('highlights', fn() => view('pages.highlights'))->name('highlights');
+    Route::get('calendar', fn() => view('pages.calendar'))->name('calendar');
+    Route::get('profile', fn() => view('pages.profile'))->name('profile');
 });
 
-// Additional routes can be added here as needed
-Route::get('/test', function () {
-    return 'Multi-role authentication system is working!';
-});
+/* ================= TEST ROUTE ================= */
+Route::get('/test', fn() => 'Multi-role authentication system is working!');
