@@ -53,7 +53,7 @@
             {{-- Table Product Category --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[400px] w-full text-sm">
+                    <table class="min-w-[350px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -132,7 +132,7 @@
             {{-- Table Product Category --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[400px] w-full text-sm">
+                    <table class="min-w-[350px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -215,7 +215,7 @@
             {{-- Table Product Category --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[400px] w-full text-sm">
+                    <table class="min-w-[350px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -292,7 +292,7 @@
             {{-- Table --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[400px] w-full text-sm">
+                    <table class="min-w-[350px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -373,7 +373,7 @@
             {{-- Table Product Category --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[400px] w-full text-sm">
+                    <table class="min-w-[350px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -454,7 +454,7 @@
             {{-- Table Product Category --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[400px] w-full text-sm">
+                    <table class="min-w-[350px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
