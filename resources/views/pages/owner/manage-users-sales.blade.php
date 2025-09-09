@@ -180,7 +180,7 @@
         {{-- ===================== MODALS ===================== --}}
         {{-- ========== Add User Modal ========== --}}
         <div x-show="openModal === 'addUser'" x-cloak
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm px-4">
             <div @click.away="openModal=null" class="bg-white rounded-xl shadow-lg w-full max-w-lg">
                 <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900">Add New User</h3>
@@ -278,7 +278,7 @@
 
         {{-- ========== Edit User Modal ========== --}}
         <div x-show="openModal === 'editUser'" x-cloak x-init="@if (session('openModal') === 'editUser' && session('editUserId')) editUser = {{ \App\Models\User::find(session('editUserId'))->toJson() }}; @endif"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm px-4">
             <div @click.away="openModal=null" class="bg-white rounded-xl shadow-lg w-full max-w-lg">
                 <div class="flex justify-between items-center border-b border-gray-200 px-6 py-4">
                     <h3 class="text-lg font-semibold text-gray-900">Edit User</h3>
@@ -375,7 +375,7 @@
 
         {{-- ========== Add Sales Modal ========== --}}
         <div x-show="openModal === 'addSales'" x-cloak
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm px-4">
             <div @click.away="openModal=null" class="bg-white rounded-xl shadow-lg w-full max-w-md">
                 <div class="flex justify-between items-center border-b border-gray-200 px-6 py-4">
                     <h3 class="text-lg font-semibold text-gray-900">Add New Sales</h3>
@@ -419,7 +419,7 @@
 
         {{-- ========== Edit Sales Modal ========== --}}
         <div x-show="openModal === 'editSales'" x-cloak x-init="@if (session('openModal') === 'editSales' && session('editSalesId')) editSales = {{ \App\Models\Sales::find(session('editSalesId'))->toJson() }}; @endif"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm px-4">
             <div @click.away="openModal=null" class="bg-white rounded-xl shadow-lg w-full max-w-md">
                 <div class="flex justify-between items-center border-b  border-gray-200 px-6 py-4">
                     <h3 class="text-lg font-semibold text-gray-900">Edit Sales</h3>
