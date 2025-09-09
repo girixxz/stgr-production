@@ -58,7 +58,6 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('product-categories', ProductCategoryController::class)->except(['index', 'create', 'show', 'edit']);
         Route::resource('material-categories', MaterialCategoryController::class)->except(['index', 'create', 'show', 'edit']);
         Route::resource('material-textures', MaterialTextureController::class)->except(['index', 'create', 'show', 'edit']);
-        Route::resource('material-textures', MaterialTextureController::class)->except(['index', 'create', 'show', 'edit']);
         Route::resource('material-sleeves', MaterialSleeveController::class)
             ->parameters([
                 'material-sleeves' => 'materialSleeve'
@@ -68,12 +67,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Manage Users & Sales
         Route::get('manage-users-sales', [ManageUsersSalesController::class, 'index'])->name('manage-users-sales');
-
-        // Users CRUD
-        Route::resource('users', UserController::class)->except(['create', 'edit']);
-
-        // Sales CRUD
-        Route::resource('sales', SalesController::class)->except(['create', 'edit']);
+        Route::resource('users', UserController::class)->except(['index', 'create', 'show', 'edit']);
+        Route::resource('sales', SalesController::class)->except(['index', 'create', 'show', 'edit']);
     });
 
     /* ---------- ADMIN ---------- */
