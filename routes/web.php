@@ -4,10 +4,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Owner\ManageUsersSalesController;
-use App\Http\Controllers\Owner\ManageProductsController;
-use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\Owner\ManageProductsController;
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\MaterialCategoryController;
+use App\Http\Controllers\MaterialTextureController;
+use App\Http\Controllers\MaterialSleeveController;
+use App\Http\Controllers\MaterialSizeController;
+use App\Http\Controllers\ShippingController;
 
 /* ================= DEFAULT INDEX / LOGIN ================= */
 
@@ -43,50 +48,32 @@ Route::middleware(['auth'])->group(function () {
         Route::get('revenue', fn() => view('pages.owner.revenue'))->name('revenue');
 
         // Manage Products
-        Route::get('manage-products', [ManageProductsController::class, 'index'])->name('manage-products');
-
-        // Product Categories CRUD
-        Route::resource('product-categories', ProductCategoryController::class)
-            ->except(['index', 'show', 'create', 'edit']);
-
-        // Material Categories CRUD
-        Route::post('material-categories', [ManageProductsController::class, 'storeMaterialCategory'])->name('material-categories.store');
-        Route::put('material-categories/{materialCategory}', [ManageProductsController::class, 'updateMaterialCategory'])->name('material-categories.update');
-        Route::delete('material-categories/{materialCategory}', [ManageProductsController::class, 'destroyMaterialCategory'])->name('material-categories.destroy');
-
-        // Material Textures CRUD
-        Route::post('material-textures', [ManageProductsController::class, 'storeMaterialTexture'])->name('material-textures.store');
-        Route::put('material-textures/{materialTexture}', [ManageProductsController::class, 'updateMaterialTexture'])->name('material-textures.update');
-        Route::delete('material-textures/{materialTexture}', [ManageProductsController::class, 'destroyMaterialTexture'])->name('material-textures.destroy');
-
-        // Material Sleeves CRUD
-        Route::post('material-sleeves', [ManageProductsController::class, 'storeMaterialSleeve'])->name('material-sleeves.store');
-        Route::put('material-sleeves/{materialSleeve}', [ManageProductsController::class, 'updateMaterialSleeve'])->name('material-sleeves.update');
-        Route::delete('material-sleeves/{materialSleeve}', [ManageProductsController::class, 'destroyMaterialSleeve'])->name('material-sleeves.destroy');
-
-        // Material Sizes CRUD
-        Route::post('material-sizes', [ManageProductsController::class, 'storeMaterialSize'])->name('material-sizes.store');
-        Route::put('material-sizes/{materialSize}', [ManageProductsController::class, 'updateMaterialSize'])->name('material-sizes.update');
-        Route::delete('material-sizes/{materialSize}', [ManageProductsController::class, 'destroyMaterialSize'])->name('material-sizes.destroy');
-
-        // Shippings CRUD
-        Route::post('shippings', [ManageProductsController::class, 'storeShipping'])->name('shippings.store');
-        Route::put('shippings/{shipping}', [ManageProductsController::class, 'updateShipping'])->name('shippings.update');
-        Route::delete('shippings/{shipping}', [ManageProductsController::class, 'destroyShipping'])->name('shippings.destroy');
+        Route::get('manage-products', fn() => view('pages.owner.manage-products'))->name('manage-products');
 
         // Manage Work Order
         Route::get('manage-wo', fn() => view('pages.owner.manage-wo'))->name('manage-wo');
 
-        // Page gabungan Users & Sales
+        // Manage Data Products
+        Route::get('manage-products', [ManageProductsController::class, 'index'])->name('manage-products');
+        Route::resource('product-categories', ProductCategoryController::class)->except(['index', 'create', 'show', 'edit']);
+        Route::resource('material-categories', MaterialCategoryController::class)->except(['index', 'create', 'show', 'edit']);
+        Route::resource('material-textures', MaterialTextureController::class)->except(['index', 'create', 'show', 'edit']);
+        Route::resource('material-textures', MaterialTextureController::class)->except(['index', 'create', 'show', 'edit']);
+        Route::resource('material-sleeves', MaterialSleeveController::class)
+            ->parameters([
+                'material-sleeves' => 'materialSleeve'
+            ]);
+        Route::resource('material-sizes', MaterialSizeController::class)->except(['index', 'create', 'show', 'edit']);
+        Route::resource('shippings', ShippingController::class)->except(['index', 'create', 'show', 'edit']);
+
+        // Manage Users & Sales
         Route::get('manage-users-sales', [ManageUsersSalesController::class, 'index'])->name('manage-users-sales');
 
         // Users CRUD
-        Route::resource('users', UserController::class)
-            ->except(['index', 'show', 'create', 'edit']);
+        Route::resource('users', UserController::class)->except(['create', 'edit']);
 
         // Sales CRUD
-        Route::resource('sales', SalesController::class)
-            ->except(['index', 'show', 'create', 'edit']);
+        Route::resource('sales', SalesController::class)->except(['create', 'edit']);
     });
 
     /* ---------- ADMIN ---------- */
@@ -118,4 +105,3 @@ Route::middleware(['auth'])->group(function () {
 
 /* ================= TEST ROUTE ================= */
 Route::get('/test', fn() => 'Multi-role authentication system is working!');
-Route::get('/test-modal', fn() => view('test-modal'));
