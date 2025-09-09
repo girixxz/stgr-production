@@ -47,12 +47,6 @@ Route::middleware(['auth'])->group(function () {
         // Revenue
         Route::get('revenue', fn() => view('pages.owner.revenue'))->name('revenue');
 
-        // Manage Products
-        Route::get('manage-products', fn() => view('pages.owner.manage-products'))->name('manage-products');
-
-        // Manage Work Order
-        Route::get('manage-wo', fn() => view('pages.owner.manage-wo'))->name('manage-wo');
-
         // Manage Data Products
         Route::get('manage-products', [ManageProductsController::class, 'index'])->name('manage-products');
         Route::resource('product-categories', ProductCategoryController::class)->except(['index', 'create', 'show', 'edit']);
@@ -64,6 +58,9 @@ Route::middleware(['auth'])->group(function () {
             ]);
         Route::resource('material-sizes', MaterialSizeController::class)->except(['index', 'create', 'show', 'edit']);
         Route::resource('shippings', ShippingController::class)->except(['index', 'create', 'show', 'edit']);
+
+        // Manage Work Order
+        Route::get('manage-wo', fn() => view('pages.owner.manage-wo'))->name('manage-wo');
 
         // Manage Users & Sales
         Route::get('manage-users-sales', [ManageUsersSalesController::class, 'index'])->name('manage-users-sales');
