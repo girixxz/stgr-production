@@ -1,24 +1,37 @@
--   [ ] Create migration for product_categories
--   [ ] Edit migration for product_categories
--   [ ] Create model ProductCategory
--   [ ] Edit model ProductCategory
--   [ ] Create migration for material_categories
--   [ ] Edit migration for material_categories
--   [ ] Create model MaterialCategory
--   [ ] Edit model MaterialCategory
--   [ ] Create migration for material_textures
--   [ ] Edit migration for material_textures
--   [ ] Create model MaterialTexture
--   [ ] Edit model MaterialTexture
--   [ ] Create migration for material_sleeves
--   [ ] Edit migration for material_sleeves
--   [ ] Create model MaterialSleeve
--   [ ] Edit model MaterialSleeve
--   [ ] Create migration for material_sizes
--   [ ] Edit migration for material_sizes
--   [ ] Create model MaterialSize
--   [ ] Edit model MaterialSize
--   [ ] Create migration for shippings
--   [ ] Edit migration for shippings
--   [ ] Create model Shipping
--   [ ] Edit model Shipping
+# TODO: Create Data Seeders
+
+## Overview
+
+Create seeders for all tables except users, with max 10 records per table.
+
+## Tables to Seed
+
+-   sales
+-   product_categories
+-   material_categories
+-   material_textures
+-   material_sleeves
+-   material_sizes
+-   shippings
+
+## Steps
+
+1. Create SalesSeeder.php
+2. Create ProductCategorySeeder.php
+3. Create MaterialCategorySeeder.php
+4. Create MaterialTextureSeeder.php
+5. Create MaterialSleeveSeeder.php
+6. Create MaterialSizeSeeder.php
+7. Create ShippingSeeder.php
+8. Update DatabaseSeeder.php to call all new seeders
+9. Test the seeders by running php artisan db:seed
+
+## Table Structures
+
+-   sales: id, sales_name (unique), phone_number (nullable), timestamps
+-   product_categories: id, product_name (unique), timestamps
+-   material_categories: id, material_name (unique), timestamps
+-   material_textures: id, texture_name (unique), timestamps
+-   material_sleeves: id, sleeve_name (unique), timestamps
+-   material_sizes: id, size_name (unique), timestamps
+-   shippings: id, shipping_name (unique), timestamps
