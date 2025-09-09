@@ -16,7 +16,8 @@ use App\Http\Controllers\ShippingController;
 
 /* ================= DEFAULT INDEX / LOGIN ================= */
 
-Route::get('/', function () {
+Route::get('/', fn() => redirect('/login'));
+Route::get('/login', function () {
     if (Auth::check()) {
         $user = Auth::user();
         switch ($user->role) {
