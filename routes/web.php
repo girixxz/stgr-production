@@ -48,17 +48,44 @@ Route::middleware(['auth'])->group(function () {
         // Revenue
         Route::get('revenue', fn() => view('pages.owner.revenue'))->name('revenue');
 
-        // Manage Data Products
-        Route::get('manage-products', [ManageProductsController::class, 'index'])->name('manage-products');
-        Route::resource('product-categories', ProductCategoryController::class)->except(['index', 'create', 'show', 'edit']);
-        Route::resource('material-categories', MaterialCategoryController::class)->except(['index', 'create', 'show', 'edit']);
-        Route::resource('material-textures', MaterialTextureController::class)->except(['index', 'create', 'show', 'edit']);
-        Route::resource('material-sleeves', MaterialSleeveController::class)
-            ->parameters([
-                'material-sleeves' => 'materialSleeve'
-            ]);
-        Route::resource('material-sizes', MaterialSizeController::class)->except(['index', 'create', 'show', 'edit']);
-        Route::resource('shippings', ShippingController::class)->except(['index', 'create', 'show', 'edit']);
+        // Manage Data
+        Route::prefix('manage-data')->name('manage-data.')->group(function () {
+            // Products
+            Route::prefix('products')->name('products.')->group(function () {
+                Route::get('/', [ManageProductsController::class, 'index'])->name('index');
+                Route::resource('product-categories', ProductCategoryController::class)->except(['index', 'create', 'show', 'edit']);
+                Route::resource('material-categories', MaterialCategoryController::class)->except(['index', 'create', 'show', 'edit']);
+                Route::resource('material-textures', MaterialTextureController::class)->except(['index', 'create', 'show', 'edit']);
+                Route::resource('material-sleeves', MaterialSleeveController::class)
+                    ->parameters([
+                        'material-sleeves' => 'materialSleeve'
+                    ]);
+                Route::resource('material-sizes', MaterialSizeController::class)->except(['index', 'create', 'show', 'edit']);
+                Route::resource('shippings', ShippingController::class)->except(['index', 'create', 'show', 'edit']);
+            });
+
+            // Work Order
+            Route::prefix('work-order')->name('work-order.')->group(function () {
+                Route::get('/', [ManageProductsController::class, 'index'])->name('index');
+            });
+
+            // Users & Sales
+            Route::prefix('users-sales')->name('users-sales.')->group(function () {
+                Route::get('/', [ManageUsersSalesController::class, 'index'])->name('index');
+                Route::resource('users', UserController::class)->except(['index', 'create', 'show', 'edit']);
+                Route::resource('sales', SalesController::class)->except(['index', 'create', 'show', 'edit']);
+            });
+        });
+        // Route::get('manage-products', [ManageProductsController::class, 'index'])->name('manage-products');
+        // Route::resource('product-categories', ProductCategoryController::class)->except(['index', 'create', 'show', 'edit']);
+        // Route::resource('material-categories', MaterialCategoryController::class)->except(['index', 'create', 'show', 'edit']);
+        // Route::resource('material-textures', MaterialTextureController::class)->except(['index', 'create', 'show', 'edit']);
+        // Route::resource('material-sleeves', MaterialSleeveController::class)
+        //     ->parameters([
+        //         'material-sleeves' => 'materialSleeve'
+        //     ]);
+        // Route::resource('material-sizes', MaterialSizeController::class)->except(['index', 'create', 'show', 'edit']);
+        // Route::resource('shippings', ShippingController::class)->except(['index', 'create', 'show', 'edit']);
 
         // Manage Work Order
         Route::get('manage-wo', fn() => view('pages.owner.manage-wo'))->name('manage-wo');

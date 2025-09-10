@@ -75,7 +75,8 @@
                                         </button>
 
                                         {{-- Tombol Delete --}}
-                                        <form action="{{ route('owner.product-categories.destroy', $product) }}"
+                                        <form
+                                            action="{{ route('owner.manage-data.products.product-categories.destroy', $product) }}"
                                             method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
@@ -156,7 +157,8 @@
                                         </button>
 
                                         {{-- Tombol Delete --}}
-                                        <form action="{{ route('owner.material-categories.destroy', $material) }}"
+                                        <form
+                                            action="{{ route('owner.manage-data.products.material-categories.destroy', $material) }}"
                                             method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
@@ -237,7 +239,8 @@
                                         </button>
 
                                         {{-- Tombol Delete --}}
-                                        <form action="{{ route('owner.material-textures.destroy', $texture) }}"
+                                        <form
+                                            action="{{ route('owner.manage-data.products.material-textures.destroy', $texture) }}"
                                             method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
@@ -314,7 +317,8 @@
                                         </button>
 
                                         {{-- Tombol Delete --}}
-                                        <form action="{{ route('owner.material-sleeves.destroy', $sleeve->id) }}"
+                                        <form
+                                            action="{{ route('owner.manage-data.products.material-sleeves.destroy', $sleeve->id) }}"
                                             method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
@@ -395,8 +399,9 @@
                                         </button>
 
                                         {{-- Tombol Delete --}}
-                                        <form action="{{ route('owner.material-sizes.destroy', $size) }}" method="POST"
-                                            class="inline">
+                                        <form
+                                            action="{{ route('owner.manage-data.products.material-sizes.destroy', $size) }}"
+                                            method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -477,8 +482,9 @@
                                         </button>
 
                                         {{-- Tombol Delete --}}
-                                        <form action="{{ route('owner.shippings.destroy', $shipping) }}" method="POST"
-                                            class="inline">
+                                        <form
+                                            action="{{ route('owner.manage-data.products.shippings.destroy', $shipping) }}"
+                                            method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -514,7 +520,8 @@
                     <h3 class="text-lg font-semibold text-gray-900">Add Product Category</h3>
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
-                <form action="{{ route('owner.product-categories.store') }}" method="POST" class="px-6 py-4 space-y-4">
+                <form action="{{ route('owner.manage-data.products.product-categories.store') }}" method="POST"
+                    class="px-6 py-4 space-y-4">
                     @csrf
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Product Name</label>
@@ -581,7 +588,7 @@
                     <h3 class="text-lg font-semibold text-gray-900">Add Material Category</h3>
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
-                <form action="{{ route('owner.material-categories.store') }}" method="POST"
+                <form action="{{ route('owner.manage-data.products.material-categories.store') }}" method="POST"
                     class="px-6 py-4 space-y-4">
                     @csrf
                     <div>
@@ -650,7 +657,8 @@
                     <h3 class="text-lg font-semibold text-gray-900">Add Material Texture</h3>
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
-                <form action="{{ route('owner.material-textures.store') }}" method="POST" class="px-6 py-4 space-y-4">
+                <form action="{{ route('owner.manage-data.products.material-textures.store') }}" method="POST"
+                    class="px-6 py-4 space-y-4">
                     @csrf
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Texture Name</label>
@@ -717,7 +725,8 @@
                     <h3 class="text-lg font-semibold text-gray-900">Add Material Sleeve</h3>
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
-                <form action="{{ route('owner.material-sleeves.store') }}" method="POST" class="px-6 py-4 space-y-4">
+                <form action="{{ route('owner.manage-data.products.material-sleeves.store') }}" method="POST"
+                    class="px-6 py-4 space-y-4">
                     @csrf
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Sleeve Name</label>
@@ -784,7 +793,8 @@
                     <h3 class="text-lg font-semibold text-gray-900">Add Material Size</h3>
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
-                <form action="{{ route('owner.material-sizes.store') }}" method="POST" class="px-6 py-4 space-y-4">
+                <form action="{{ route('owner.manage-data.products.material-sizes.store') }}" method="POST"
+                    class="px-6 py-4 space-y-4">
                     @csrf
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Size Name</label>
@@ -851,7 +861,8 @@
                     <h3 class="text-lg font-semibold text-gray-900">Add Shippings</h3>
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
-                <form action="{{ route('owner.shippings.store') }}" method="POST" class="px-6 py-4 space-y-4">
+                <form action="{{ route('owner.manage-data.products.shippings.store') }}" method="POST"
+                    class="px-6 py-4 space-y-4">
                     @csrf
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Shipping Name</label>
