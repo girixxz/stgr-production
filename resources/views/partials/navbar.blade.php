@@ -69,15 +69,13 @@
                 <div id="userDropdown" x-cloak x-show="open" @click.outside="open = false" x-transition.opacity
                     class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-20"
                     role="menu">
-                    <a href="{{ route('profile') }}" class="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        role="menuitem">
-                        Profile
-                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                        <button type="submit"
+                            class="flex items-center w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 cursor-pointer"
                             role="menuitem">
-                            Logout
+                            <x-icons.logout class="" />
+                            <span>Logout</span>
                         </button>
                     </form>
                 </div>
