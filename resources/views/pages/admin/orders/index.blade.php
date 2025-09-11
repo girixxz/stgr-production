@@ -60,7 +60,7 @@
                 </select>
 
                 {{-- Create Order --}}
-                <a href="#"
+                <a href="{{ route('admin.orders.create') }}"
                     class="cursor-pointer whitespace-nowrap px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 text-sm">
                     + Create Order
                 </a>

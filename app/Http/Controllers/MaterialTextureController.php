@@ -19,7 +19,7 @@ class MaterialTextureController extends Controller
 
         MaterialTexture::create($validated);
 
-        return redirect()->route('owner.manage-products')
+        return redirect()->route('owner.manage-data.products.index')
             ->with('success_add', 'Texture added successfully.');
     }
 
@@ -35,7 +35,7 @@ class MaterialTextureController extends Controller
 
         $material_texture->update(array_filter($validated));
 
-        return redirect()->route('owner.manage-products')
+        return redirect()->route('owner.manage-data.products.index')
             ->with('success_edit', 'Product updated successfully.');
     }
 
@@ -43,7 +43,7 @@ class MaterialTextureController extends Controller
     {
         $material_texture->delete();
 
-        return redirect()->route('owner.manage-products')
+        return redirect()->route('owner.manage-data.products.index')
             ->with('success', 'Product Category deleted successfully.');
     }
 }

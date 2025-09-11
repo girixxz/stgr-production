@@ -112,7 +112,7 @@
                     @endif
                     <!-- Orders -->
                     <li>
-                        <x-sidebar-menu.main-menu href="{{ route('admin.orders') }}" :pattern="'admin.orders'">
+                        <x-sidebar-menu.main-menu href="{{ route('admin.orders.index') }}" :pattern="'admin.orders.*'">
                             <x-icons.orders class="text-current" />
                             <span class="ml-2">Orders</span>
                         </x-sidebar-menu.main-menu>

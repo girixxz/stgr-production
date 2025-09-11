@@ -10,4 +10,9 @@ class ProductCategory extends Model
     protected $table = 'product_categories';
 
     protected $fillable = ['product_name'];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

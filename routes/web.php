@@ -13,6 +13,9 @@ use App\Http\Controllers\MaterialTextureController;
 use App\Http\Controllers\MaterialSleeveController;
 use App\Http\Controllers\MaterialSizeController;
 use App\Http\Controllers\ShippingController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\CreateOrderController as AdminCreateOrderController;
 
 /* ================= DEFAULT INDEX / LOGIN ================= */
 
@@ -97,9 +100,28 @@ Route::middleware(['auth'])->group(function () {
     });
 
     /* ---------- ADMIN ---------- */
+    // Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
+    //     Route::get('dashboard', fn() => view('pages.admin.dashboard'))->name('dashboard');
+    //     Route::get('orders', fn() => view('pages.admin.orders'))->name('orders');
+    //     Route::get('work-orders', fn() => view('pages.admin.work-orders'))->name('work-orders');
+    //     Route::get('payment-history', fn() => view('pages.admin.payment-history'))->name('payment-history');
+    //     Route::get('customers', fn() => view('pages.admin.customers'))->name('customers');
+    // });
+
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
+
         Route::get('dashboard', fn() => view('pages.admin.dashboard'))->name('dashboard');
-        Route::get('orders', fn() => view('pages.admin.orders'))->name('orders');
+
+        // Orders
+        Route::resource('orders', OrderController::class)->except(['show']);
+
+        // Route::prefix('orders')->name('orders.')->group(function () {
+        //     Route::get('/', [AdminOrderController::class, 'index'])->name('index');
+        //     Route::get('create-order', [AdminCreateOrderController::class, 'index'])->name('create-order');
+        //     Route::post('/', [AdminCreateOrderController::class, 'store'])->name('store');
+        //     Route::put('{order}', [AdminOrderController::class, 'update'])->name('update');
+        //     Route::delete('{order}', [AdminOrderController::class, 'destroy'])->name('destroy');
+        // });
         Route::get('work-orders', fn() => view('pages.admin.work-orders'))->name('work-orders');
         Route::get('payment-history', fn() => view('pages.admin.payment-history'))->name('payment-history');
         Route::get('customers', fn() => view('pages.admin.customers'))->name('customers');
