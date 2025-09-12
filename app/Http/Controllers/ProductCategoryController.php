@@ -19,8 +19,9 @@ class ProductCategoryController extends Controller
 
         ProductCategory::create($validated);
 
-        return redirect()->route('owner.manage-data.products.index')
-            ->with('success_add', 'Product added successfully.');
+        return redirect()->to(
+            route('owner.manage-data.products.index') . '#product-categories'
+        )->with('success', 'Product added successfully.');
     }
 
     public function update(Request $request, ProductCategory $productCategory)
@@ -35,7 +36,7 @@ class ProductCategoryController extends Controller
 
         $productCategory->update(array_filter($validated));
 
-        return redirect()->route('owner.manage-data.products.index')
+        return redirect()->to(route('owner.manage-data.products.index') . '#product-categories')
             ->with('success_edit', 'Product updated successfully.');
     }
 
@@ -43,7 +44,7 @@ class ProductCategoryController extends Controller
     {
         $productCategory->delete();
 
-        return redirect()->route('owner.manage-data.products.index')
+        return redirect()->to(route('owner.manage-data.products.index') . '#product-categories')
             ->with('success', 'Product Category deleted successfully.');
     }
 }

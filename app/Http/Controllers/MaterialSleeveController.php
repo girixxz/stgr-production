@@ -17,7 +17,9 @@ class MaterialSleeveController extends Controller
 
         MaterialSleeve::create($validated);
 
-        return back()->with('success', 'Material Sleeve added successfully.');
+        return redirect()
+            ->to(url()->previous() . '#material-sleeves')
+            ->with('success', 'Material Sleeve added successfully.');
     }
 
     public function update(Request $request, MaterialSleeve $materialSleeve)
@@ -31,13 +33,17 @@ class MaterialSleeveController extends Controller
 
         $materialSleeve->update($validated);
 
-        return back()->with('success', 'Material Sleeve updated successfully.');
+        return redirect()
+            ->to(url()->previous() . '#material-sleeves')
+            ->with('success', 'Material Sleeve updated successfully.');
     }
 
     public function destroy(MaterialSleeve $materialSleeve)
     {
         $materialSleeve->delete();
 
-        return back()->with('success', 'Material Sleeve deleted successfully.');
+        return redirect()
+            ->to(url()->previous() . '#material-sleeves')
+            ->with('success', 'Material Sleeve deleted successfully.');
     }
 }

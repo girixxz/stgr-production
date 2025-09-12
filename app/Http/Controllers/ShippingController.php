@@ -19,7 +19,7 @@ class ShippingController extends Controller
 
         Shipping::create($validated);
 
-        return redirect()->route('owner.manage-data.products.index')
+        return redirect()->to(route('owner.manage-data.products.index') . '#shippings')
             ->with('success_add', 'Shipping added successfully.');
     }
 
@@ -35,7 +35,7 @@ class ShippingController extends Controller
 
         $shipping->update(array_filter($validated));
 
-        return redirect()->route('owner.manage-data.products.index')
+        return redirect()->to(route('owner.manage-data.products.index') . '#shippings')
             ->with('success_edit', 'Shipping updated successfully.');
     }
 
@@ -43,7 +43,7 @@ class ShippingController extends Controller
     {
         $shipping->delete();
 
-        return redirect()->route('owner.manage-data.products.index')
+        return redirect()->to(route('owner.manage-data.products.index') . '#shippings')
             ->with('success', 'Shipping deleted successfully.');
     }
 }

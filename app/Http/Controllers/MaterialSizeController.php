@@ -19,7 +19,7 @@ class MaterialSizeController extends Controller
 
         MaterialSize::create($validated);
 
-        return redirect()->route('owner.manage-data.products.index')
+        return redirect()->to(route('owner.manage-data.products.index') . '#material-sizes')
             ->with('success_add', 'Size added successfully.');
     }
 
@@ -35,7 +35,7 @@ class MaterialSizeController extends Controller
 
         $materialSize->update(array_filter($validated));
 
-        return redirect()->route('owner.manage-data.products.index')
+        return redirect()->to(route('owner.manage-data.products.index') . '#material-sizes')
             ->with('success_edit', 'Size updated successfully.');
     }
 
@@ -43,7 +43,7 @@ class MaterialSizeController extends Controller
     {
         $materialSize->delete();
 
-        return redirect()->route('owner.manage-data.products.index')
+        return redirect()->to(route('owner.manage-data.products.index') . '#material-sizes')
             ->with('success', 'Size Category deleted successfully.');
     }
 }

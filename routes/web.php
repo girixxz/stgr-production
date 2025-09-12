@@ -3,19 +3,19 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Owner\ManageUsersSalesController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\SalesController;
-use App\Http\Controllers\Owner\ManageProductsController;
+use App\Http\Controllers\Main\ManageProductsController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\MaterialCategoryController;
 use App\Http\Controllers\MaterialTextureController;
 use App\Http\Controllers\MaterialSleeveController;
 use App\Http\Controllers\MaterialSizeController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ShippingController;
+
+use App\Http\Controllers\Owner\ManageUsersSalesController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Admin\CreateOrderController as AdminCreateOrderController;
 
 /* ================= DEFAULT INDEX / LOGIN ================= */
 
@@ -64,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
                         'material-sleeves' => 'materialSleeve'
                     ]);
                 Route::resource('material-sizes', MaterialSizeController::class)->except(['index', 'create', 'show', 'edit']);
+                Route::resource('services', ServiceController::class)->except(['index', 'create', 'show', 'edit']);
                 Route::resource('shippings', ShippingController::class)->except(['index', 'create', 'show', 'edit']);
             });
 
@@ -91,7 +92,7 @@ Route::middleware(['auth'])->group(function () {
         // Route::resource('shippings', ShippingController::class)->except(['index', 'create', 'show', 'edit']);
 
         // Manage Work Order
-        Route::get('manage-wo', fn() => view('pages.owner.manage-wo'))->name('manage-wo');
+        // Route::get('manage-wo', fn() => view('pages.owner.manage-wo'))->name('manage-wo');
 
         // Manage Users & Sales
         Route::get('manage-users-sales', [ManageUsersSalesController::class, 'index'])->name('manage-users-sales');
