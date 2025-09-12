@@ -18,7 +18,7 @@ class SalesController extends Controller
 
         Sales::create($validated);
 
-        return redirect()->route('owner.manage-users-sales')
+        return redirect()->route('owner.manage-data.users-sales.index')
             ->with('success_add_sales', 'Sales added successfully.');
     }
 
@@ -33,7 +33,7 @@ class SalesController extends Controller
 
         $sale->update($validated);
 
-        return redirect()->route('owner.manage-users-sales')
+        return redirect()->route('owner.manage-data.users-sales.index')
             ->with('success_edit_sales', 'Sales updated successfully.');
     }
 
@@ -41,7 +41,7 @@ class SalesController extends Controller
     {
         $sale->delete();
 
-        return redirect()->route('owner.manage-users-sales')
+        return redirect()->route('owner.manage-data.users-sales.index')
             ->with('success', 'Sales deleted successfully.');
     }
 }

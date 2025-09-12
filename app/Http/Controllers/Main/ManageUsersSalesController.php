@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Owner;
+namespace App\Http\Controllers\Main;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -15,7 +15,7 @@ class ManageUsersSalesController extends Controller
         $users = User::all();
         $sales = Sales::all();
 
-        return view('pages.owner.manage-users-sales', compact(
+        return view('pages.owner.manage-data.users-sales', compact(
             'users',
             'sales'
         ));

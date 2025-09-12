@@ -86,8 +86,8 @@
                                             class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
                                             Edit
                                         </button>
-                                        <form action="{{ route('owner.users.destroy', $user) }}" method="POST"
-                                            class="inline">
+                                        <form action="{{ route('owner.manage-data.users-sales.users.destroy', $user) }}"
+                                            method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -158,8 +158,8 @@
                                             class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
                                             Edit
                                         </button>
-                                        <form action="{{ route('owner.sales.destroy', $sale) }}" method="POST"
-                                            class="inline">
+                                        <form action="{{ route('owner.manage-data.users-sales.sales.destroy', $sale) }}"
+                                            method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -186,7 +186,8 @@
                     <h3 class="text-lg font-semibold text-gray-900">Add New User</h3>
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
-                <form action="{{ route('owner.users.store') }}" method="POST" class="px-6 py-4 space-y-4">
+                <form action="{{ route('owner.manage-data.users-sales.users.store') }}" method="POST"
+                    class="px-6 py-4 space-y-4">
                     @csrf
                     {{-- Full Name --}}
                     <div>
@@ -284,7 +285,8 @@
                     <h3 class="text-lg font-semibold text-gray-900">Edit User</h3>
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
-                <form :action="`/owner/users/${editUser.id}`" method="POST" class="px-6 py-4 space-y-4">
+                <form :action="`/owner/manage-data/users-sales/users/${editUser.id}`" method="POST"
+                    class="px-6 py-4 space-y-4">
                     @csrf
                     @method('PUT')
 
@@ -382,7 +384,8 @@
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
 
-                <form action="{{ route('owner.sales.store') }}" method="POST" class="px-6 py-4 space-y-4">
+                <form action="{{ route('owner.manage-data.users-sales.sales.store') }}" method="POST"
+                    class="px-6 py-4 space-y-4">
                     @csrf
                     <div class="relative">
                         <label class="block text-sm font-medium text-gray-700">Sales Name</label>
@@ -426,8 +429,8 @@
                     <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                 </div>
 
-
-                <form :action="`/owner/sales/${editSales.id}`" method="POST" class="px-6 py-4 space-y-4">
+                <form :action="`/owner/manage-data/users-sales/sales/${editSales.id}`" method="POST"
+                    class="px-6 py-4 space-y-4">
                     @csrf
                     @method('PUT')
 

@@ -12,7 +12,7 @@ use App\Http\Controllers\MaterialSizeController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ShippingController;
 
-use App\Http\Controllers\Owner\ManageUsersSalesController;
+use App\Http\Controllers\Main\ManageUsersSalesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\OrderController;
@@ -80,34 +80,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::resource('sales', SalesController::class)->except(['index', 'create', 'show', 'edit']);
             });
         });
-        // Route::get('manage-products', [ManageProductsController::class, 'index'])->name('manage-products');
-        // Route::resource('product-categories', ProductCategoryController::class)->except(['index', 'create', 'show', 'edit']);
-        // Route::resource('material-categories', MaterialCategoryController::class)->except(['index', 'create', 'show', 'edit']);
-        // Route::resource('material-textures', MaterialTextureController::class)->except(['index', 'create', 'show', 'edit']);
-        // Route::resource('material-sleeves', MaterialSleeveController::class)
-        //     ->parameters([
-        //         'material-sleeves' => 'materialSleeve'
-        //     ]);
-        // Route::resource('material-sizes', MaterialSizeController::class)->except(['index', 'create', 'show', 'edit']);
-        // Route::resource('shippings', ShippingController::class)->except(['index', 'create', 'show', 'edit']);
-
-        // Manage Work Order
-        // Route::get('manage-wo', fn() => view('pages.owner.manage-wo'))->name('manage-wo');
-
-        // Manage Users & Sales
-        Route::get('manage-users-sales', [ManageUsersSalesController::class, 'index'])->name('manage-users-sales');
-        Route::resource('users', UserController::class)->except(['index', 'create', 'show', 'edit']);
-        Route::resource('sales', SalesController::class)->except(['index', 'create', 'show', 'edit']);
     });
-
-    /* ---------- ADMIN ---------- */
-    // Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
-    //     Route::get('dashboard', fn() => view('pages.admin.dashboard'))->name('dashboard');
-    //     Route::get('orders', fn() => view('pages.admin.orders'))->name('orders');
-    //     Route::get('work-orders', fn() => view('pages.admin.work-orders'))->name('work-orders');
-    //     Route::get('payment-history', fn() => view('pages.admin.payment-history'))->name('payment-history');
-    //     Route::get('customers', fn() => view('pages.admin.customers'))->name('customers');
-    // });
 
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
 

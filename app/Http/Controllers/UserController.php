@@ -23,7 +23,7 @@ class UserController extends Controller
 
         User::create($validated);
 
-        return redirect()->route('owner.manage-users-sales')
+        return redirect()->route('owner.manage-data.users-sales.index')
             ->with('success_add', 'User added successfully.');
     }
 
@@ -43,7 +43,7 @@ class UserController extends Controller
 
         $user->update(array_filter($validated));
 
-        return redirect()->route('owner.manage-users-sales')
+        return redirect()->route('owner.manage-data.users-sales.index')
             ->with('success_edit', 'User updated successfully.');
     }
 
@@ -51,7 +51,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect()->route('owner.manage-users-sales')
+        return redirect()->route('owner.manage-data.users-sales.index')
             ->with('success', 'User deleted successfully.');
     }
 }
