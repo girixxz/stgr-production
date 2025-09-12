@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Main\ManageProductsController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\MaterialCategoryController;
@@ -91,7 +92,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('work-orders', fn() => view('pages.admin.work-orders'))->name('work-orders');
         Route::get('payment-history', fn() => view('pages.admin.payment-history'))->name('payment-history');
-        Route::get('customers', fn() => view('pages.admin.customers'))->name('customers');
+
+        // Customers
+        Route::resource('customers', CustomerController::class)->except(['show']);
     });
 
     /* ---------- PROJECT MANAGER ---------- */

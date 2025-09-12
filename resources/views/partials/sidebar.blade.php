@@ -130,7 +130,7 @@
                         </x-sidebar-menu.main-menu>
                     </li>
                     <li>
-                        <x-sidebar-menu.main-menu href="{{ route('admin.customers') }}" :pattern="'admin.customers'">
+                        <x-sidebar-menu.main-menu href="{{ route('admin.customers.index') }}" :pattern="'admin.customers*'">
                             <x-icons.customers class="text-current" />
                             <span class="ml-2">Customers</span>
                         </x-sidebar-menu.main-menu>

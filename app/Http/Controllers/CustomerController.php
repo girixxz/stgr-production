@@ -3,63 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Province;
+use App\Models\City;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $customers = Customer::with(['province', 'city'])->get();
+        $provinces = Province::orderBy('name', 'asc')->get();
+        $cities = City::orderBy('name', 'asc')->get();
+        return view('pages.admin.customers', compact('customers', 'provinces', 'cities'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        // biar modal add kebuka kalau gagal
+        session()->flash('openModal', 'addCustomer');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Customer $customer)
-    {
-        //
-    }
+        $validated = $request->validateWithBag('addCustomer', [
+            'name'        => 'required|max:100',
+            'phone'       => 'required|max:20|unique:customers,phone',
+            'province_id' => 'required|exists:provinces,id',
+            'city_id'     => 'required|exists:cities,id',
+            'address'     => 'required',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Customer $customer)
-    {
-        //
-    }
+        Customer::create($validated);
 
-    /**
-     * Update the specified resource in storage.
-     */
+        return redirect()->to(route('admin.customers.index') . '#customers')
+            ->with('success_add', 'Customer added successfully.');
+    }
     public function update(Request $request, Customer $customer)
     {
-        //
+        // biar modal edit kebuka kalau gagal
+        session()->flash('openModal', 'editCustomer');
+        session()->flash('editCustomerId', $customer->id);
+
+        $validated = $request->validateWithBag('editCustomer', [
+            'name'        => 'required|max:100',
+            'phone' => 'required|max:20|unique:customers,phone,' . $customer->id,
+            'province_id' => 'required|exists:provinces,id',
+            'city_id'     => 'required|exists:cities,id',
+            'address'     => 'required',
+        ]);
+
+        $customer->update($validated);
+
+        return redirect()->to(route('admin.customers.index') . '#customers')
+            ->with('success_edit', 'Customer updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Customer $customer)
     {
-        //
+        $customer->delete();
+
+        return redirect()->to(route('admin.customers.index') . '#customers')
+            ->with('success_delete', 'Customer deleted successfully.');
     }
 }
