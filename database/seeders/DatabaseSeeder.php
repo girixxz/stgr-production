@@ -19,7 +19,11 @@ class DatabaseSeeder extends Seeder
             MaterialTextureSeeder::class,
             MaterialSleeveSeeder::class,
             MaterialSizeSeeder::class,
+            ServiceSeeder::class,
             ShippingSeeder::class,
+            ProvinceSeeder::class,
+            CitySeeder::class,
+            CustomerSeeder::class,
         ]);
     }
 }
