@@ -83,19 +83,12 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
-
+        // Dashboard
         Route::get('dashboard', fn() => view('pages.admin.dashboard'))->name('dashboard');
 
         // Orders
         Route::resource('orders', OrderController::class)->except(['show']);
 
-        // Route::prefix('orders')->name('orders.')->group(function () {
-        //     Route::get('/', [AdminOrderController::class, 'index'])->name('index');
-        //     Route::get('create-order', [AdminCreateOrderController::class, 'index'])->name('create-order');
-        //     Route::post('/', [AdminCreateOrderController::class, 'store'])->name('store');
-        //     Route::put('{order}', [AdminOrderController::class, 'update'])->name('update');
-        //     Route::delete('{order}', [AdminOrderController::class, 'destroy'])->name('destroy');
-        // });
         Route::get('work-orders', fn() => view('pages.admin.work-orders'))->name('work-orders');
         Route::get('payment-history', fn() => view('pages.admin.payment-history'))->name('payment-history');
         Route::get('customers', fn() => view('pages.admin.customers'))->name('customers');
