@@ -16,7 +16,7 @@ use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\Main\ManageUsersSalesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Main\OrderController;
 
 /* ================= DEFAULT INDEX / LOGIN ================= */
 

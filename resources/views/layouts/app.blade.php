@@ -54,6 +54,7 @@
     </div>
 
     <x-toast-notif />
+    @stack('scripts')
 
 </body>
 
