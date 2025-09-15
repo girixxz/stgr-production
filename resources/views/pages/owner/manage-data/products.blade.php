@@ -51,11 +51,10 @@
                 </div>
             </div>
 
-
             {{-- Table Product Category --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[350px] w-full text-sm">
+                    <table class="min-w-[300px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -66,28 +65,33 @@
                         <tbody>
                             @forelse ($productCategories as $product)
                                 <tr class="border-t border-gray-200"
-                                    x-show="searchProduct.length < 3 || '{{ strtolower($product->product_name) }}'.includes(searchProduct.toLowerCase())">
+                                    x-show="searchProduct.length < 1 || '{{ strtolower($product->product_name) }}'.includes(searchProduct.toLowerCase())">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $product->product_name }}</td>
                                     <td class="py-2 px-4 text-right">
-                                        {{-- Tombol Edit --}}
-                                        <button @click="editProduct = {{ $product->toJson() }}; openModal = 'editProduct'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
-                                        </button>
-
-                                        {{-- Tombol Delete --}}
-                                        <form
-                                            action="{{ route('owner.manage-data.products.product-categories.destroy', $product) }}"
-                                            method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this product?')">
-                                                Delete
+                                        <div class="flex items-center justify-end gap-2">
+                                            {{-- Tombol Edit --}}
+                                            <button
+                                                @click="editProduct = {{ $product->toJson() }}; openModal = 'editProduct'"
+                                                class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                                title="Edit">
+                                                <x-icons.edit class="w-3 h-3 !mr-0" />
                                             </button>
-                                        </form>
+
+                                            {{-- Tombol Delete --}}
+                                            <form
+                                                action="{{ route('owner.manage-data.products.product-categories.destroy', $product) }}"
+                                                method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    onclick="return confirm('Are you sure you want to delete this product?')"
+                                                    title="Delete">
+                                                    <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -131,11 +135,10 @@
                 </div>
             </div>
 
-
-            {{-- Table Product Category --}}
+            {{-- Table Material Category --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[350px] w-full text-sm">
+                    <table class="min-w-[300px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -143,33 +146,36 @@
                                 <th class="py-2 px-4 text-right">Action</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @forelse ($materialCategories as $material)
                                 <tr class="border-t border-gray-200"
-                                    x-show="searchMaterial.length < 3 || '{{ strtolower($material->material_name) }}'.includes(searchMaterial.toLowerCase())">
+                                    x-show="searchMaterial.length < 1 || '{{ strtolower($material->material_name) }}'.includes(searchMaterial.toLowerCase())">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $material->material_name }}</td>
                                     <td class="py-2 px-4 text-right">
-                                        {{-- Tombol Edit --}}
-                                        <button
-                                            @click="editMaterial = {{ $material->toJson() }}; openModal = 'editMaterial'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
-                                        </button>
-
-                                        {{-- Tombol Delete --}}
-                                        <form
-                                            action="{{ route('owner.manage-data.products.material-categories.destroy', $material) }}"
-                                            method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this material?')">
-                                                Delete
+                                        <div class="flex items-center justify-end gap-2">
+                                            {{-- Tombol Edit --}}
+                                            <button
+                                                @click="editMaterial = {{ $material->toJson() }}; openModal = 'editMaterial'"
+                                                class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                                title="Edit">
+                                                <x-icons.edit class="w-3 h-3 !mr-0" />
                                             </button>
-                                        </form>
+
+                                            {{-- Tombol Delete --}}
+                                            <form
+                                                action="{{ route('owner.manage-data.products.material-categories.destroy', $material) }}"
+                                                method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    onclick="return confirm('Are you sure you want to delete this material?')"
+                                                    title="Delete">
+                                                    <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -180,8 +186,6 @@
                                 </tr>
                             @endforelse
                         </tbody>
-
-
                     </table>
                 </div>
             </div>
@@ -215,11 +219,10 @@
                 </div>
             </div>
 
-
-            {{-- Table Product Category --}}
+            {{-- Table Material Texture --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[350px] w-full text-sm">
+                    <table class="min-w-[300px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -230,28 +233,33 @@
                         <tbody>
                             @forelse ($materialTextures as $texture)
                                 <tr class="border-t border-gray-200"
-                                    x-show="searchTexture.length < 3 || '{{ strtolower($texture->texture_name) }}'.includes(searchTexture.toLowerCase())">
+                                    x-show="searchTexture.length < 1 || '{{ strtolower($texture->texture_name) }}'.includes(searchTexture.toLowerCase())">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $texture->texture_name }}</td>
                                     <td class="py-2 px-4 text-right">
-                                        {{-- Tombol Edit --}}
-                                        <button @click="editTexture = {{ $texture->toJson() }}; openModal = 'editTexture'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
-                                        </button>
-
-                                        {{-- Tombol Delete --}}
-                                        <form
-                                            action="{{ route('owner.manage-data.products.material-textures.destroy', $texture) }}"
-                                            method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this texture?')">
-                                                Delete
+                                        <div class="flex items-center justify-end gap-2">
+                                            {{-- Tombol Edit --}}
+                                            <button
+                                                @click="editTexture = {{ $texture->toJson() }}; openModal = 'editTexture'"
+                                                class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                                title="Edit">
+                                                <x-icons.edit class="w-3 h-3 !mr-0" />
                                             </button>
-                                        </form>
+
+                                            {{-- Tombol Delete --}}
+                                            <form
+                                                action="{{ route('owner.manage-data.products.material-textures.destroy', $texture) }}"
+                                                method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    onclick="return confirm('Are you sure you want to delete this texture?')"
+                                                    title="Delete">
+                                                    <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -298,7 +306,7 @@
             {{-- Table --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[350px] w-full text-sm">
+                    <table class="min-w-[300px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -309,14 +317,15 @@
                         <tbody>
                             @forelse ($materialSleeves as $sleeve)
                                 <tr class="border-t border-gray-200"
-                                    x-show="searchSleeve.length < 3 || '{{ strtolower($sleeve->sleeve_name) }}'.includes(searchSleeve.toLowerCase())">
+                                    x-show="searchSleeve.length < 1 || '{{ strtolower($sleeve->sleeve_name) }}'.includes(searchSleeve.toLowerCase())">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $sleeve->sleeve_name }}</td>
                                     <td class="py-2 px-4 text-right">
                                         {{-- Tombol Edit --}}
                                         <button @click="editSleeve = {{ $sleeve->toJson() }}; openModal = 'editSleeve'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
+                                            class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                            title="Edit">
+                                            <x-icons.edit class="w-3 h-3 !mr-0" />
                                         </button>
 
                                         {{-- Tombol Delete --}}
@@ -326,9 +335,10 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this sleeve?')">
-                                                Delete
+                                                class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                onclick="return confirm('Are you sure you want to delete this sleeve?')"
+                                                title="Delete">
+                                                <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
                                             </button>
                                         </form>
 
@@ -377,10 +387,10 @@
             </div>
 
 
-            {{-- Table Product Category --}}
+            {{-- Table Material Size --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[350px] w-full text-sm">
+                    <table class="min-w-[300px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -391,28 +401,32 @@
                         <tbody>
                             @forelse ($materialSizes as $size)
                                 <tr class="border-t border-gray-200"
-                                    x-show="searchSize.length < 3 || '{{ strtolower($size->size_name) }}'.includes(searchSize.toLowerCase())">
+                                    x-show="searchSize.length < 1 || '{{ strtolower($size->size_name) }}'.includes(searchSize.toLowerCase())">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $size->size_name }}</td>
                                     <td class="py-2 px-4 text-right">
-                                        {{-- Tombol Edit --}}
-                                        <button @click="editSize = {{ $size->toJson() }}; openModal = 'editSize'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
-                                        </button>
-
-                                        {{-- Tombol Delete --}}
-                                        <form
-                                            action="{{ route('owner.manage-data.products.material-sizes.destroy', $size) }}"
-                                            method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this size?')">
-                                                Delete
+                                        <div class="flex items-center justify-end gap-2">
+                                            {{-- Tombol Edit --}}
+                                            <button @click="editSize = {{ $size->toJson() }}; openModal = 'editSize'"
+                                                class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                                title="Edit">
+                                                <x-icons.edit class="w-3 h-3 !mr-0" />
                                             </button>
-                                        </form>
+
+                                            {{-- Tombol Delete --}}
+                                            <form
+                                                action="{{ route('owner.manage-data.products.material-sizes.destroy', $size) }}"
+                                                method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    onclick="return confirm('Are you sure you want to delete this size?')"
+                                                    title="Delete">
+                                                    <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -459,10 +473,10 @@
             </div>
 
 
-            {{-- Table Product Category --}}
+            {{-- Table Services --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[350px] w-full text-sm">
+                    <table class="min-w-[300px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -473,28 +487,33 @@
                         <tbody>
                             @forelse ($services as $service)
                                 <tr class="border-t border-gray-200"
-                                    x-show="searchService.length < 3 || '{{ strtolower($service->service_name) }}'.includes(searchService.toLowerCase())">
+                                    x-show="searchService.length < 1 || '{{ strtolower($service->service_name) }}'.includes(searchService.toLowerCase())">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $service->service_name }}</td>
                                     <td class="py-2 px-4 text-right">
-                                        {{-- Tombol Edit --}}
-                                        <button @click="editService = {{ $service->toJson() }}; openModal = 'editService'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
-                                        </button>
-
-                                        {{-- Tombol Delete --}}
-                                        <form
-                                            action="{{ route('owner.manage-data.products.services.destroy', $service) }}"
-                                            method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this service?')">
-                                                Delete
+                                        <div class="flex items-center justify-end gap-2">
+                                            {{-- Tombol Edit --}}
+                                            <button
+                                                @click="editService = {{ $service->toJson() }}; openModal = 'editService'"
+                                                class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                                title="Edit">
+                                                <x-icons.edit class="w-3 h-3 !mr-0" />
                                             </button>
-                                        </form>
+
+                                            {{-- Tombol Delete --}}
+                                            <form
+                                                action="{{ route('owner.manage-data.products.services.destroy', $service) }}"
+                                                method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    onclick="return confirm('Are you sure you want to delete this service?')"
+                                                    title="Delete">
+                                                    <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -544,7 +563,7 @@
             {{-- Table Product Category --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-72 overflow-y-auto">
-                    <table class="min-w-[350px] w-full text-sm">
+                    <table class="min-w-[300px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -555,29 +574,33 @@
                         <tbody>
                             @forelse ($materialShippings as $shipping)
                                 <tr class="border-t border-gray-200"
-                                    x-show="searchShipping.length < 3 || '{{ strtolower($shipping->shipping_name) }}'.includes(searchShipping.toLowerCase())">
+                                    x-show="searchShipping.length < 1 || '{{ strtolower($shipping->shipping_name) }}'.includes(searchShipping.toLowerCase())">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $shipping->shipping_name }}</td>
                                     <td class="py-2 px-4 text-right">
-                                        {{-- Tombol Edit --}}
-                                        <button
-                                            @click="editShipping = {{ $shipping->toJson() }}; openModal = 'editShipping'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
-                                        </button>
-
-                                        {{-- Tombol Delete --}}
-                                        <form
-                                            action="{{ route('owner.manage-data.products.shippings.destroy', $shipping) }}"
-                                            method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this shipping?')">
-                                                Delete
+                                        <div class="flex items-center justify-end gap-2">
+                                            {{-- Tombol Edit --}}
+                                            <button
+                                                @click="editShipping = {{ $shipping->toJson() }}; openModal = 'editShipping'"
+                                                class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                                title="Edit">
+                                                <x-icons.edit class="w-3 h-3 !mr-0" />
                                             </button>
-                                        </form>
+
+                                            {{-- Tombol Delete --}}
+                                            <form
+                                                action="{{ route('owner.manage-data.products.shippings.destroy', $shipping) }}"
+                                                method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    onclick="return confirm('Are you sure you want to delete this shipping?')"
+                                                    title="Delete">
+                                                    <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

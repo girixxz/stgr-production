@@ -18,7 +18,6 @@ use App\Models\OrderItem;
 use App\Models\AdditionalService;
 use App\Models\DesignVariant;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 
 class OrderController extends Controller

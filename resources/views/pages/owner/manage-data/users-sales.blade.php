@@ -41,7 +41,7 @@
             {{-- Table Users --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-96 overflow-y-auto">
-                    <table class="min-w-[800px] w-full text-sm">
+                    <table class="min-w-[750px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -82,20 +82,28 @@
                                         </span>
                                     </td>
                                     <td class="py-2 px-4 text-right">
-                                        <button @click="editUser = {{ $user->toJson() }}; openModal = 'editUser'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
-                                        </button>
-                                        <form action="{{ route('owner.manage-data.users-sales.users.destroy', $user) }}"
-                                            method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this user?')">
-                                                Delete
+                                        <div class="flex items-center justify-end gap-2">
+                                            {{-- Tombol Edit --}}
+                                            <button @click="editUser = {{ $user->toJson() }}; openModal = 'editUser'"
+                                                class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                                title="Edit">
+                                                <x-icons.edit class="w-3 h-3 !mr-0" />
                                             </button>
-                                        </form>
+
+                                            {{-- Tombol Delete --}}
+                                            <form
+                                                action="{{ route('owner.manage-data.users-sales.users.destroy', $user) }}"
+                                                method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    onclick="return confirm('Are you sure you want to delete this user?')"
+                                                    title="Delete">
+                                                    <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -133,7 +141,7 @@
             {{-- Table --}}
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-96 overflow-y-auto">
-                    <table class="min-w-[500px] w-full text-sm">
+                    <table class="min-w-[450px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
@@ -154,20 +162,28 @@
                                     <td class="py-2 px-4">{{ $sale->phone_number }}</td>
 
                                     <td class="py-2 px-4 text-right">
-                                        <button @click="editSales = {{ $sale->toJson() }}; openModal = 'editSales'"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
-                                        </button>
-                                        <form action="{{ route('owner.manage-data.users-sales.sales.destroy', $sale) }}"
-                                            method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this sale?')">
-                                                Delete
+                                        <div class="flex items-center justify-end gap-2">
+                                            {{-- Tombol Edit --}}
+                                            <button @click="editSales = {{ $sale->toJson() }}; openModal = 'editSales'"
+                                                class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                                title="Edit">
+                                                <x-icons.edit class="w-3 h-3 !mr-0" />
                                             </button>
-                                        </form>
+
+                                            {{-- Tombol Delete --}}
+                                            <form
+                                                action="{{ route('owner.manage-data.users-sales.sales.destroy', $sale) }}"
+                                                method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    onclick="return confirm('Are you sure you want to delete this sales?')"
+                                                    title="Delete">
+                                                    <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

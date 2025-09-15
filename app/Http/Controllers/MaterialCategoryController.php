@@ -33,13 +33,13 @@ class MaterialCategoryController extends Controller
 
         $materialCategory->update(array_filter($validated));
 
-        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')->with('success_edit', 'Product updated successfully.');
+        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')->with('success_edit', 'Material updated successfully.');
     }
 
     public function destroy(MaterialCategory $materialCategory)
     {
         $materialCategory->delete();
 
-        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')->with('success', 'Product Category deleted successfully.');
+        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')->with('success', 'Material Category deleted successfully.');
     }
 }
