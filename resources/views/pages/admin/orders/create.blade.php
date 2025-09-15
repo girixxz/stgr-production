@@ -3,6 +3,7 @@
 @section('title', 'Create Orders')
 
 @section('content')
+
     @php
         $role = auth()->user()?->role;
         $root = $role === 'owner' ? 'Admin' : 'Menu';
@@ -10,8 +11,13 @@
 
     <x-nav-locate :items="[$root, 'Orders', 'Create Order']" />
 
-    <form x-data="orderForm()" @submit.prevent="submitForm" class="bg-white rounded-lg shadow p-6 space-y-8">
-
+    <form x-data="orderForm()" @submit="preparePayload" @customer_id-selected.window="customer_id = $event.detail"
+        @sales_id-selected.window="sales_id = $event.detail"
+        @product_category_id-selected.window="product_category_id = $event.detail"
+        @material_category_id-selected.window="material_category_id = $event.detail"
+        @material_texture_id-selected.window="material_texture_id = $event.detail"
+        @shipping_id-selected.window="shipping_id = $event.detail" method="POST" action="{{ route('admin.orders.store') }}"
+        class="bg-white rounded-lg shadow p-6 space-y-8">
         @csrf
 
         {{-- ================= Header ================= --}}
@@ -54,136 +60,36 @@
         {{-- ================= Customers & Sales ================= --}}
         <section class="space-y-5 border-b pb-12">
             <h3 class="text-lg font-semibold text-gray-800">Data Customers & Sales</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                {{-- Customer --}}
-                <div class="relative w-full min-h-[60px]">
-                    <label class="block text-sm text-gray-600 mb-1">Customer</label>
-                    <div class="relative">
-                        <select name="customer_id" x-model="customer_id"
-                            class="appearance-none w-full rounded-md border px-3 py-2 text-sm text-gray-700
-                    {{ $errors->addOrder->has('customer_id')
-                        ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-                        : 'border-gray-300 focus:border-green-500 focus:ring-green-200' }}
-                    focus:outline-none focus:ring-2">
-                            <option value="">-- Select Customer --</option>
-                            @foreach ($customers as $customer)
-                                <option value="{{ $customer->id }}"
-                                    {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                    {{ $customer->name }}
-                                </option>
-                            @endforeach
-                        </select>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <div class="relative flex flex-col gap-2 md:gap-3">
+                    <label class="text-sm text-gray-600 md:w-24">Customer</label>
 
-                        {{-- Custom Arrow --}}
-                        <div class="pointer-events-none absolute top-1/2 -translate-y-1/2 right-3 text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-
-                        {{-- Danger Icon --}}
-                        @if ($errors->addOrder->has('customer_id'))
-                            <span class="absolute top-1/2 -translate-y-1/2 right-8 text-red-500 pointer-events-none">
-                                <x-icons.danger />
-                            </span>
-                        @endif
-
-                        {{-- Error Message --}}
-                        @error('customer_id', 'addOrder')
-                            <p class="absolute left-0 -bottom-5 text-[10px] text-red-600">{{ $message }}</p>
-                        @enderror
-                        <span x-show="errors.customer_id" x-text="errors.customer_id"
-                            class="absolute left-0 -bottom-5 text-[10px] text-red-600"></span>
-                    </div>
+                    <x-select-form name="customer_id" label="Customer" placeholder="-- Select Customer --" :options="$customers"
+                        display="name" :old="old('customer_id')" />
                 </div>
 
-                {{-- Sales --}}
-                <div class="relative w-full min-h-[60px]">
-                    <label class="block text-sm text-gray-600 mb-1">Sales</label>
-                    <div class="relative">
-                        <select name="sales_id" x-model="sales_id"
-                            class="appearance-none w-full rounded-md border px-3 py-2 text-sm text-gray-700
-                    {{ $errors->addOrder->has('sales_id')
-                        ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-                        : 'border-gray-300 focus:border-green-500 focus:ring-green-200' }}
-                    focus:outline-none focus:ring-2">
-                            <option value="">-- Select Sales --</option>
-                            @foreach ($sales as $sale)
-                                <option value="{{ $sale->id }}" {{ old('sales_id') == $sale->id ? 'selected' : '' }}>
-                                    {{ $sale->sales_name }}
-                                </option>
-                            @endforeach
-                        </select>
+                <div class="relative flex flex-col gap-2 md:gap-3">
+                    <label class="text-sm text-gray-600 md:w-24">Sales</label>
 
-                        {{-- Custom Arrow --}}
-                        <div class="pointer-events-none absolute top-1/2 -translate-y-1/2 right-3 text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-
-                        {{-- Danger Icon --}}
-                        @if ($errors->addOrder->has('sales_id'))
-                            <span class="absolute top-1/2 -translate-y-1/2 right-8 text-red-500 pointer-events-none">
-                                <x-icons.danger />
-                            </span>
-                        @endif
-
-                        {{-- Error Message --}}
-                        @error('sales_id', 'addOrder')
-                            <p class="absolute left-0 -bottom-5 text-[10px] text-red-600">{{ $message }}</p>
-                        @enderror
-                        <span x-show="errors.sales_id" x-text="errors.sales_id"
-                            class="absolute left-0 -bottom-5 text-[10px] text-red-600"></span>
-                    </div>
+                    <x-select-form name="sales_id" label="Sales" placeholder="-- Select Sales --" :options="$sales"
+                        display="sales_name" :old="old('sales_id')" />
                 </div>
+
+
             </div>
         </section>
-
 
         {{-- ================= Detail Products ================= --}}
         <section class="space-y-5 border-b pb-12">
             <h3 class="text-lg font-semibold text-gray-800">Detail Products</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 <div class="space-y-7">
                     {{-- Product --}}
                     <div class="relative flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
                         <label class="text-sm text-gray-600 md:w-24">Product</label>
-                        <div class="relative w-full">
-                            <select name="product_category_id" x-model="product_category_id"
-                                class="appearance-none w-full rounded-md border px-3 py-2 text-sm text-gray-700
-                        {{ $errors->addOrder->has('product_category_id')
-                            ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
-                            : 'border-gray-300 focus:border-green-500 focus:ring-green-200' }} 
-                        focus:outline-none focus:ring-2">
-                                <option value="">-- Select Product --</option>
-                                @foreach ($productCategories as $product)
-                                    <option value="{{ $product->id }}"
-                                        {{ old('product_category_id') == $product->id ? 'selected' : '' }}>
-                                        {{ $product->product_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            {{-- Custom Arrow --}}
-                            <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
-                            @if ($errors->addOrder->has('product_category_id'))
-                                <span class="absolute right-8 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
-                                    <x-icons.danger />
-                                </span>
-                            @endif
-                            @error('product_category_id', 'addOrder')
-                                <p class="absolute left-0 -bottom-5 text-[10px] text-red-600">{{ $message }}</p>
-                            @enderror
-                            <span x-show="errors.product_category_id" x-text="errors.product_category_id"
-                                class="absolute left-0 -bottom-5 text-[10px] text-red-600"></span>
-                        </div>
+
+                        <x-select-form name="product_category_id" label="Product" placeholder="-- Select Product --"
+                            :options="$productCategories" display="product_name" :old="old('product_category_id')" />
                     </div>
 
                     {{-- Color --}}
@@ -212,85 +118,14 @@
                     </div>
 
                     {{-- Materials --}}
-                    <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
-                        <label class="text-sm text-gray-600 md:w-24">Materials</label>
+                    <div class="relative flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
+                        <label class="text-sm text-gray-600 md:w-24">Material</label>
                         <div class="flex flex-col md:flex-row gap-2 gap-y-6 md:gap-3 w-full">
+                            <x-select-form name="material_category_id" label="Product" placeholder="-- Select Material --"
+                                :options="$materialCategories" display="material_name" :old="old('material_category_id')" />
 
-                            {{-- Material --}}
-                            <div class="relative w-full">
-                                <select name="material_category_id" x-model="material_category_id"
-                                    class="appearance-none w-full rounded-md border px-3 py-2 text-sm text-gray-700 {{ $errors->addOrder->has('material_category_id') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2">
-                                    <option value="">-- Select Material --</option>
-                                    @foreach ($materialCategories as $material)
-                                        <option value="{{ $material->id }}"
-                                            {{ old('material_category_id') == $material->id ? 'selected' : '' }}>
-                                            {{ $material->material_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-
-                                {{-- Custom Arrow --}}
-                                <div
-                                    class="pointer-events-none absolute top-1/2 -translate-y-1/2 right-3 flex items-center text-gray-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-
-                                {{-- Danger Icon --}}
-                                @if ($errors->addOrder->has('material_category_id'))
-                                    <span
-                                        class="absolute top-1/2 -translate-y-1/2 right-8 text-red-500 pointer-events-none">
-                                        <x-icons.danger />
-                                    </span>
-                                @endif
-
-                                {{-- Error Message --}}
-                                @error('material_category_id', 'addOrder')
-                                    <p class="absolute left-0 -bottom-5 text-[10px] text-red-600">{{ $message }}</p>
-                                @enderror
-                                <span x-show="errors.material_category_id" x-text="errors.material_category_id"
-                                    class="absolute left-0 -bottom-5 text-[10px] text-red-600"></span>
-                            </div>
-
-                            {{-- Texture --}}
-                            <div class="relative w-full">
-                                <select name="material_texture_id" x-model="material_texture_id"
-                                    class="appearance-none w-full rounded-md border px-3 py-2 text-sm text-gray-700 {{ $errors->addOrder->has('material_texture_id') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2">
-                                    <option value="">-- Select Texture --</option>
-                                    @foreach ($materialTextures as $texture)
-                                        <option value="{{ $texture->id }}"
-                                            {{ old('material_texture_id') == $texture->id ? 'selected' : '' }}>
-                                            {{ $texture->texture_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-
-                                {{-- Custom Arrow --}}
-                                <div
-                                    class="pointer-events-none absolute top-1/2 -translate-y-1/2 right-3 flex items-center text-gray-500">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-
-                                {{-- Danger Icon --}}
-                                @if ($errors->addOrder->has('material_texture_id'))
-                                    <span
-                                        class="absolute top-1/2 -translate-y-1/2 right-8 text-red-500 pointer-events-none">
-                                        <x-icons.danger />
-                                    </span>
-                                @endif
-
-                                {{-- Error Message --}}
-                                @error('material_texture_id', 'addOrder')
-                                    <p class="absolute left-0 -bottom-5 text-[10px] text-red-600">{{ $message }}</p>
-                                @enderror
-                                <span x-show="errors.material_texture_id" x-text="errors.material_texture_id"
-                                    class="absolute left-0 -bottom-5 text-[10px] text-red-600"></span>
-                            </div>
+                            <x-select-form name="material_texture_id" label="Product" placeholder="-- Select Texture --"
+                                :options="$materialTextures" display="texture_name" :old="old('material_texture_id')" />
                         </div>
                     </div>
 
@@ -427,11 +262,7 @@
                                                 <td class="py-2 px-4 text-right">
                                                     <button type="button" @click="variant.rows.splice(rIndex, 1)"
                                                         class="px-2 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 text-sm">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
-                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                            stroke-width="2">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1
-                                    0 00-1-1h-4a1 1 0 00-1 1v3m-4 0h14" />
+                                                        <x-icons.trash class="text-white" />
                                                     </button>
                                                 </td>
                                             </tr>
@@ -500,8 +331,7 @@
                     <template x-for="(item, index) in additionals" :key="index">
                         <div class="flex flex-col md:flex-row gap-3 mb-3">
                             <select x-model="item.service_id"
-                                class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm
-                focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400">
+                                class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400">
                                 <option value="">-- Select Service --</option>
                                 @foreach ($services as $service)
                                     <option value="{{ $service->id }}">{{ $service->service_name }}</option>
@@ -527,23 +357,16 @@
                 </div>
 
                 {{-- Shipping --}}
-                <div>
-                    <label class="block text-sm text-gray-600 mb-2">Shipping</label>
-                    {{-- Shipping --}}
-                    <select name="shipping_id" x-model="shipping_id"
-                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
-                        <option value="">-- Select Shipping --</option>
-                        @foreach ($shippings as $shipping)
-                            <option value="{{ $shipping->id }}">{{ $shipping->shipping_name }}</option>
-                        @endforeach
-                    </select>
-                    <span x-show="errors.shipping_id" x-text="errors.shipping_id"
-                        class="text-red-500 text-xs mt-1"></span>
+                <div class="relative flex flex-col gap-2 md:gap-3">
+                    <label class="text-sm text-gray-600 md:w-24">Shipping</label>
+
+                    <x-select-form name="shipping_id" label="Shipping" placeholder="-- Select Shipping --"
+                        :options="$shippings" display="shipping_name" :old="old('shipping_id')" />
                 </div>
+
             </div>
         </section>
 
-        <input type="hidden" name="payload" x-model="jsonPayload">
         {{-- ================= Discount, Final Price & Create ================= --}}
         <div class="flex justify-end mt-6">
             <div class="w-full md:w-1/3 space-y-4">
@@ -565,57 +388,85 @@
                 </button>
             </div>
         </div>
+
+        <input type="hidden" name="payload" x-model="jsonPayload">
+
     </form>
 @endsection
 @push('scripts')
     <script>
+        function searchSelect(options, oldValue, fieldName) {
+            return {
+                open: false,
+                search: '',
+                options,
+                selected: null,
+                selectedId: oldValue || '',
+                fieldName,
+
+                init() {
+                    if (this.selectedId) {
+                        this.selected = this.options.find(o => String(o.id) === String(this.selectedId)) || null;
+                    }
+                    // ⬇️ dispatch event biar orderForm tahu
+                    this.$dispatch(`${this.fieldName}-selected`, this.selectedId || '');
+                },
+
+                select(option) {
+                    this.selected = option;
+                    this.selectedId = option.id;
+                    this.open = false;
+
+                    // ⬇️ dispatch lagi setiap kali select berubah
+                    this.$dispatch(`${this.fieldName}-selected`, this.selectedId);
+                }
+            }
+        }
+
         function orderForm() {
             return {
-                // ================== STATE ==================
-                order_date: '',
-                deadline: '',
-                customer_id: '',
-                sales_id: '',
-                product_category_id: '',
-                product_color: '',
-                material_category_id: '',
-                material_texture_id: '',
-                notes: '',
-                discount: 0,
-                shipping_id: '',
+                // ====== STATE UTAMA ======
+                order_date: '{{ old('order_date') }}',
+                deadline: '{{ old('deadline') }}',
+                customer_id: '{{ old('customer_id') }}',
+                sales_id: '{{ old('sales_id') }}',
+                product_category_id: '{{ old('product_category_id') }}',
+                product_color: '{{ old('product_color') }}',
+                material_category_id: '{{ old('material_category_id') }}',
+                material_texture_id: '{{ old('material_texture_id') }}',
+                notes: '{{ old('notes') }}',
+                discount: {{ old('discount', 0) }},
+                shipping_id: '{{ old('shipping_id') }}',
 
+                // ====== DETAIL (pakai old payload kalau ada) ======
                 designVariants: [],
                 additionals: [],
-                errors: {},
                 jsonPayload: '',
 
-                // SIZE & SLEEVE
+                // REF DATA
                 sizes: @json($materialSizes),
                 sleeves: @json($materialSleeves),
 
-                // MODAL
+                // MODAL STATE
                 openModal: null,
                 selectedDesign: null,
                 selectedVariant: null,
                 selectedSizes: [],
 
-                // ================== INIT ==================
+                // INIT
                 init() {
-                    // Auto-scroll ke error Laravel pertama
-                    @if ($errors->addOrder->any())
-                        let firstError = "{{ $errors->addOrder->keys()[0] }}";
-                        let el = document.querySelector(`[name="${firstError}"]`);
-                        if (el) {
-                            el.scrollIntoView({
-                                behavior: "smooth",
-                                block: "center"
-                            });
-                            el.focus();
+                    @if (old('payload'))
+                        try {
+                            let oldData = JSON.parse(@json(old('payload')));
+                            this.designVariants = oldData.design_variants || [];
+                            this.additionals = oldData.additionals || [];
+                        } catch (e) {
+                            console.error("Failed to parse old payload", e);
                         }
                     @endif
                 },
 
-                // ================== DESIGN VARIANTS ==================
+                // ====== DESIGN VARIANT HANDLER ======
                 addDesignVariant() {
                     this.designVariants.push({
                         name: '',
@@ -629,30 +480,44 @@
                     });
                 },
 
-                // ================== SIZE HANDLER ==================
+                // SIZE HANDLER
                 toggleSize(size) {
                     let exists = this.selectedSizes.find(s => s.id === size.id);
                     this.selectedSizes = exists ?
                         this.selectedSizes.filter(s => s.id !== size.id) : [...this.selectedSizes, size];
                 },
                 applySizes() {
+                    // 1. Pastikan ada design & variant yang sedang dipilih
                     if (this.selectedDesign !== null && this.selectedVariant !== null) {
+
+                        // 2. Loop semua size yang dipilih di modal (this.selectedSizes)
                         this.selectedSizes.forEach(size => {
-                            this.designVariants[this.selectedDesign]
+
+                            // 3. Cek apakah size ini sudah ada di rows (untuk variant tsb)
+                            let exists = this.designVariants[this.selectedDesign]
                                 .sleeveVariants[this.selectedVariant]
-                                .rows.push({
-                                    size_id: size.id,
-                                    size: size.size_name,
-                                    unitPrice: 0,
-                                    qty: 0
-                                });
+                                .rows.find(r => r.size_id === size.id);
+
+                            // 4. Kalau belum ada, push data baru ke rows
+                            if (!exists) {
+                                this.designVariants[this.selectedDesign]
+                                    .sleeveVariants[this.selectedVariant]
+                                    .rows.push({
+                                        size_id: size.id,
+                                        size: size.size_name,
+                                        unitPrice: 0,
+                                        qty: 0
+                                    });
+                            }
                         });
+
+                        // 5. Reset pilihan & tutup modal
                         this.selectedSizes = [];
                         this.openModal = null;
                     }
                 },
 
-                // ================== ADDITIONALS ==================
+                // ADDITIONALS
                 addAdditional() {
                     this.additionals.push({
                         service_id: '',
@@ -663,11 +528,9 @@
                     this.additionals.splice(index, 1);
                 },
 
-                // ================== CALCULATION ==================
+                // CALCULATION
                 getSubTotal() {
                     let total = 0;
-
-                    // dari design variants
                     this.designVariants.forEach(design => {
                         design.sleeveVariants.forEach(variant => {
                             variant.rows.forEach(row => {
@@ -675,52 +538,20 @@
                             });
                         });
                     });
-
-                    // dari additionals
                     this.additionals.forEach(add => {
                         total += parseInt(add.price || 0);
                     });
-
                     return total;
                 },
                 getFinalPrice() {
                     return this.getSubTotal() - (this.discount || 0);
                 },
 
-                // ================== VALIDATION ==================
-                validate() {
-                    this.errors = {};
-                    if (!this.order_date) this.errors.order_date = "Order date is required.";
-                    if (!this.deadline) this.errors.deadline = "Deadline is required.";
-                    if (!this.customer_id) this.errors.customer_id = "Customer is required.";
-                    if (!this.sales_id) this.errors.sales_id = "Sales is required.";
-                    if (!this.product_category_id) this.errors.product_category_id = "Product is required.";
-                    if (!this.product_color) this.errors.product_color = "Product color is required.";
-                    if (!this.material_category_id) this.errors.material_category_id = "Material is required.";
-                    if (!this.material_texture_id) this.errors.material_texture_id = "Texture is required.";
-                    if (!this.shipping_id) this.errors.shipping_id = "Shipping is required.";
-                    return Object.keys(this.errors).length === 0;
-                },
-
-                // ================== SUBMIT ==================
-                submitForm() {
-                    if (!this.validate()) {
-                        // Scroll ke error Alpine pertama
-                        let firstErrorKey = Object.keys(this.errors)[0];
-                        let el = document.querySelector(`[name="${firstErrorKey}"]`);
-                        if (el) {
-                            el.scrollIntoView({
-                                behavior: "smooth",
-                                block: "center"
-                            });
-                            el.focus();
-                        }
-                        return;
-                    }
-
+                // SUBMIT → cukup update payload sebelum form submit
+                preparePayload() {
                     const data = {
-                        order_date: this.order_date + " 00:00:00",
-                        deadline: this.deadline + " 00:00:00",
+                        order_date: this.order_date ? this.order_date + " 00:00:00" : null,
+                        deadline: this.deadline ? this.deadline + " 00:00:00" : null,
                         customer_id: this.customer_id,
                         sales_id: this.sales_id,
                         product_category_id: this.product_category_id,
@@ -733,28 +564,7 @@
                         design_variants: this.designVariants,
                         additionals: this.additionals,
                     };
-
                     this.jsonPayload = JSON.stringify(data);
-
-                    // Create and submit hidden form
-                    let form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = "{{ route('admin.orders.store') }}";
-
-                    let csrf = document.createElement('input');
-                    csrf.type = 'hidden';
-                    csrf.name = '_token';
-                    csrf.value = "{{ csrf_token() }}";
-                    form.appendChild(csrf);
-
-                    let hidden = document.createElement('input');
-                    hidden.type = 'hidden';
-                    hidden.name = 'payload';
-                    hidden.value = this.jsonPayload;
-                    form.appendChild(hidden);
-
-                    document.body.appendChild(form);
-                    form.submit();
                 }
             }
         }
