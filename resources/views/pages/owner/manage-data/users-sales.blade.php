@@ -11,10 +11,10 @@
         editSales: {},
         searchUser: '',
         searchSales: ''
-    }" class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+    }" class="grid grid-cols-1 gap-6">
 
         {{-- ===================== USERS ===================== --}}
-        <section class="xl:col-span-2 bg-white border border-gray-200 rounded-2xl p-5">
+        <section class="bg-white border border-gray-200 rounded-2xl p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 <h2 class="text-xl font-semibold text-gray-900">Users</h2>
@@ -114,7 +114,7 @@
         </section>
 
         {{-- ===================== SALES ===================== --}}
-        <section class="xl:col-span-1 bg-white border border-gray-200 rounded-2xl p-5">
+        <section class="bg-white border border-gray-200 rounded-2xl p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 <h2 class="text-xl font-semibold text-gray-900">Sales</h2>

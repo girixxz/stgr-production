@@ -21,6 +21,12 @@ return new class extends Migration
             $table->foreignId('city_id') // province_id INT
                 ->constrained('cities') // FOREIGN KEY province_id REFERENCES provinces(id)
                 ->onDelete('cascade');
+            $table->foreignId('district_id')
+                ->constrained('districts')
+                ->onDelete('cascade');
+            $table->foreignId('village_id')
+                ->constrained('villages')
+                ->onDelete('cascade');
             $table->text('address');
             $table->timestamps();
         });

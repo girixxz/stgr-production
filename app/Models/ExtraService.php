@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AdditionalService extends Model
+class ExtraService extends Model
 {
     protected $fillable = ['order_id', 'service_id', 'price'];
 

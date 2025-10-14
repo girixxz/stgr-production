@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 
 class UserSeeder extends Seeder
 {
@@ -13,51 +12,32 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->insert([
-            [
-                'img_url' => null,
-                'fullname' => 'Aditya Giri',
-                'username' => 'owner',
-                'phone_number' => null,
-                'role' => 'owner',
-                'password' => Hash::make('password123'),
-                'remember_token' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'img_url' => null,
-                'fullname' => 'Ahmad Doni',
-                'username' => 'admin',
-                'phone_number' => null,
-                'role' => 'admin',
-                'password' => Hash::make('password123'),
-                'remember_token' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'img_url' => null,
-                'fullname' => 'Hafizh Umar',
-                'username' => 'pm',
-                'phone_number' => null,
-                'role' => 'pm',
-                'password' => Hash::make('password123'),
-                'remember_token' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'img_url' => null,
-                'fullname' => 'Jabrik',
-                'username' => 'karyawan',
-                'phone_number' => null,
-                'role' => 'karyawan',
-                'password' => Hash::make('password123'),
-                'remember_token' => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+        // Create one user for each role
+        User::factory()->create([
+            'fullname' => 'Owner User',
+            'username' => 'owner',
+            'role' => 'owner',
         ]);
+
+        User::factory()->create([
+            'fullname' => 'Admin User',
+            'username' => 'admin',
+            'role' => 'admin',
+        ]);
+
+        User::factory()->create([
+            'fullname' => 'PM User',
+            'username' => 'pm',
+            'role' => 'pm',
+        ]);
+
+        User::factory()->create([
+            'fullname' => 'Karyawan User',
+            'username' => 'karyawan',
+            'role' => 'karyawan',
+        ]);
+
+        // Create additional random users
+        User::factory(10)->create();
     }
 }

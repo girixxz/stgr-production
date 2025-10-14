@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('material_sizes', function (Blueprint $table) {
             $table->id();
             $table->string('size_name', 100)->unique();
+            $table->bigInteger('extra_price')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

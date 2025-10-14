@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
 
-            $table->timestamp('order_date')->useCurrent();
-            $table->timestamp('deadline');
+            $table->enum('priority', ['normal', 'high']);
 
             $table->foreignId('customer_id')
                 ->constrained('customers')
@@ -23,19 +22,20 @@ return new class extends Migration
             $table->foreignId('sales_id')
                 ->constrained('sales')
                 ->onDelete('cascade');
+            $table->string('order_name');
+            $table->timestamp('order_date')->useCurrent();
+            $table->timestamp('due_date');
 
             $table->foreignId('product_category_id')
                 ->constrained('product_categories')
                 ->onDelete('cascade');
             $table->string('product_color');
-
             $table->foreignId('material_category_id')
                 ->constrained('material_categories')
                 ->onDelete('cascade');
             $table->foreignId('material_texture_id')
                 ->constrained('material_textures')
                 ->onDelete('cascade');
-
             $table->text('notes')->nullable();
 
             $table->foreignId('shipping_id')
@@ -45,10 +45,10 @@ return new class extends Migration
             $table->bigInteger('total_qty')->default(0);
             $table->bigInteger('sub_total')->default(0);
             $table->bigInteger('discount')->default(0);
-            $table->bigInteger('final_price')->default(0);
+            $table->bigInteger('grand_total')->default(0);
 
-            $table->enum('production_status', ['not_started', 'in_progress', 'completed', 'cancelled'])
-                ->default('not_started');
+            $table->enum('production_status', ['pending', 'wip', 'finished', 'cancelled'])
+                ->default('pending');
 
             $table->timestamps();
         });

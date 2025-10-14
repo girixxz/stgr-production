@@ -1,10 +1,7 @@
-# TODO: Fix Create Order Functionality
+# TODO: Update Users-Sales Layout
 
 ## Tasks
 
--   [ ] Add x-model bindings to form inputs and selects in create-order.blade.php
--   [ ] Add validation to CreateOrderController@store
--   [ ] Parse deadline from string to datetime in controller
--   [ ] Map sleeve and size strings to IDs in controller
--   [ ] Improve error handling in controller
--   [ ] Test the order creation flow
+-   [x] Modify the root div to remove xl:grid-cols-3 and keep grid-cols-1 for vertical stacking
+-   [x] Remove xl:col-span-2 from the users section
+-   [x] Remove xl:col-span-1 from the sales section

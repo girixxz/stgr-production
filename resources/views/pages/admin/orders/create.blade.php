@@ -61,14 +61,14 @@
         <section class="space-y-5 border-b pb-12">
             <h3 class="text-lg font-semibold text-gray-800">Data Customers & Sales</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                <div class="relative flex flex-col gap-2 md:gap-3">
+                <div class="relative flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
                     <label class="text-sm text-gray-600 md:w-24">Customer</label>
 
                     <x-select-form name="customer_id" label="Customer" placeholder="-- Select Customer --" :options="$customers"
                         display="name" :old="old('customer_id')" />
                 </div>
 
-                <div class="relative flex flex-col gap-2 md:gap-3">
+                <div class="relative flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
                     <label class="text-sm text-gray-600 md:w-24">Sales</label>
 
                     <x-select-form name="sales_id" label="Sales" placeholder="-- Select Sales --" :options="$sales"
@@ -282,8 +282,7 @@
 
             {{-- Button Add Design Variant --}}
             <button type="button" @click="addDesignVariant()"
-                class="px-3 py-2 rounded-md text-sm font-medium cursor-pointer
-           bg-green-600 hover:bg-green-700 text-white">
+                class="px-3 py-2 rounded-md text-sm font-medium cursor-pointer bg-primary hover:bg-green-700 text-white">
                 + Add Design Variant
             </button>
             {{-- ================= Modal Add Size ================= --}}

@@ -32,15 +32,6 @@
                         </x-sidebar-menu.main-menu>
                     </li>
 
-                    <!-- Revenue -->
-                    <li>
-                        <x-sidebar-menu.main-menu
-                            href="{{ Route::has('owner.revenue') ? route('owner.revenue') : '#' }}" :pattern="['owner.revenue.*', 'owner/revenue*']">
-                            <x-icons.revenue class="text-current" />
-                            <span class="ml-2">Revenue</span>
-                        </x-sidebar-menu.main-menu>
-                    </li>
-
                     <!-- Manage Data -->
                     <li x-data="{
                         open: @js(request()->routeIs('owner.manage-data.products.*') || request()->is('owner/manage-data/products/*') || request()->routeIs('owner.manage-data.work-order.*') || request()->is('owner/manage-data/work-order/*') || request()->routeIs('owner.manage-data.users-sales.*') || request()->is('owner/manage-data/users-sales/*'))
@@ -76,7 +67,7 @@
                             <li>
                                 <x-sidebar-menu.sub-menu href="{{ route('owner.manage-data.work-order.index') }}"
                                     :pattern="['owner.manage-data.work-order.*', 'owner/manage-data/work-order/*']">
-                                    Work Order
+                                    WO Data
                                 </x-sidebar-menu.sub-menu>
                             </li>
                             <li>

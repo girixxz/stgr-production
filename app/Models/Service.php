@@ -8,8 +8,8 @@ class Service extends Model
 {
     protected $fillable = ['service_name'];
 
-    public function additionalServices()
+    public function extraServices()
     {
-        return $this->hasMany(additionalService::class);
+        return $this->hasMany(ExtraService::class);
     }
 }

@@ -11,10 +11,12 @@ class Order extends Model
 
     // kolom yang boleh diisi mass-assignment
     protected $fillable = [
-        'order_date',
-        'deadline',
+        'priority',
         'customer_id',
         'sales_id',
+        'order_name',
+        'order_date',
+        'due_date',
         'product_category_id',
         'product_color',
         'material_category_id',
@@ -24,14 +26,14 @@ class Order extends Model
         'total_qty',
         'sub_total',
         'discount',
-        'final_price',
+        'grand_total',
         'production_status',
     ];
 
     // casting otomatis ke Carbon
     protected $casts = [
         'order_date' => 'datetime',
-        'deadline'   => 'datetime',
+        'due_date'   => 'datetime',
     ];
 
     // 🔗 Relasi
@@ -77,8 +79,13 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function additionalServices()
+    public function extraServices()
     {
-        return $this->hasMany(additionalService::class);
+        return $this->hasMany(ExtraService::class);
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
     }
 }
