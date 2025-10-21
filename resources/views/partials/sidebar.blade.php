@@ -43,7 +43,7 @@
                                     $mdActive =
                                         request()->routeIs('owner.manage-data.products.*') ||
                                         request()->is('owner/manage-data/products.*') ||
-                                        request()->routeIs('owner/manage-data/work-order.*') ||
+                                        request()->routeIs('owner.manage-data.work-order.*') ||
                                         request()->is('owner/manage-data/work-order.*') ||
                                         request()->routeIs('owner.manage-data.users-sales.*') ||
                                         request()->is('owner/manage-data/users-sales.*');

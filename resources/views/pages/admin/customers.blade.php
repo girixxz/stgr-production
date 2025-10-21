@@ -1,37 +1,154 @@
 @extends('layouts.app')
-
-@section('title', 'Customers')
-
+@section('title', 'Manage Customers')
 @section('content')
-    @php
-        $role = auth()->user()?->role;
-        if ($role === 'owner') {
-            $root = 'Admin';
-        } else {
-            $root = 'Menu';
-        }
-    @endphp
-    <x-nav-locate :items="[$root, 'Customers']" />
 
-    {{-- konten revenue di bawah --}}
+    <x-nav-locate :items="['Menu', 'Customers']" />
+
     {{-- Root Alpine State --}}
     <div x-data="{
         openModal: '{{ session('openModal') }}',
+        detailCustomer: {},
         editCustomer: {},
         searchCustomer: '',
-        provinces: {{ $provinces->toJson() }},
-        cities: {{ $cities->toJson() }},
-        selectedProvince: '',
-        selectedCity: '',
-        addCustomerAddress: '{{ old('address') }}', // supaya kalau gagal validasi tetap isi
+        // For Add Customer
+        addProvince: '',
+        addCity: '',
+        addDistrict: '',
+        addVillage: '',
+        addCities: [],
+        addDistricts: [],
+        addVillages: [],
+        // For Edit Customer
+        editProvince: '',
+        editCity: '',
+        editDistrict: '',
+        editVillage: '',
+        editCities: [],
+        editDistricts: [],
+        editVillages: [],
     
-        get filteredCities() {
-            if (!this.selectedProvince) return [];
-            return this.cities.filter(c => c.province_id == this.selectedProvince);
+        async fetchCities(provinceId, mode = 'add') {
+            if (!provinceId) {
+                if (mode === 'add') {
+                    this.addCities = [];
+                    this.addDistricts = [];
+                    this.addVillages = [];
+                    this.addCity = '';
+                    this.addDistrict = '';
+                    this.addVillage = '';
+                } else {
+                    this.editCities = [];
+                    this.editDistricts = [];
+                    this.editVillages = [];
+                    this.editCity = '';
+                    this.editDistrict = '';
+                    this.editVillage = '';
+                }
+                return;
+            }
+            try {
+                const response = await fetch(`{{ url('/admin/customers/api/cities') }}/${provinceId}`);
+                const cities = await response.json();
+                if (mode === 'add') {
+                    this.addCities = cities;
+                    this.addDistricts = [];
+                    this.addVillages = [];
+                    this.addCity = '';
+                    this.addDistrict = '';
+                    this.addVillage = '';
+                } else {
+                    this.editCities = cities;
+                    this.editDistricts = [];
+                    this.editVillages = [];
+                    this.editCity = '';
+                    this.editDistrict = '';
+                    this.editVillage = '';
+                }
+            } catch (error) {
+                console.error('Error fetching cities:', error);
+            }
+        },
+    
+        async fetchDistricts(cityId, mode = 'add') {
+            if (!cityId) {
+                if (mode === 'add') {
+                    this.addDistricts = [];
+                    this.addVillages = [];
+                    this.addDistrict = '';
+                    this.addVillage = '';
+                } else {
+                    this.editDistricts = [];
+                    this.editVillages = [];
+                    this.editDistrict = '';
+                    this.editVillage = '';
+                }
+                return;
+            }
+            try {
+                const response = await fetch(`{{ url('/admin/customers/api/districts') }}/${cityId}`);
+                const districts = await response.json();
+                if (mode === 'add') {
+                    this.addDistricts = districts;
+                    this.addVillages = [];
+                    this.addDistrict = '';
+                    this.addVillage = '';
+                } else {
+                    this.editDistricts = districts;
+                    this.editVillages = [];
+                    this.editDistrict = '';
+                    this.editVillage = '';
+                }
+            } catch (error) {
+                console.error('Error fetching districts:', error);
+            }
+        },
+    
+        async fetchVillages(districtId, mode = 'add') {
+            if (!districtId) {
+                if (mode === 'add') {
+                    this.addVillages = [];
+                    this.addVillage = '';
+                } else {
+                    this.editVillages = [];
+                    this.editVillage = '';
+                }
+                return;
+            }
+            try {
+                const response = await fetch(`{{ url('/admin/customers/api/villages') }}/${districtId}`);
+                const villages = await response.json();
+                if (mode === 'add') {
+                    this.addVillages = villages;
+                    this.addVillage = '';
+                } else {
+                    this.editVillages = villages;
+                    this.editVillage = '';
+                }
+            } catch (error) {
+                console.error('Error fetching villages:', error);
+            }
+        },
+    
+        async loadEditLocationData() {
+            if (this.editCustomer.province_id) {
+                this.editProvince = this.editCustomer.province_id;
+                await this.fetchCities(this.editCustomer.province_id, 'edit');
+            }
+            if (this.editCustomer.city_id) {
+                this.editCity = this.editCustomer.city_id;
+                await this.fetchDistricts(this.editCustomer.city_id, 'edit');
+            }
+            if (this.editCustomer.district_id) {
+                this.editDistrict = this.editCustomer.district_id;
+                await this.fetchVillages(this.editCustomer.district_id, 'edit');
+            }
+            if (this.editCustomer.village_id) {
+                this.editVillage = this.editCustomer.village_id;
+            }
         }
-    }" class="gap-6">
+    }" class="grid grid-cols-1">
 
-        {{-- ===================== Customers ===================== --}}
+        {{-- ===================== CUSTOMERS ===================== --}}
         <section class="bg-white border border-gray-200 rounded-2xl p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
@@ -44,13 +161,13 @@
                             <x-icons.search />
                             <input type="text" x-model="searchCustomer" placeholder="Search Customer"
                                 class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                                      focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                         </div>
                     </div>
 
                     {{-- Add Customer --}}
                     <button @click="openModal = 'addCustomer'"
-                        class="cursor-pointer w-32 whitespace-nowrap px-3 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 text-sm text-center">
+                        class="cursor-pointer w-40 whitespace-nowrap px-3 py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Customer
                     </button>
                 </div>
@@ -58,53 +175,125 @@
 
             {{-- Table Customers --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-96 overflow-y-auto">
-                    <table class="min-w-[800px] w-full text-sm">
+                <div class="max-h-168 overflow-y-auto">
+                    <table class="min-w-[900px] w-full text-sm">
                         <thead class="sticky top-0 bg-white text-gray-600 z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
                                 <th class="py-2 px-4 text-left">Name</th>
-                                <th class="py-2 px-4 text-left">Phone</th>
-                                <th class="py-2 px-4 text-left">Province</th>
-                                <th class="py-2 px-4 text-left">City</th>
+                                <th class="py-2 px-4 text-left">Total Order</th>
+                                <th class="py-2 px-4 text-left">Total QTY</th>
                                 <th class="py-2 px-4 text-left">Address</th>
                                 <th class="py-2 px-4 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($customers as $index => $customer)
+                            @forelse ($customers as $customer)
                                 <tr class="border-t border-gray-200"
-                                    x-show="searchCustomer.length < 3 || '{{ strtolower($customer->name) }}'.includes(searchCustomer.toLowerCase())">
+                                    x-show="
+                                        '{{ strtolower($customer->customer_name) }} {{ strtolower($customer->phone ?? '') }}'
+                                        .includes(searchCustomer.toLowerCase())
+                                    ">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
-                                    <td class="py-2 px-4">{{ $customer->name }}</td>
-                                    <td class="py-2 px-4">{{ $customer->phone }}</td>
-                                    <td class="py-2 px-4">{{ $customer->province->name ?? '-' }}</td>
-                                    <td class="py-2 px-4">{{ $customer->city->name ?? '-' }}</td>
-                                    <td class="py-2 px-4">{{ $customer->address }}</td>
+                                    <td class="py-2 px-4">
+                                        <div class="flex flex-col">
+                                            <span class="font-medium">{{ $customer->customer_name }}</span>
+                                            <span class="text-xs text-gray-500">{{ $customer->phone ?? '-' }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-2 px-4">
+                                        <span
+                                            class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-primary-light text-primary-dark">
+                                            {{ $customer->orders_count ?? 0 }} Orders
+                                        </span>
+                                    </td>
+                                    <td class="py-2 px-4">
+                                        <span class="font-medium">{{ number_format($customer->orders_sum_total_qty ?? 0) }}
+                                            pcs</span>
+                                    </td>
+                                    <td class="py-2 px-4">
+                                        <div class="text-xs max-w-xs">
+                                            @if ($customer->address || $customer->village || $customer->district || $customer->city || $customer->province)
+                                                {{ $customer->address ? $customer->address . ', ' : '' }}
+                                                {{ $customer->village ? $customer->village->village_name . ', ' : '' }}
+                                                {{ $customer->district ? $customer->district->district_name . ', ' : '' }}
+                                                {{ $customer->city ? $customer->city->city_name . ', ' : '' }}
+                                                {{ $customer->province ? $customer->province->province_name : '' }}
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </div>
+                                    </td>
                                     <td class="py-2 px-4 text-right">
-                                        {{-- Tombol Edit --}}
-                                        <button @click="openModal='editCustomer'; editCustomer={{ $customer->toJson() }}"
-                                            class="cursor-pointer px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50">
-                                            Edit
-                                        </button>
-
-                                        {{-- Tombol Hapus --}}
-                                        <form action="{{ route('admin.customers.destroy', $customer->id) }}" method="POST"
-                                            class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" onclick="return confirm('Are you sure?')"
-                                                class="cursor-pointer px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
-                                                onclick="return confirm('Are you sure you want to delete this customer?')">
-                                                Delete
+                                        <div class="relative inline-block text-left" x-data="{ open: false }">
+                                            {{-- Tombol Titik 3 Horizontal --}}
+                                            <button @click="open = !open" type="button"
+                                                class="cursor-pointer inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
+                                                title="Actions">
+                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path
+                                                        d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                                </svg>
                                             </button>
-                                        </form>
+
+                                            {{-- Dropdown Menu --}}
+                                            <div x-show="open" @click.away="open = false" x-transition
+                                                class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                                                <div class="py-1">
+                                                    {{-- Detail --}}
+                                                    <button
+                                                        @click="detailCustomer = {{ $customer->toJson() }}; openModal = 'detailCustomer'; open = false"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                        Detail
+                                                    </button>
+
+                                                    {{-- Edit --}}
+                                                    <button
+                                                        @click="editCustomer = {{ $customer->toJson() }}; openModal = 'editCustomer'; loadEditLocationData(); open = false"
+                                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        </svg>
+                                                        Edit
+                                                    </button>
+
+                                                    {{-- Delete --}}
+                                                    <form action="{{ route('admin.customers.destroy', $customer) }}"
+                                                        method="POST" class="inline w-full"
+                                                        onsubmit="return confirm('Are you sure you want to delete this customer?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="w-full text-left px-4 py-2 text-sm text-alert-danger hover:bg-gray-100 flex items-center gap-2">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="py-4 px-4 text-center text-gray-500">
-                                        No customers found.
+                                    <td colspan="6" class="py-8 text-center text-gray-500">
+                                        No customers found
                                     </td>
                                 </tr>
                             @endforelse
@@ -114,240 +303,408 @@
             </div>
         </section>
 
-        {{-- ===================== MODALS ===================== --}}
-        {{-- ========== Add & Edit Customer Modal ========== --}}
-        <div x-show="openModal === 'addCustomer'" x-cloak
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm px-4">
-            <div @click.away="openModal=null" class="bg-white rounded-xl shadow-lg w-full max-w-lg">
-                <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Add New Customer</h3>
-                    <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
+        {{-- ===================== MODAL DETAIL CUSTOMER ===================== --}}
+        <div x-show="openModal === 'detailCustomer'" x-transition.opacity
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm" x-cloak>
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div @click.away="openModal = ''" class="bg-white rounded-lg shadow-xl w-full max-w-md">
+                    {{-- Header --}}
+                    <div class="flex items-center justify-between p-5 border-b">
+                        <h3 class="text-lg font-semibold text-gray-900">Customer Detail</h3>
+                        <button @click="openModal = ''" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    {{-- Body --}}
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <p class="text-xs text-gray-500">Customer Name</p>
+                            <p class="text-sm font-medium" x-text="detailCustomer.customer_name || '-'"></p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-500">Phone</p>
+                            <p class="text-sm" x-text="detailCustomer.phone || '-'"></p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-500">Province</p>
+                            <p class="text-sm" x-text="detailCustomer.province?.province_name || '-'"></p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-500">City</p>
+                            <p class="text-sm" x-text="detailCustomer.city?.city_name || '-'"></p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-500">District</p>
+                            <p class="text-sm" x-text="detailCustomer.district?.district_name || '-'"></p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-500">Village</p>
+                            <p class="text-sm" x-text="detailCustomer.village?.village_name || '-'"></p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-500">Address</p>
+                            <p class="text-sm" x-text="detailCustomer.address || '-'"></p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-500">Total Orders</p>
+                            <p class="text-sm font-medium">
+                                <span x-text="detailCustomer.orders_count || 0"></span> Orders
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-500">Total Quantity</p>
+                            <p class="text-sm font-medium">
+                                <span x-text="detailCustomer.orders_sum_total_qty || 0"></span> pcs
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Footer --}}
+                    <div class="flex justify-end gap-2 p-5 border-t">
+                        <button @click="openModal = ''"
+                            class="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                            Close
+                        </button>
+                    </div>
                 </div>
-                <form action="{{ route('admin.customers.store') }}" method="POST" class="px-6 py-4 space-y-4">
-                    @csrf
-                    {{-- Name --}}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Name</label>
-                        <div class="relative">
-                            <input type="text" name="name" value="{{ old('name') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addCustomer->has('name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
-                            @if ($errors->addCustomer->has('name'))
-                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
-
-                                    <x-icons.danger />
-                                </span>
-                            @endif
-                        </div>
-                        @error('name', 'addCustomer')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    {{-- Phone --}}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Phone</label>
-                        <div class="relative">
-                            <input type="text" name="phone" value="{{ old('phone') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addCustomer->has('phone') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
-                            @if ($errors->addCustomer->has('phone'))
-                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
-
-                                    <x-icons.danger />
-                                </span>
-                            @endif
-                        </div>
-                        @error('phone', 'addCustomer')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    {{-- Province --}}
-                    <div class="relative">
-                        <select name="province_id" x-model="selectedProvince"
-                            class="appearance-none tom-select mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 disabled:bg-gray-100 disabled:text-gray-400 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
-                            <option value="">-- Select Province --</option>
-                            <template x-for="prov in provinces" :key="prov.id">
-                                <option :value="prov.id" x-text="prov.name"></option>
-                            </template>
-                        </select>
-
-                        <!-- Ikon SVG -->
-                        <div class="pointer-events-none absolute top-1 inset-y-0 right-3 flex items-center text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-
-
-                    {{-- City --}}
-                    <div class="relative">
-                        <label class="block text-sm font-medium text-gray-700">City</label>
-                        <select name="city_id" x-model="selectedCity" :disabled="!selectedProvince"
-                            class="appearance-none tom-select mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 disabled:bg-gray-100 disabled:text-gray-400 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
-
-                            {{-- Kalau belum pilih provinsi --}}
-                            <template x-if="!selectedProvince">
-                                <option value="">Choose Province First</option>
-                            </template>
-
-                            {{-- Kalau sudah pilih provinsi --}}
-                            <template x-if="selectedProvince">
-                                <option value="">-- Select City --</option>
-                            </template>
-
-                            {{-- Daftar kota berdasarkan provinsi --}}
-                            <template x-for="city in filteredCities" :key="city.id">
-                                <option :value="city.id" x-text="city.name"></option>
-                            </template>
-                        </select>
-                        <!-- Ikon SVG -->
-                        <div class="pointer-events-none absolute top-6 inset-y-0 right-3 flex items-center text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    {{-- Address --}}
-                    <div class="flex flex-col md:items-start gap-2 md:gap-3">
-                        <label class="text-sm text-gray-600 md:w-24">Address</label>
-                        <textarea rows="3" name="address" x-model="addCustomerAddress"
-                            class="w-full md:flex-1 min-h-[120px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400"
-                            placeholder="Fill the address here..."></textarea>
-
-                        @error('address', 'addCustomer')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="flex justify-end gap-3 pt-4">
-                        <button type="button" @click="openModal=null"
-                            class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
-                        <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
-                    </div>
-                </form>
             </div>
         </div>
-        <div x-show="openModal === 'editCustomer'" x-cloak x-init="@if (session('openModal') === 'editCustomer' && session('editCustomerId')) editCustomer = {{ \App\Models\Customer::find(session('editCustomerId'))->toJson() }}; @endif"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm px-4">
 
-            <div @click.away="openModal=null" class="bg-white rounded-xl shadow-lg w-full max-w-lg">
-                <div class="flex justify-between items-center border-b border-gray-200 px-6 py-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Edit Customer</h3>
-                    <button @click="openModal=null" class="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
+        {{-- ===================== MODAL ADD CUSTOMER ===================== --}}
+        <div x-show="openModal === 'addCustomer'" x-transition.opacity
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm" x-cloak>
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div @click.away="openModal = ''" class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+                    {{-- Header --}}
+                    <div class="flex items-center justify-between p-5 border-b">
+                        <h3 class="text-lg font-semibold text-gray-900">Add Customer</h3>
+                        <button @click="openModal = ''" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    {{-- Form --}}
+                    <form action="{{ route('admin.customers.store') }}" method="POST">
+                        @csrf
+                        <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+                            {{-- Customer Name --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Customer Name <span class="text-alert-danger">*</span>
+                                </label>
+                                <input type="text" name="customer_name" value="{{ old('customer_name') }}" required
+                                    @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->addCustomer->has('customer_name'),
+                                        'border-gray-300' => !$errors->addCustomer->has('customer_name'),
+                                    ]) />
+                                @error('customer_name', 'addCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Phone --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Phone <span class="text-alert-danger">*</span>
+                                </label>
+                                <input type="text" name="phone" value="{{ old('phone') }}" required
+                                    @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->addCustomer->has('phone'),
+                                        'border-gray-300' => !$errors->addCustomer->has('phone'),
+                                    ]) />
+                                @error('phone', 'addCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Province --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Province</label>
+                                <select x-model="addProvince" name="province_id"
+                                    @change="fetchCities(addProvince, 'add')" @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->addCustomer->has('province_id'),
+                                        'border-gray-300' => !$errors->addCustomer->has('province_id'),
+                                    ])>
+                                    <option value="">Select Province</option>
+                                    @foreach ($provinces as $province)
+                                        <option value="{{ $province->id }}"
+                                            {{ old('province_id') == $province->id ? 'selected' : '' }}>
+                                            {{ $province->province_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('province_id', 'addCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- City (shown when province selected) --}}
+                            <div x-show="addProvince && addCities.length > 0" x-transition>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                <select x-model="addCity" name="city_id" @change="fetchDistricts(addCity, 'add')"
+                                    @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->addCustomer->has('city_id'),
+                                        'border-gray-300' => !$errors->addCustomer->has('city_id'),
+                                    ])>
+                                    <option value="">Select City</option>
+                                    <template x-for="city in addCities" :key="city.id">
+                                        <option :value="city.id" x-text="city.city_name"></option>
+                                    </template>
+                                </select>
+                                @error('city_id', 'addCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- District (shown when city selected) --}}
+                            <div x-show="addCity && addDistricts.length > 0" x-transition>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">District</label>
+                                <select x-model="addDistrict" name="district_id"
+                                    @change="fetchVillages(addDistrict, 'add')" @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->addCustomer->has('district_id'),
+                                        'border-gray-300' => !$errors->addCustomer->has('district_id'),
+                                    ])>
+                                    <option value="">Select District</option>
+                                    <template x-for="district in addDistricts" :key="district.id">
+                                        <option :value="district.id" x-text="district.district_name"></option>
+                                    </template>
+                                </select>
+                                @error('district_id', 'addCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Village (shown when district selected) --}}
+                            <div x-show="addDistrict && addVillages.length > 0" x-transition>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Village</label>
+                                <select x-model="addVillage" name="village_id" @class([
+                                    'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                    'border-alert-danger' => $errors->addCustomer->has('village_id'),
+                                    'border-gray-300' => !$errors->addCustomer->has('village_id'),
+                                ])>
+                                    <option value="">Select Village</option>
+                                    <template x-for="village in addVillages" :key="village.id">
+                                        <option :value="village.id" x-text="village.village_name"></option>
+                                    </template>
+                                </select>
+                                @error('village_id', 'addCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Address --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Address Detail</label>
+                                <textarea name="address" rows="3" @class([
+                                    'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                    'border-alert-danger' => $errors->addCustomer->has('address'),
+                                    'border-gray-300' => !$errors->addCustomer->has('address'),
+                                ])>{{ old('address') }}</textarea>
+                                @error('address', 'addCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Footer --}}
+                        <div class="flex justify-end gap-2 p-5 border-t bg-gray-50">
+                            <button type="button" @click="openModal = ''"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2 text-sm text-white bg-primary rounded-md hover:bg-primary-dark">
+                                Add Customer
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <form :action="`/admin/customers/${editCustomer.id}`" method="POST" class="px-6 py-4 space-y-4">
-                    @csrf
-                    @method('PUT')
-
-                    {{-- Name --}}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Name</label>
-                        <div class="relative">
-                            <input type="text" name="name" :value="editCustomer.name"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editCustomer->has('name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
-                            @if ($errors->editCustomer->has('name'))
-                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
-                                    <x-icons.danger />
-                                </span>
-                            @endif
-                        </div>
-                        @error('name', 'editCustomer')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Phone --}}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Phone</label>
-                        <div class="relative">
-                            <input type="text" name="phone" :value="editCustomer.phone"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editCustomer->has('phone') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
-                            @if ($errors->editCustomer->has('phone'))
-                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
-                                    <x-icons.danger />
-                                </span>
-                            @endif
-                        </div>
-                        @error('phone', 'editCustomer')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Province --}}
-                    <div class="relative">
-                        <label class="block text-sm font-medium text-gray-700">Province</label>
-                        <select name="province_id" x-model="editCustomer.province_id"
-                            class="appearance-none mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
-                            <option value="">-- Select Province --</option>
-                            <template x-for="prov in provinces" :key="prov.id">
-                                <option :value="prov.id" x-text="prov.name"></option>
-                            </template>
-                        </select>
-
-                        <!-- Ikon SVG -->
-                        <div class="pointer-events-none absolute top-6 inset-y-0 right-3 flex items-center text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    {{-- City --}}
-                    <div class="relative">
-                        <label class="block text-sm font-medium text-gray-700">City</label>
-                        <select name="city_id" x-model="editCustomer.city_id" :disabled="!editCustomer.province_id"
-                            class="appearance-none mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 disabled:bg-gray-100 disabled:text-gray-400 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
-
-                            {{-- Kalau belum pilih provinsi --}}
-                            <template x-if="!editCustomer.province_id">
-                                <option value="">Choose Province First</option>
-                            </template>
-
-                            {{-- Kalau sudah pilih provinsi --}}
-                            <template x-if="editCustomer.province_id">
-                                <option value="">-- Select City --</option>
-                            </template>
-
-                            {{-- Daftar kota berdasarkan provinsi --}}
-                            <template x-for="city in cities.filter(c => c.province_id == editCustomer.province_id)"
-                                :key="city.id">
-                                <option :value="city.id" x-text="city.name"></option>
-                            </template>
-                        </select>
-                        <!-- Ikon SVG -->
-                        <div class="pointer-events-none absolute top-6 inset-y-0 right-3 flex items-center text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    {{-- Address --}}
-                    <div class="flex flex-col md:items-start gap-2 md:gap-3">
-                        <label class="text-sm text-gray-600 md:w-24">Address</label>
-                        <textarea rows="3" name="address" x-model="editCustomer.address"
-                            class="w-full md:flex-1 min-h-[120px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400"
-                            placeholder="Fill the address here..."></textarea>
-
-                        @error('address', 'editCustomer')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="flex justify-end gap-3 pt-4">
-                        <button type="button" @click="openModal=null"
-                            class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
-                        <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
-                    </div>
-                </form>
             </div>
         </div>
+
+        {{-- ===================== MODAL EDIT CUSTOMER ===================== --}}
+        <div x-show="openModal === 'editCustomer'" x-transition.opacity
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm" x-cloak>
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div @click.away="openModal = ''" class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+                    {{-- Header --}}
+                    <div class="flex items-center justify-between p-5 border-b">
+                        <h3 class="text-lg font-semibold text-gray-900">Edit Customer</h3>
+                        <button @click="openModal = ''" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    {{-- Form --}}
+                    <form :action="`{{ route('admin.customers.index') }}/${editCustomer.id}`" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+                            {{-- Customer Name --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Customer Name <span class="text-alert-danger">*</span>
+                                </label>
+                                <input type="text" name="customer_name" x-model="editCustomer.customer_name"
+                                    :value="editCustomer.customer_name" required @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->editCustomer->has('customer_name'),
+                                        'border-gray-300' => !$errors->editCustomer->has('customer_name'),
+                                    ]) />
+                                @error('customer_name', 'editCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Phone --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Phone <span class="text-alert-danger">*</span>
+                                </label>
+                                <input type="text" name="phone" x-model="editCustomer.phone"
+                                    :value="editCustomer.phone" required @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->editCustomer->has('phone'),
+                                        'border-gray-300' => !$errors->editCustomer->has('phone'),
+                                    ]) />
+                                @error('phone', 'editCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Province --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Province</label>
+                                <select x-model="editProvince" name="province_id"
+                                    @change="fetchCities(editProvince, 'edit')" @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->editCustomer->has('province_id'),
+                                        'border-gray-300' => !$errors->editCustomer->has('province_id'),
+                                    ])>
+                                    <option value="">Select Province</option>
+                                    @foreach ($provinces as $province)
+                                        <option value="{{ $province->id }}">
+                                            {{ $province->province_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('province_id', 'editCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- City (shown when province selected) --}}
+                            <div x-show="editProvince && editCities.length > 0" x-transition>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                <select x-model="editCity" name="city_id" @change="fetchDistricts(editCity, 'edit')"
+                                    @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->editCustomer->has('city_id'),
+                                        'border-gray-300' => !$errors->editCustomer->has('city_id'),
+                                    ])>
+                                    <option value="">Select City</option>
+                                    <template x-for="city in editCities" :key="city.id">
+                                        <option :value="city.id" x-text="city.city_name"></option>
+                                    </template>
+                                </select>
+                                @error('city_id', 'editCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- District (shown when city selected) --}}
+                            <div x-show="editCity && editDistricts.length > 0" x-transition>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">District</label>
+                                <select x-model="editDistrict" name="district_id"
+                                    @change="fetchVillages(editDistrict, 'edit')" @class([
+                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                        'border-alert-danger' => $errors->editCustomer->has('district_id'),
+                                        'border-gray-300' => !$errors->editCustomer->has('district_id'),
+                                    ])>
+                                    <option value="">Select District</option>
+                                    <template x-for="district in editDistricts" :key="district.id">
+                                        <option :value="district.id" x-text="district.district_name"></option>
+                                    </template>
+                                </select>
+                                @error('district_id', 'editCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Village (shown when district selected) --}}
+                            <div x-show="editDistrict && editVillages.length > 0" x-transition>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Village</label>
+                                <select x-model="editVillage" name="village_id" @class([
+                                    'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                    'border-alert-danger' => $errors->editCustomer->has('village_id'),
+                                    'border-gray-300' => !$errors->editCustomer->has('village_id'),
+                                ])>
+                                    <option value="">Select Village</option>
+                                    <template x-for="village in editVillages" :key="village.id">
+                                        <option :value="village.id" x-text="village.village_name"></option>
+                                    </template>
+                                </select>
+                                @error('village_id', 'editCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Address --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Address Detail</label>
+                                <textarea name="address" rows="3" x-model="editCustomer.address" @class([
+                                    'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+                                    'border-alert-danger' => $errors->editCustomer->has('address'),
+                                    'border-gray-300' => !$errors->editCustomer->has('address'),
+                                ])></textarea>
+                                @error('address', 'editCustomer')
+                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Footer --}}
+                        <div class="flex justify-end gap-2 p-5 border-t bg-gray-50">
+                            <button type="button" @click="openModal = ''"
+                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2 text-sm text-white bg-primary rounded-md hover:bg-primary-dark">
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
+
 @endsection
