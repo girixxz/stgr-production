@@ -29,7 +29,7 @@
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
                 <h2 class="text-xl font-semibold text-gray-900 flex-shrink-0">
-                    Product Category
+                    Products
                 </h2>
 
                 {{-- Spacer biar search bisa fleksibel --}}
@@ -39,13 +39,13 @@
                         <x-icons.search />
                         <input type="text" x-model="searchProduct" placeholder="Search Items"
                             class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                      focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                     </div>
 
                     {{-- Add Items --}}
                     <button @click="openModal = 'addProduct'"
                         class="cursor-pointer flex-shrink-0 w-32 whitespace-nowrap px-3 py-2 rounded-md
-                   bg-green-600 text-white hover:bg-green-700 text-sm text-center">
+                   bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Items
                     </button>
                 </div>
@@ -113,7 +113,7 @@
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
                 <h2 class="text-xl font-semibold text-gray-900 flex-shrink-0">
-                    Material Category
+                    Materials
                 </h2>
 
                 {{-- Spacer biar search bisa fleksibel --}}
@@ -123,13 +123,13 @@
                         <x-icons.search />
                         <input type="text" x-model="searchMaterial" placeholder="Search Items"
                             class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                      focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                     </div>
 
                     {{-- Add Items --}}
                     <button @click="openModal = 'addMaterial'"
                         class="cursor-pointer flex-shrink-0 w-32 whitespace-nowrap px-3 py-2 rounded-md
-                   bg-green-600 text-white hover:bg-green-700 text-sm text-center">
+                   bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Items
                     </button>
                 </div>
@@ -197,7 +197,7 @@
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
                 <h2 class="text-xl font-semibold text-gray-900 flex-shrink-0">
-                    Material Texture
+                    Textures
                 </h2>
 
                 {{-- Spacer biar search bisa fleksibel --}}
@@ -207,13 +207,13 @@
                         <x-icons.search />
                         <input type="text" x-model="searchTexture" placeholder="Search Items"
                             class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                      focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                     </div>
 
                     {{-- Add Items --}}
                     <button @click="openModal = 'addTexture'"
                         class="cursor-pointer flex-shrink-0 w-32 whitespace-nowrap px-3 py-2 rounded-md
-                   bg-green-600 text-white hover:bg-green-700 text-sm text-center">
+                   bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Items
                     </button>
                 </div>
@@ -282,7 +282,7 @@
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 <h2 class="text-xl font-semibold text-gray-900 flex-shrink-0">
-                    Material Sleeve
+                    Sleeves
                 </h2>
 
                 <div class="md:ml-auto flex items-center gap-2 w-full md:w-auto min-w-0">
@@ -291,13 +291,13 @@
                         <x-icons.search />
                         <input type="text" x-model="searchSleeve" placeholder="Search Items"
                             class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                    focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                    focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                     </div>
 
                     {{-- Add Items --}}
                     <button @click="openModal = 'addSleeve'"
                         class="cursor-pointer flex-shrink-0 w-32 whitespace-nowrap px-3 py-2 rounded-md
-                bg-green-600 text-white hover:bg-green-700 text-sm text-center">
+                bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Items
                     </button>
                 </div>
@@ -364,7 +364,7 @@
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
                 <h2 class="text-xl font-semibold text-gray-900 flex-shrink-0">
-                    Material Size
+                    Sizes
                 </h2>
 
                 {{-- Spacer biar search bisa fleksibel --}}
@@ -374,13 +374,13 @@
                         <x-icons.search />
                         <input type="text" x-model="searchSize" placeholder="Search Items"
                             class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                      focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                     </div>
 
                     {{-- Add Items --}}
                     <button @click="openModal = 'addSize'"
                         class="cursor-pointer flex-shrink-0 w-32 whitespace-nowrap px-3 py-2 rounded-md
-                   bg-green-600 text-white hover:bg-green-700 text-sm text-center">
+                   bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Items
                     </button>
                 </div>
@@ -395,6 +395,7 @@
                             <tr>
                                 <th class="py-2 px-4 text-left">No</th>
                                 <th class="py-2 px-4 text-left">Size Name</th>
+                                <th class="py-2 px-4 text-right">Extra Price</th>
                                 <th class="py-2 px-4 text-right">Action</th>
                             </tr>
                         </thead>
@@ -404,6 +405,8 @@
                                     x-show="searchSize.length < 1 || '{{ strtolower($size->size_name) }}'.includes(searchSize.toLowerCase())">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $size->size_name }}</td>
+                                    <td class="py-2 px-4 text-right">Rp
+                                        {{ number_format($size->extra_price, 0, ',', '.') }}</td>
                                     <td class="py-2 px-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
                                             {{-- Tombol Edit --}}
@@ -431,7 +434,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3"
+                                    <td colspan="4"
                                         class="py-3 px-4 text-center text-red-500 border-t border-gray-200">
                                         No Material Size found.
                                     </td>
@@ -450,7 +453,7 @@
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
                 <h2 class="text-xl font-semibold text-gray-900 flex-shrink-0">
-                    Service
+                    Services
                 </h2>
 
                 {{-- Spacer biar search bisa fleksibel --}}
@@ -460,13 +463,13 @@
                         <x-icons.search />
                         <input type="text" x-model="searchService" placeholder="Search Items"
                             class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                      focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                     </div>
 
                     {{-- Add Items --}}
                     <button @click="openModal = 'addService'"
                         class="cursor-pointer flex-shrink-0 w-32 whitespace-nowrap px-3 py-2 rounded-md
-                   bg-green-600 text-white hover:bg-green-700 text-sm text-center">
+                   bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Items
                     </button>
                 </div>
@@ -537,7 +540,7 @@
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
                 <h2 class="text-xl font-semibold text-gray-900 flex-shrink-0">
-                    Shipping
+                    Shippings
                 </h2>
 
                 {{-- Spacer biar search bisa fleksibel --}}
@@ -547,13 +550,13 @@
                         <x-icons.search />
                         <input type="text" x-model="searchShipping" placeholder="Search Items"
                             class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                      focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                     </div>
 
                     {{-- Add Items --}}
                     <button @click="openModal = 'addShipping'"
                         class="cursor-pointer flex-shrink-0 w-32 whitespace-nowrap px-3 py-2 rounded-md
-                   bg-green-600 text-white hover:bg-green-700 text-sm text-center">
+                   bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Items
                     </button>
                 </div>
@@ -634,7 +637,7 @@
                         <label class="block text-sm font-medium text-gray-700">Product Name</label>
                         <div class="relative">
                             <input type="text" name="product_name" value="{{ old('product_name') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addProduct->has('product_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addProduct->has('product_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addProduct->has('product_name'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -650,7 +653,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Save</button>
                     </div>
                 </form>
             </div>
@@ -671,7 +674,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Product Name</label>
                         <input type="text" name="product_name" x-model="editProduct.product_name"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editProduct->has('product_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editProduct->has('product_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('product_name', 'editProduct')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -682,7 +685,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>
@@ -704,7 +707,7 @@
                         <label class="block text-sm font-medium text-gray-700">Material Name</label>
                         <div class="relative">
                             <input type="text" name="material_name" value="{{ old('material_name') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addMaterial->has('material_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addMaterial->has('material_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addMaterial->has('material_name'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -720,7 +723,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Save</button>
                     </div>
                 </form>
             </div>
@@ -741,7 +744,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Material Name</label>
                         <input type="text" name="material_name" x-model="editMaterial.material_name"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editMaterial->has('material_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editMaterial->has('material_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('material_name', 'editMaterial')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -752,7 +755,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>
@@ -773,7 +776,7 @@
                         <label class="block text-sm font-medium text-gray-700">Texture Name</label>
                         <div class="relative">
                             <input type="text" name="texture_name" value="{{ old('texture_name') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addTexture->has('texture_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addTexture->has('texture_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addTexture->has('texture_name'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -789,7 +792,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Save</button>
                     </div>
                 </form>
             </div>
@@ -810,7 +813,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Texture Name</label>
                         <input type="text" name="texture_name" x-model="editTexture.texture_name"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editTexture->has('texture_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editTexture->has('texture_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('texture_name', 'editTexture')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -821,7 +824,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>
@@ -842,7 +845,7 @@
                         <label class="block text-sm font-medium text-gray-700">Sleeve Name</label>
                         <div class="relative">
                             <input type="text" name="sleeve_name" value="{{ old('sleeve_name') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addSleeve->has('sleeve_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addSleeve->has('sleeve_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addSleeve->has('sleeve_name'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -858,7 +861,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Save</button>
                     </div>
                 </form>
             </div>
@@ -879,7 +882,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Sleeve Name</label>
                         <input type="text" name="sleeve_name" x-model="editSleeve.sleeve_name"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editSleeve->has('sleeve_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editSleeve->has('sleeve_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('sleeve_name', 'editSleeve')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -890,7 +893,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>
@@ -908,13 +911,13 @@
                     method="POST" class="px-6 py-4 space-y-4">
                     @csrf
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Size Name</label>
+                        <label class="block text-sm font-medium text-gray-700">Size Name <span
+                                class="text-red-500">*</span></label>
                         <div class="relative">
                             <input type="text" name="size_name" value="{{ old('size_name') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addSize->has('size_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addSize->has('size_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addSize->has('size_name'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
-
                                     <x-icons.danger />
                                 </span>
                             @endif
@@ -923,11 +926,29 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Extra Price <span
+                                class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">Rp</span>
+                            <input type="number" name="extra_price" value="{{ old('extra_price', 0) }}" step="0.01"
+                                min="0"
+                                class="mt-1 w-full rounded-md pl-12 pr-4 py-2 text-sm border {{ $errors->addSize->has('extra_price') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
+                            @if ($errors->addSize->has('extra_price'))
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
+                                    <x-icons.danger />
+                                </span>
+                            @endif
+                        </div>
+                        @error('extra_price', 'addSize')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                     <div class="flex justify-end gap-3 pt-4">
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Save</button>
                     </div>
                 </form>
             </div>
@@ -944,13 +965,34 @@
                     @csrf
                     @method('PUT')
 
-                    {{-- Full Name --}}
+                    {{-- Size Name --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Size Name</label>
+                        <label class="block text-sm font-medium text-gray-700">Size Name <span
+                                class="text-red-500">*</span></label>
                         <input type="text" name="size_name" x-model="editSize.size_name"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editSize->has('size_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editSize->has('size_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('size_name', 'editSize')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Extra Price --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Extra Price <span
+                                class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">Rp</span>
+                            <input type="number" name="extra_price" x-model="editSize.extra_price" step="0.01"
+                                min="0"
+                                class="mt-1 w-full rounded-md pl-12 pr-4 py-2 text-sm border {{ $errors->editSize->has('extra_price') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
+                            @if ($errors->editSize->has('extra_price'))
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
+                                    <x-icons.danger />
+                                </span>
+                            @endif
+                        </div>
+                        @error('extra_price', 'editSize')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -959,7 +1001,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>
@@ -980,7 +1022,7 @@
                         <label class="block text-sm font-medium text-gray-700">Service Name</label>
                         <div class="relative">
                             <input type="text" name="service_name" value="{{ old('service_name') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addService->has('service_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addService->has('service_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addService->has('service_name'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -996,7 +1038,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Save</button>
                     </div>
                 </form>
             </div>
@@ -1017,7 +1059,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Service Name</label>
                         <input type="text" name="service_name" x-model="editService.service_name"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editService->has('service_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editService->has('service_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('service_name', 'editService')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -1028,7 +1070,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>
@@ -1049,7 +1091,7 @@
                         <label class="block text-sm font-medium text-gray-700">Shipping Name</label>
                         <div class="relative">
                             <input type="text" name="shipping_name" value="{{ old('shipping_name') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addShipping->has('shipping_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addShipping->has('shipping_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addShipping->has('shipping_name'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -1065,7 +1107,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Save</button>
                     </div>
                 </form>
             </div>
@@ -1086,7 +1128,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Shipping Name</label>
                         <input type="text" name="shipping_name" x-model="editShipping.shipping_name"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editShipping->has('shipping_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editShipping->has('shipping_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('shipping_name', 'editShipping')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -1097,7 +1139,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>

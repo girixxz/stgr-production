@@ -18,7 +18,9 @@ class ServiceController extends Controller
         Service::create($validated);
 
         return redirect()
-            ->to(url()->previous() . '#services')->with('success', 'Service added successfully.');
+            ->to(url()->previous() . '#services')
+            ->with('message', 'Service added successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function update(Request $request, Service $service)
@@ -33,7 +35,9 @@ class ServiceController extends Controller
         $service->update($validated);
 
         return redirect()
-            ->to(url()->previous() . '#services')->with('success', 'Service updated successfully.');
+            ->to(url()->previous() . '#services')
+            ->with('message', 'Service updated successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function destroy(Service $service)
@@ -41,6 +45,8 @@ class ServiceController extends Controller
         $service->delete();
 
         return redirect()
-            ->to(url()->previous() . '#services')->with('success', 'Service deleted successfully.');
+            ->to(url()->previous() . '#services')
+            ->with('message', 'Service deleted successfully.')
+            ->with('alert-type', 'success');
     }
 }

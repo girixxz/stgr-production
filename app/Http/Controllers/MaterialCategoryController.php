@@ -18,7 +18,9 @@ class MaterialCategoryController extends Controller
 
         MaterialCategory::create($validated);
 
-        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')->with('success_add', 'Material added successfully.');
+        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')
+            ->with('message', 'Material added successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function update(Request $request, MaterialCategory $materialCategory)
@@ -33,13 +35,17 @@ class MaterialCategoryController extends Controller
 
         $materialCategory->update(array_filter($validated));
 
-        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')->with('success_edit', 'Material updated successfully.');
+        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')
+            ->with('message', 'Material updated successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function destroy(MaterialCategory $materialCategory)
     {
         $materialCategory->delete();
 
-        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')->with('success', 'Material Category deleted successfully.');
+        return redirect()->to(route('owner.manage-data.products.index') . '#material-categories')
+            ->with('message', 'Material Category deleted successfully.')
+            ->with('alert-type', 'success');
     }
 }

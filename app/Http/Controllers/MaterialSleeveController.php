@@ -19,7 +19,8 @@ class MaterialSleeveController extends Controller
 
         return redirect()
             ->to(url()->previous() . '#material-sleeves')
-            ->with('success', 'Material Sleeve added successfully.');
+            ->with('message', 'Material Sleeve added successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function update(Request $request, MaterialSleeve $materialSleeve)
@@ -31,11 +32,11 @@ class MaterialSleeveController extends Controller
             'sleeve_name' => 'required|string|max:100|unique:material_sleeves,sleeve_name,' . $materialSleeve->id,
         ]);
 
-        $materialSleeve->update($validated);
+        $materialSleeve->update(array_filter($validated));
 
-        return redirect()
-            ->to(url()->previous() . '#material-sleeves')
-            ->with('success', 'Material Sleeve updated successfully.');
+        return redirect()->to(route('owner.manage-data.products.index') . '#material-sleeves')
+            ->with('message', 'Material Sleeve updated successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function destroy(MaterialSleeve $materialSleeve)
@@ -44,6 +45,7 @@ class MaterialSleeveController extends Controller
 
         return redirect()
             ->to(url()->previous() . '#material-sleeves')
-            ->with('success', 'Material Sleeve deleted successfully.');
+            ->with('message', 'Material Sleeve deleted successfully.')
+            ->with('alert-type', 'success');
     }
 }

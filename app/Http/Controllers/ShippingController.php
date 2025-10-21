@@ -20,7 +20,8 @@ class ShippingController extends Controller
         Shipping::create($validated);
 
         return redirect()->to(route('owner.manage-data.products.index') . '#shippings')
-            ->with('success_add', 'Shipping added successfully.');
+            ->with('message', 'Shipping added successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function update(Request $request, Shipping $shipping)
@@ -36,7 +37,8 @@ class ShippingController extends Controller
         $shipping->update(array_filter($validated));
 
         return redirect()->to(route('owner.manage-data.products.index') . '#shippings')
-            ->with('success_edit', 'Shipping updated successfully.');
+            ->with('message', 'Shipping updated successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function destroy(Shipping $shipping)
@@ -44,6 +46,7 @@ class ShippingController extends Controller
         $shipping->delete();
 
         return redirect()->to(route('owner.manage-data.products.index') . '#shippings')
-            ->with('success', 'Shipping deleted successfully.');
+            ->with('message', 'Shipping deleted successfully.')
+            ->with('alert-type', 'success');
     }
 }

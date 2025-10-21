@@ -21,7 +21,8 @@ class ProductCategoryController extends Controller
 
         return redirect()->to(
             route('owner.manage-data.products.index') . '#product-categories'
-        )->with('success', 'Product added successfully.');
+        )->with('message', 'Product added successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function update(Request $request, ProductCategory $productCategory)
@@ -37,7 +38,8 @@ class ProductCategoryController extends Controller
         $productCategory->update(array_filter($validated));
 
         return redirect()->to(route('owner.manage-data.products.index') . '#product-categories')
-            ->with('success_edit', 'Product updated successfully.');
+            ->with('message', 'Product updated successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function destroy(ProductCategory $productCategory)
@@ -45,6 +47,7 @@ class ProductCategoryController extends Controller
         $productCategory->delete();
 
         return redirect()->to(route('owner.manage-data.products.index') . '#product-categories')
-            ->with('success', 'Product Category deleted successfully.');
+            ->with('message', 'Product Category deleted successfully.')
+            ->with('alert-type', 'success');
     }
 }

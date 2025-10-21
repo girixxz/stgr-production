@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Sales;
+use App\Models\Sale;
 use Illuminate\Http\Request;
 
 class SalesController extends Controller
@@ -13,35 +13,38 @@ class SalesController extends Controller
         session()->flash('openModal', 'addSales');
         $validated = $request->validateWithBag('addSales', [
             'sales_name' => 'required|max:100|unique:sales,sales_name',
-            'phone_number' => 'nullable|max:100',
+            'phone' => 'nullable|max:100',
         ]);
 
-        Sales::create($validated);
+        Sale::create($validated);
 
-        return redirect()->route('owner.manage-data.users-sales.index')
-            ->with('success_add_sales', 'Sales added successfully.');
+        return redirect(route('owner.manage-data.users-sales.index') . '#sales')
+            ->with('message', 'Sales added successfully.')
+            ->with('alert-type', 'success');
     }
 
-    public function update(Request $request, Sales $sale)
+    public function update(Request $request, Sale $sale)
     {
         session()->flash('openModal', 'editSales');
         session()->flash('editSalesId', $sale->id);
         $validated = $request->validateWithBag('editSales', [
             'sales_name' => 'required|max:100|unique:sales,sales_name,' . $sale->id,
-            'phone_number' => 'nullable|max:100',
+            'phone' => 'nullable|max:100',
         ]);
 
         $sale->update($validated);
 
-        return redirect()->route('owner.manage-data.users-sales.index')
-            ->with('success_edit_sales', 'Sales updated successfully.');
+        return redirect(route('owner.manage-data.users-sales.index') . '#sales')
+            ->with('message', 'Sales updated successfully.')
+            ->with('alert-type', 'success');
     }
 
-    public function destroy(Sales $sale)
+    public function destroy(Sale $sale)
     {
         $sale->delete();
 
         return redirect()->route('owner.manage-data.users-sales.index')
-            ->with('success', 'Sales deleted successfully.');
+            ->with('message', 'Sales deleted successfully.')
+            ->with('alert-type', 'success');
     }
 }

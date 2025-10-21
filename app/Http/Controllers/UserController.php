@@ -23,8 +23,9 @@ class UserController extends Controller
 
         User::create($validated);
 
-        return redirect()->route('owner.manage-data.users-sales.index')
-            ->with('success_add', 'User added successfully.');
+        return redirect(route('owner.manage-data.users-sales.index') . '#users')
+            ->with('message', 'User added successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function update(Request $request, User $user)
@@ -41,17 +42,24 @@ class UserController extends Controller
             'password' => 'nullable|min:6|confirmed',
         ]);
 
-        $user->update(array_filter($validated));
+        // Filter null values kecuali password kosong
+        $updateData = array_filter($validated, function ($value, $key) {
+            return $key !== 'password' || !empty($value);
+        }, ARRAY_FILTER_USE_BOTH);
 
-        return redirect()->route('owner.manage-data.users-sales.index')
-            ->with('success_edit', 'User updated successfully.');
+        $user->update($updateData);
+
+        return redirect(route('owner.manage-data.users-sales.index') . '#users')
+            ->with('message', 'User updated successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
 
-        return redirect()->route('owner.manage-data.users-sales.index')
-            ->with('success', 'User deleted successfully.');
+        return redirect(route('owner.manage-data.users-sales.index') . '#users')
+            ->with('message', 'User deleted successfully.')
+            ->with('alert-type', 'success');
     }
 }

@@ -15,12 +15,14 @@ class MaterialSizeController extends Controller
 
         $validated = $request->validateWithBag('addSize', [
             'size_name' => 'required|max:255|unique:material_sizes,size_name',
+            'extra_price' => 'required|numeric|min:0',
         ]);
 
         MaterialSize::create($validated);
 
         return redirect()->to(route('owner.manage-data.products.index') . '#material-sizes')
-            ->with('success_add', 'Material Size added successfully.');
+            ->with('message', 'Material Size added successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function update(Request $request, MaterialSize $materialSize)
@@ -31,12 +33,14 @@ class MaterialSizeController extends Controller
 
         $validated = $request->validateWithBag('editSize', [
             'size_name' => 'required|max:255|unique:material_sizes,size_name,' . $materialSize->id,
+            'extra_price' => 'required|numeric|min:0',
         ]);
 
-        $materialSize->update(array_filter($validated));
+        $materialSize->update($validated);
 
         return redirect()->to(route('owner.manage-data.products.index') . '#material-sizes')
-            ->with('success_edit', 'Material Size updated successfully.');
+            ->with('message', 'Material Size updated successfully.')
+            ->with('alert-type', 'success');
     }
 
     public function destroy(MaterialSize $materialSize)
@@ -44,6 +48,7 @@ class MaterialSizeController extends Controller
         $materialSize->delete();
 
         return redirect()->to(route('owner.manage-data.products.index') . '#material-sizes')
-            ->with('success', 'Material Size deleted successfully.');
+            ->with('message', 'Material Size deleted successfully.')
+            ->with('alert-type', 'success');
     }
 }

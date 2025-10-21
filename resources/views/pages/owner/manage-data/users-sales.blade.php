@@ -26,14 +26,14 @@
                             <x-icons.search />
                             <input type="text" x-model="searchUser" placeholder="Search User"
                                 class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                                      focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                         </div>
                     </div>
 
                     {{-- Add Users --}}
                     <button @click="openModal = 'addUser'"
-                        class="cursor-pointer w-32 whitespace-nowrap px-3 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 text-sm text-center">
-                        + Add Users
+                        class="cursor-pointer w-32 whitespace-nowrap px-3 py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-sm text-center">
+                        + Add User
                     </button>
                 </div>
             </div>
@@ -74,10 +74,14 @@
                                         </div>
                                     </td>
                                     <td class="py-2 px-4">{{ $user->username }}</td>
-                                    <td class="py-2 px-4">{{ $user->phone_number }}</td>
+                                    <td class="py-2 px-4">{{ $user->phone_number ?? '-' }}</td>
                                     <td class="py-2 px-4">
                                         <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded-md bg-green-50 text-green-700 ring-1 ring-inset ring-green-200">
+                                            class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium
+                                            {{ $user->role === 'owner' ? 'bg-purple-100 text-purple-800' : '' }}
+                                            {{ $user->role === 'admin' ? 'bg-blue-100 text-blue-800' : '' }}
+                                            {{ $user->role === 'pm' ? 'bg-primary-light text-primary-dark' : '' }}
+                                            {{ $user->role === 'karyawan' ? 'bg-gray-100 text-gray-800' : '' }}">
                                             {{ ucfirst($user->role) }}
                                         </span>
                                     </td>
@@ -97,7 +101,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-alert-danger text-white hover:bg-alert-danger-dark"
                                                     onclick="return confirm('Are you sure you want to delete this user?')"
                                                     title="Delete">
                                                     <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
@@ -126,13 +130,13 @@
                             <x-icons.search />
                             <input type="text" x-model="searchSales" placeholder="Search Sales"
                                 class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                                      focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-300" />
+                                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                         </div>
                     </div>
 
                     {{-- Add Sales --}}
                     <button @click="openModal = 'addSales'"
-                        class="cursor-pointer flex-shrink-0 w-32 whitespace-nowrap px-3 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 text-sm text-center">
+                        class="cursor-pointer flex-shrink-0 w-32 whitespace-nowrap px-3 py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Sales
                     </button>
                 </div>
@@ -154,12 +158,12 @@
                             @foreach ($sales as $sale)
                                 <tr class="border-t border-gray-200"
                                     x-show="
-                                        '{{ strtolower($sale->sales_name) }} {{ strtolower($sale->phone_number) }}'
+                                        '{{ strtolower($sale->sales_name) }} {{ strtolower($sale->phone ?? '') }}'
                                         .includes(searchSales.toLowerCase())
                                     ">
                                     <td class="py-2 px-4">{{ $loop->iteration }}</td>
                                     <td class="py-2 px-4">{{ $sale->sales_name }}</td>
-                                    <td class="py-2 px-4">{{ $sale->phone_number }}</td>
+                                    <td class="py-2 px-4">{{ $sale->phone ?? '-' }}</td>
 
                                     <td class="py-2 px-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
@@ -177,7 +181,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+                                                    class="cursor-pointer inline-flex items-center justify-center px-1 py-1 rounded-md bg-alert-danger text-white hover:bg-alert-danger-dark"
                                                     onclick="return confirm('Are you sure you want to delete this sales?')"
                                                     title="Delete">
                                                     <x-icons.trash class="w-2 h-2 !mr-0 text-white" />
@@ -210,7 +214,7 @@
                         <label class="block text-sm font-medium text-gray-700">Fullname</label>
                         <div class="relative">
                             <input type="text" name="fullname" value="{{ old('fullname') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addUser->has('fullname') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addUser->has('fullname') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addUser->has('fullname'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -227,7 +231,7 @@
                         <label class="block text-sm font-medium text-gray-700">Username</label>
                         <div class="relative">
                             <input type="text" name="username" value="{{ old('username') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addUser->has('username') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addUser->has('username') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addUser->has('username'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -243,13 +247,13 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Phone (optional)</label>
                         <input type="text" name="phone_number"
-                            class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200" />
+                            class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Roles</label>
                         <select name="role"
                             class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm
-                            text-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
+                            text-gray-500 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                             <option value="owner">Owner</option>
                             <option value="admin">Admin</option>
                             <option value="pm">Project Manager</option>
@@ -261,7 +265,7 @@
                         <label class="block text-sm font-medium text-gray-700">Password</label>
                         <div class="relative">
                             <input type="password" name="password" value="{{ old('password') }}"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addUser->has('password') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addUser->has('password') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->addUser->has('password'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -277,7 +281,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Confirm Password</label>
                         <input type="password" name="password_confirmation" value="{{ old('password_confirmation') }}"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addUser->has('password_confirmation') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->addUser->has('password_confirmation') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('password_confirmation', 'addUser')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -287,7 +291,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Save</button>
                     </div>
                 </form>
             </div>
@@ -310,7 +314,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Full Name</label>
                         <input type="text" name="fullname" x-model="editUser.fullname"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editUser->has('fullname') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editUser->has('fullname') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('fullname', 'editUser')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -321,7 +325,7 @@
                         <label class="block text-sm font-medium text-gray-700">Username</label>
                         <div class="relative">
                             <input type="text" name="username" x-model="editUser.username"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editUser->has('username') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editUser->has('username') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->editUser->has('username'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -338,14 +342,14 @@
                         <label class="block text-sm font-medium text-gray-700">Phone</label>
                         <input type="text" name="phone_number" x-model="editUser.phone_number"
                             class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm 
-                           text-gray-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
+                           text-gray-700 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                     </div>
                     {{-- Role --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Role</label>
                         <select name="role" x-model="editUser.role"
                             class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm 
-                           text-gray-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
+                           text-gray-700 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                             <option value="owner">Owner</option>
                             <option value="admin">Admin</option>
                             <option value="pm">Project Manager</option>
@@ -358,7 +362,7 @@
                             current)</label>
                         <div class="relative">
                             <input type="password" name="password"
-                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editUser->has('password') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                                class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editUser->has('password') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
                             @if ($errors->editUser->has('password'))
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none">
 
@@ -374,7 +378,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Confirm Password</label>
                         <input type="password" name="password_confirmation"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editUser->has('password_confirmation') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm border {{ $errors->editUser->has('password_confirmation') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         @error('password_confirmation', 'editUser')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -385,7 +389,7 @@
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>
@@ -406,7 +410,7 @@
                     <div class="relative">
                         <label class="block text-sm font-medium text-gray-700">Sales Name</label>
                         <input type="text" name="sales_name" value="{{ old('sales_name') }}"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm pr-10 border {{ $errors->addSales->has('sales_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm pr-10 border {{ $errors->addSales->has('sales_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         {{-- Error icon di dalam input --}}
                         @if ($errors->addSales->has('sales_name'))
@@ -422,22 +426,22 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Phone (optional)</label>
-                        <input type="text" name="phone_number"
-                            class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
+                        <input type="text" name="phone" value="{{ old('phone') }}"
+                            class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                     </div>
 
                     <div class="flex justify-end gap-3 pt-4">
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Save</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Save</button>
                     </div>
                 </form>
             </div>
         </div>
 
         {{-- ========== Edit Sales Modal ========== --}}
-        <div x-show="openModal === 'editSales'" x-cloak x-init="@if (session('openModal') === 'editSales' && session('editSalesId')) editSales = {{ \App\Models\Sales::find(session('editSalesId'))->toJson() }}; @endif"
+        <div x-show="openModal === 'editSales'" x-cloak x-init="@if (session('openModal') === 'editSales' && session('editSalesId')) editSales = {{ \App\Models\Sale::find(session('editSalesId'))->toJson() }}; @endif"
             class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm px-4">
             <div @click.away="openModal=null" class="bg-white rounded-xl shadow-lg w-full max-w-md">
                 <div class="flex justify-between items-center border-b  border-gray-200 px-6 py-4">
@@ -454,7 +458,7 @@
                         <label class="block text-sm font-medium text-gray-700">Sales Name</label>
                         <input type="text" name="sales_name" value="{{ old('sales_name') }}"
                             x-model="editSales.sales_name"
-                            class="mt-1 w-full rounded-md px-4 py-2 text-sm pr-10 border {{ $errors->editSales->has('sales_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-green-500 focus:ring-green-200' }} focus:outline-none focus:ring-2 text-gray-700">
+                            class="mt-1 w-full rounded-md px-4 py-2 text-sm pr-10 border {{ $errors->editSales->has('sales_name') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-200 focus:border-primary focus:ring-primary/20' }} focus:outline-none focus:ring-2 text-gray-700">
 
                         {{-- Error icon di dalam input --}}
                         @if ($errors->editSales->has('sales_name'))
@@ -470,18 +474,19 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Phone</label>
-                        <input type="text" name="phone_number" x-model="editSales.phone_number"
-                            class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200">
+                        <input type="text" name="phone" x-model="editSales.phone"
+                            class="mt-1 w-full rounded-md border border-gray-200 px-4 py-2 text-sm text-gray-700 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
                     </div>
 
                     <div class="flex justify-end gap-3 pt-4">
                         <button type="button" @click="openModal=null"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">Cancel</button>
                         <button type="submit"
-                            class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 cursor-pointer">Update</button>
+                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">Update</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
 @endsection
