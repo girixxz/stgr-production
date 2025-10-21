@@ -3,8 +3,8 @@
         <!-- Left: Hamburger -->
         <div class="flex items-center space-x-4">
             <button @click="$dispatch('sidebar-toggle')"
-                class="text-gray-500 hover:text-gray-700 focus:outline-none lg:hidden p-2 rounded-md hover:bg-gray-100"
-                aria-label="Toggle sidebar">
+                class="text-gray-600 hover:text-gray-800 focus:outline-none p-2 rounded-md hover:bg-gray-100 md:inline-flex"
+                aria-label="Toggle sidebar" title="Toggle sidebar">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 6h16M4 12h16M4 18h16"></path>
@@ -17,13 +17,13 @@
             $navClasses = function (string $pattern) {
                 $base = 'px-3 py-2 rounded-md';
                 return request()->routeIs($pattern)
-                    ? $base . ' bg-green-50 text-green-700 ring-1 ring-inset ring-green-200'
-                    : $base . ' text-gray-700 hover:bg-gray-100';
+                    ? $base . ' bg-primary-light ring-1 ring-inset ring-primary-light text-font-base font-semibold'
+                    : $base . ' text-font-base hover:bg-gray-light';
             };
         @endphp
 
         <nav class="flex-1 flex items-center justify-center">
-            <ul class="flex items-center text-sm md:text-[16px] gap-1">
+            <ul class="flex items-center text-sm md:text-[14px] gap-1">
                 <li>
                     <a href="{{ route('highlights') }}" class="{{ $navClasses('highlights') }}">
                         Highlights

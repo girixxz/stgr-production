@@ -8,7 +8,7 @@
     @vite(['resources/css/app.css'])
 </head>
 
-<body class="min-h-screen bg-[#f9f9f9] flex items-center justify-center">
+<body class="min-h-screen bg-gray-light flex items-center justify-center">
     <main class="w-full max-w-md px-4 py-10">
         <!-- Logo -->
         <div class="flex justify-center mb-8">
@@ -35,13 +35,13 @@
 
             <!-- Username -->
             <div class="space-y-1">
-                <label for="username" class="block text-sm text-gray-700">Username</label>
+                <label for="username" class="block text-sm text-font-base">Username</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <!-- icon user -->
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <!-- user-circle, stroke halus -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 24 24"
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-font-muted" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
                                 stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="9"></circle>
@@ -52,19 +52,19 @@
 
                     </span>
                     <input id="username" name="username" type="text" autocomplete="username" required
-                        class="block w-full h-10 rounded-md border border-slate-300 bg-white text-sm placeholder-slate-400
-                    pl-10 pr-3 focus:outline-none focus:border-[#56ba9f] focus:ring-2 focus:ring-[#56ba9f]"
+                        class="block w-full h-10 rounded-md border border-gray-solid bg-white text-sm
+                    pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                         placeholder="Username" />
                 </div>
             </div>
 
             <!-- Password -->
             <div class="space-y-1">
-                <label for="password" class="block text-sm text-gray-700">Password</label>
+                <label for="password" class="block text-sm text-font-base">Password</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <!-- icon lock -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 24 24"
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-font-muted" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M16.5 10.5V8.25a4.5 4.5 0 10-9 0V10.5" />
@@ -75,8 +75,8 @@
 
                     <input id="password" name="password" type="password" autocomplete="current-password" required
                         minlength="6"
-                        class="block w-full h-10 rounded-md border border-slate-300 bg-white text-sm placeholder-slate-400
-                    pl-10 pr-10 focus:outline-none focus:border-[#56ba9f] focus:ring-2 focus:ring-[#56ba9f]"
+                        class="block w-full h-10 rounded-md border border-slate-300 bg-white text-sm
+                        pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                         placeholder="Password" />
 
                     <!-- Toggle password -->
@@ -103,9 +103,9 @@
 
             <!-- Remember me -->
             <div class="flex items-center">
-                <label class="inline-flex items-center gap-2 text-sm text-gray-700 select-none">
+                <label class="inline-flex items-center gap-2 text-sm text-font-base select-none">
                     <input id="remember" name="remember" type="checkbox"
-                        class="rounded border-slate-300 text-[#56ba9f] focus:ring-[#56ba9f]">
+                        class="rounded border-slate-300 text-primary focus:ring-primary">
                     Remember Me
                 </label>
             </div>
@@ -115,8 +115,8 @@
 
             <!-- Submit -->
             <button type="submit"
-                class="w-full h-10 rounded-md bg-[#56ba9f] text-white font-semibold
-                    hover:bg-[#4da78f] focus:outline-none focus:ring-4 focus:ring-[#56ba9f]/30
+                class="w-full h-10 rounded-md bg-primary text-white font-semibold
+                    hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-primary/30
                     transition">
                 Login
             </button>

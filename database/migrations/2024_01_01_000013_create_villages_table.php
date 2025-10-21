@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('material_sizes', function (Blueprint $table) {
+        Schema::create('villages', function (Blueprint $table) {
             $table->id();
-            $table->string('size_name', 100)->unique();
-            $table->bigInteger('extra_price')->default(0);
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->foreignId('district_id')->constrained('districts')->onDelete('cascade');
+            $table->string('village_name', 100)->unique();
+            $table->timestamps();
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('material_sizes');
+        Schema::dropIfExists('villages');
     }
 };

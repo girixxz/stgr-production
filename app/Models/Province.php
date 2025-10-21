@@ -3,33 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Province extends Model
 {
-    protected $fillable = ['province_name'];
+    protected $fillable = [
+        'province_name',
+    ];
 
-    // 1 province punya banyak city
-    public function cities()
+    /**
+     * Get all cities in this province
+     */
+    public function cities(): HasMany
     {
-        return $this->hasMany(City::class);
+        return $this->hasMany(City::class, 'province_id');
     }
 
-    // 1 province punya banyak district melalui city
-    public function districts()
+    /**
+     * Get all customers in this province
+     */
+    public function customers(): HasMany
     {
-        return $this->hasManyThrough(District::class, City::class);
-    }
-
-    // 1 province punya banyak village melalui city dan district
-    public function villages()
-    {
-        return $this->hasManyThrough(Village::class, City::class, 'province_id', 'district_id', 'id', 'city_id')
-            ->join('districts', 'districts.city_id', '=', 'cities.id');
-    }
-
-    // 1 province punya banyak customer
-    public function customers()
-    {
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(Customer::class, 'province_id');
     }
 }

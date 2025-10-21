@@ -10,20 +10,20 @@
         default => 'login',
     };
 @endphp
-<div class="flex flex-col h-screen bg-white border-r border-gray-200 w-64">
+<div class="flex flex-col h-screen bg-white border-r border-gray-light w-64">
     <!-- Logo -->
-    <div class="flex items-center justify-center h-16 border-b border-gray-200">
-        <a href="{{ route($dashboardRouteName) }}" class="text-2xl font-bold text-green-700">STGR</a>
+    <div class="flex items-center justify-center h-16 border-b border-gray-light">
+        <a href="{{ route($dashboardRouteName) }}" class="text-2xl font-bold text-primary">STGR</a>
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto py-6 text-sm text-gray-600">
+    <nav class="flex-1 overflow-y-auto py-6 text-sm text-font-base">
         {{-- ================= OWNER ONLY ================= --}}
         @if ($role === 'owner')
             <div class="mb-4">
-                <p class="px-4 text-xs font-semibold text-gray-400 uppercase mb-2">Menu</p>
+                <p class="px-4 text-xs font-semibold text-gray-dark uppercase mb-2">Menu</p>
 
-                <ul class="space-y-2 font-medium">
+                <ul class="space-y-2">
                     <!-- Dashboard -->
                     <li>
                         <x-sidebar-menu.main-menu href="{{ route('owner.dashboard') }}" :pattern="'owner.dashboard'">
@@ -37,7 +37,7 @@
                         open: @js(request()->routeIs('owner.manage-data.products.*') || request()->is('owner/manage-data/products/*') || request()->routeIs('owner.manage-data.work-order.*') || request()->is('owner/manage-data/work-order/*') || request()->routeIs('owner.manage-data.users-sales.*') || request()->is('owner/manage-data/users-sales/*'))
                     }">
                         <button type="button" @click="open = !open"
-                            class="flex items-center justify-between w-full pl-6 pr-4 py-3 rounded-md hover:bg-gray-100 focus:outline-none cursor-pointer">
+                            class="flex items-center justify-between w-full pl-6 pr-4 py-3 rounded-md hover:bg-gray-light focus:outline-none cursor-pointer">
                             <span class="flex items-center">
                                 @php
                                     $mdActive =
@@ -48,10 +48,10 @@
                                         request()->routeIs('owner.manage-data.users-sales.*') ||
                                         request()->is('owner/manage-data/users-sales.*');
                                 @endphp
-                                <x-icons.manage-data class="{{ $mdActive ? 'text-green-700' : 'text-gray-500' }}" />
-                                <span class="ml-2 {{ $mdActive ? 'text-green-700' : '' }}">Manage Data</span>
+                                <x-icons.manage-data />
+                                <span class="ml-2">Manage Data</span>
                             </span>
-                            <x-icons.right-arrow class="text-gray-500 transition-transform duration-200"
+                            <x-icons.right-arrow class="text-font-base transition-transform duration-200"
                                 x-bind:class="open ? 'rotate-90' : ''" />
                         </button>
 
@@ -86,12 +86,12 @@
         @if (in_array($role, ['owner', 'admin']))
             <div class="mb-4">
                 @if ($role === 'owner')
-                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase mb-2">ADMIN</p>
+                    <p class="px-4 text-xs font-semibold text-gray-dark uppercase mb-2">ADMIN</p>
                 @elseif ($role === 'admin')
-                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase mb-2">MENU</p>
+                    <p class="px-4 text-xs font-semibold text-gray-dark uppercase mb-2">MENU</p>
                 @endif
 
-                <ul class="space-y-2 font-medium">
+                <ul class="space-y-2">
                     @if ($role === 'admin')
                         <!-- Dashboard -->
                         <li>
@@ -135,12 +135,12 @@
         @if (in_array($role, ['owner', 'pm']))
             <div class="mb-4">
                 @if ($role === 'owner')
-                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase mb-2">PRODUCT MANAGER</p>
+                    <p class="px-4 text-xs font-semibold text-gray-dark uppercase mb-2">PRODUCT MANAGER</p>
                 @elseif ($role === 'pm')
-                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase mb-2">MENU</p>
+                    <p class="px-4 text-xs font-semibold text-gray-dark uppercase mb-2">MENU</p>
                 @endif
 
-                <ul class="space-y-2 font-medium">
+                <ul class="space-y-2">
                     @if ($role === 'pm')
                         <!-- Dashboard -->
                         <li>
@@ -164,12 +164,12 @@
         @if (in_array($role, ['owner', 'karyawan']))
             <div class="mb-4">
                 @if ($role === 'owner')
-                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase mb-2">KARYAWAN</p>
+                    <p class="px-4 text-xs font-semibold text-gray-dark uppercase mb-2">KARYAWAN</p>
                 @elseif ($role === 'karyawan')
-                    <p class="px-4 text-xs font-semibold text-gray-400 uppercase mb-2">MENU</p>
+                    <p class="px-4 text-xs font-semibold text-gray-dark uppercase mb-2">MENU</p>
                 @endif
 
-                <ul class="space-y-2 font-medium">
+                <ul class="space-y-2">
                     @if ($role === 'karyawan')
                         <!-- Dashboard -->
                         <li>
@@ -194,8 +194,8 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
-                    class="w-full flex items-center justify-center px-6 py-3 rounded-md
-                           bg-red-400 text-white hover:bg-red-500 cursor-pointer">
+                    class="w-full flex items-center justify-center px-6 py-3 rounded-md bg-alert-danger hover:bg-alert-danger-dark
+                            text-white cursor-pointer">
                     <x-icons.logout class="text-white" />
                     <span class="font-medium">Logout</span>
                 </button>

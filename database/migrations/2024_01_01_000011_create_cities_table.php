@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('districts', function (Blueprint $table) {
-            $table->id(); // id INT AUTO_INCREMENT PRIMARY KEY
-            $table->foreignId('city_id')
-                ->constrained('cities')
-                ->onDelete('cascade');
-            $table->string('district_name', 100);
+        Schema::create('cities', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('province_id')->constrained('provinces')->onDelete('cascade');
+            $table->string('city_name', 100)->unique();
             $table->timestamps();
-            $table->unique(['city_id', 'district_name']);
         });
     }
 
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('districts');
+        Schema::dropIfExists('cities');
     }
 };

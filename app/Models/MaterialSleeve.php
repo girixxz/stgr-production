@@ -3,15 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MaterialSleeve extends Model
 {
-    // kasih tau nama tabel yang benar
-    protected $table = 'material_sleeves';
-    protected $fillable = ['sleeve_name'];
+    protected $fillable = [
+        'sleeve_name',
+    ];
 
-    public function orders()
+    /**
+     * Get all order items using this sleeve type
+     */
+    public function orderItems(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(OrderItem::class, 'sleeve_id');
     }
 }

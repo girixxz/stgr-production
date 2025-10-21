@@ -3,14 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MaterialSize extends Model
 {
-    protected $table =  'material_sizes';
-    protected $fillable = ['size_name'];
+    protected $fillable = [
+        'size_name',
+        'extra_price',
+    ];
 
-    public function orders()
+    protected $casts = [
+        'extra_price' => 'decimal:2',
+    ];
+
+    /**
+     * Get all order items using this size
+     */
+    public function orderItems(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(OrderItem::class, 'size_id');
     }
 }

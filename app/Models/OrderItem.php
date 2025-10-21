@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderItem extends Model
 {
@@ -11,28 +12,45 @@ class OrderItem extends Model
         'design_variant_id',
         'sleeve_id',
         'size_id',
-        'quantity',
+        'qty',
         'unit_price',
         'subtotal',
     ];
 
-    public function order()
+    protected $casts = [
+        'unit_price' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+    ];
+
+    /**
+     * Get the order this item belongs to
+     */
+    public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id');
     }
 
-    public function designVariant()
+    /**
+     * Get the design variant for this item
+     */
+    public function designVariant(): BelongsTo
     {
-        return $this->belongsTo(DesignVariant::class);
+        return $this->belongsTo(DesignVariant::class, 'design_variant_id');
     }
 
-    public function sleeve()
+    /**
+     * Get the sleeve type for this item
+     */
+    public function sleeve(): BelongsTo
     {
-        return $this->belongsTo(MaterialSleeve::class);
+        return $this->belongsTo(MaterialSleeve::class, 'sleeve_id');
     }
 
-    public function size()
+    /**
+     * Get the size for this item
+     */
+    public function size(): BelongsTo
     {
-        return $this->belongsTo(MaterialSize::class);
+        return $this->belongsTo(MaterialSize::class, 'size_id');
     }
 }

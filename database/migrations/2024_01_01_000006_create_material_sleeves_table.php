@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('material_textures', function (Blueprint $table) {
+        Schema::create('material_sleeves', function (Blueprint $table) {
             $table->id();
-            $table->string('texture_name', 100)->unique();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->string('sleeve_name', 100)->unique();
+            $table->timestamps();
         });
     }
 
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('material_textures');
+        Schema::dropIfExists('material_sleeves');
     }
 };

@@ -3,26 +3,37 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class District extends Model
 {
-    protected $fillable = ['city_id', 'district_name'];
+    protected $fillable = [
+        'city_id',
+        'district_name',
+    ];
 
-    // 1 district belongs to 1 city
-    public function city()
+    /**
+     * Get the city this district belongs to
+     */
+    public function city(): BelongsTo
     {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(City::class, 'city_id');
     }
 
-    // 1 district punya banyak village
-    public function villages()
+    /**
+     * Get all villages in this district
+     */
+    public function villages(): HasMany
     {
-        return $this->hasMany(Village::class);
+        return $this->hasMany(Village::class, 'district_id');
     }
 
-    // 1 district punya banyak customer
-    public function customers()
+    /**
+     * Get all customers in this district
+     */
+    public function customers(): HasMany
     {
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(Customer::class, 'district_id');
     }
 }

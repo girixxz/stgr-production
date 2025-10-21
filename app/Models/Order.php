@@ -3,20 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
-    use HasFactory;
-
-    // kolom yang boleh diisi mass-assignment
     protected $fillable = [
         'priority',
         'customer_id',
         'sales_id',
-        'order_name',
         'order_date',
-        'due_date',
+        'deadline',
         'product_category_id',
         'product_color',
         'material_category_id',
@@ -24,68 +22,97 @@ class Order extends Model
         'notes',
         'shipping_id',
         'total_qty',
-        'sub_total',
+        'subtotal',
         'discount',
         'grand_total',
         'production_status',
     ];
 
-    // casting otomatis ke Carbon
     protected $casts = [
         'order_date' => 'datetime',
-        'due_date'   => 'datetime',
+        'deadline' => 'datetime',
+        'subtotal' => 'decimal:2',
+        'discount' => 'decimal:2',
+        'grand_total' => 'decimal:2',
     ];
 
-    // 🔗 Relasi
-
-    public function customer()
+    /**
+     * Get the customer that owns the order
+     */
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    public function sales()
+    /**
+     * Get the sales person that handles this order
+     */
+    public function sales(): BelongsTo
     {
-        return $this->belongsTo(Sales::class);
+        return $this->belongsTo(Sale::class, 'sales_id');
     }
 
-    public function productCategory()
+    /**
+     * Get the product category for this order
+     */
+    public function productCategory(): BelongsTo
     {
-        return $this->belongsTo(ProductCategory::class);
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
-    public function materialCategory()
+    /**
+     * Get the material category for this order
+     */
+    public function materialCategory(): BelongsTo
     {
-        return $this->belongsTo(MaterialCategory::class);
+        return $this->belongsTo(MaterialCategory::class, 'material_category_id');
     }
 
-    public function materialTexture()
+    /**
+     * Get the material texture for this order
+     */
+    public function materialTexture(): BelongsTo
     {
-        return $this->belongsTo(MaterialTexture::class);
+        return $this->belongsTo(MaterialTexture::class, 'material_texture_id');
     }
 
-    public function shipping()
+    /**
+     * Get the shipping method for this order
+     */
+    public function shipping(): BelongsTo
     {
-        return $this->belongsTo(Shipping::class);
+        return $this->belongsTo(Shipping::class, 'shipping_id');
     }
 
-    public function designVariants()
+    /**
+     * Get all design variants for this order
+     */
+    public function designVariants(): HasMany
     {
-        return $this->hasMany(DesignVariant::class);
+        return $this->hasMany(DesignVariant::class, 'order_id');
     }
 
-    // 🔥 tambahan kalau order_items punya order_id langsung
-    public function orderItems()
+    /**
+     * Get all order items for this order
+     */
+    public function orderItems(): HasMany
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class, 'order_id');
     }
 
-    public function extraServices()
+    /**
+     * Get all extra services for this order
+     */
+    public function extraServices(): HasMany
     {
-        return $this->hasMany(ExtraService::class);
+        return $this->hasMany(ExtraService::class, 'order_id');
     }
 
-    public function invoice()
+    /**
+     * Get the invoice for this order
+     */
+    public function invoice(): HasOne
     {
-        return $this->hasOne(Invoice::class);
+        return $this->hasOne(Invoice::class, 'order_id');
     }
 }

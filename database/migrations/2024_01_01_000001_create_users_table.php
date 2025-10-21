@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cities', function (Blueprint $table) {
-            $table->id(); // id INT AUTO_INCREMENT PRIMARY KEY
-            $table->foreignId('province_id')
-                ->constrained('provinces')
-                ->onDelete('cascade');
-            $table->string('city_name', 100);
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('fullname', 100);
+            $table->string('username', 100)->unique();
+            $table->string('phone_number', 100)->nullable();
+            $table->string('password');
+            $table->enum('role', ['owner', 'admin', 'pm', 'karyawan']);
             $table->timestamps();
-            $table->unique(['province_id', 'city_name']);
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cities');
+        Schema::dropIfExists('users');
     }
 };

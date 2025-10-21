@@ -3,32 +3,37 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class City extends Model
 {
-    protected $fillable = ['province_id', 'city_name'];
+    protected $fillable = [
+        'province_id',
+        'city_name',
+    ];
 
-    // 1 city belongs to 1 province
-    public function province()
+    /**
+     * Get the province this city belongs to
+     */
+    public function province(): BelongsTo
     {
-        return $this->belongsTo(Province::class);
+        return $this->belongsTo(Province::class, 'province_id');
     }
 
-    // 1 city punya banyak district
-    public function districts()
+    /**
+     * Get all districts in this city
+     */
+    public function districts(): HasMany
     {
-        return $this->hasMany(District::class);
+        return $this->hasMany(District::class, 'city_id');
     }
 
-    // 1 city punya banyak village melalui district
-    public function villages()
+    /**
+     * Get all customers in this city
+     */
+    public function customers(): HasMany
     {
-        return $this->hasManyThrough(Village::class, District::class);
-    }
-
-    // 1 city punya banyak customer
-    public function customers()
-    {
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(Customer::class, 'city_id');
     }
 }

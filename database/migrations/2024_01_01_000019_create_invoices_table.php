@@ -13,15 +13,17 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')
-                ->constrained('orders')
-                ->onDelete('cascade')
-                ->unique();
+            $table->foreignId('order_id')->unique()->constrained('orders')->onDelete('cascade');
             $table->string('invoice_no', 50)->unique();
-            $table->bigInteger('total_bill')->default(0);
-            $table->bigInteger('amount_paid')->default(0);
-            $table->bigInteger('amount_due')->default(0);
+            
+            // Totals
+            $table->decimal('total_bill', 12, 2)->default(0);
+            $table->decimal('amount_paid', 12, 2)->default(0);
+            $table->decimal('amount_due', 12, 2)->default(0);
+            
+            // Status
             $table->enum('status', ['unpaid', 'dp', 'paid'])->default('unpaid');
+            
             $table->text('notes')->nullable();
             $table->timestamps();
         });

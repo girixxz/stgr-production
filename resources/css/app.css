@@ -8,6 +8,28 @@
 @theme {
     --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
-    --color-primary: #16a34a;
-    --color-primary-hover: #15803d;
+    --color-primary: #56ba9f;
+    --color-primary-light: #c6ecdb;
+    --color-primary-dark: #49a08a;
+
+    --color-gray-solid: #cecece;
+    --color-gray-light: #f0f0f0;
+    --color-gray-dark: #8c8c8c;
+
+    /* font */
+    --color-font-base: #374151;
+    --color-font-muted: #9ca3af;
+
+    /* alert */
+    --color-alert-success: #059669;
+    --color-alert-success-light: #c6f6d5;
+    --color-alert-success-dark: #049c6b;
+
+    --color-alert-warning: #d97706;
+    --color-alert-warning-light: #fef6e0;
+    --color-alert-warning-dark: #b45309;
+
+    --color-alert-danger: #dc2626;
+    --color-alert-danger-light: #fef2f2;
+    --color-alert-danger-dark: #b91c1c;
 }

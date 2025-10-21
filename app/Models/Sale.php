@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Shipping extends Model
+class Sale extends Model
 {
     protected $fillable = [
-        'shipping_name',
+        'sales_name',
+        'phone',
     ];
 
     /**
-     * Get all orders using this shipping method
+     * Get all orders for this sales person
      */
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class, 'shipping_id');
+        return $this->hasMany(Order::class, 'sales_id');
     }
 }

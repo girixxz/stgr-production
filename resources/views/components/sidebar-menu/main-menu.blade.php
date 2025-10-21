@@ -16,8 +16,8 @@
     }
 
     $classes = $active
-        ? 'flex items-center px-6 py-3 rounded-md bg-green-200 text-green-700'
-        : 'flex items-center px-6 py-3 rounded-md hover:bg-gray-100 text-gray-700';
+        ? 'flex items-center px-6 py-3 rounded-md bg-primary-light font-semibold text-font-base'
+        : 'flex items-center px-6 py-3 rounded-md hover:bg-gray-light';
 @endphp
 
 <a href="{{ $href }}" {{ $attributes->merge(['class' => $classes]) }}>

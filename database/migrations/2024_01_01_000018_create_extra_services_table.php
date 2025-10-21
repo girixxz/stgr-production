@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('material_sleeves', function (Blueprint $table) {
+        Schema::create('extra_services', function (Blueprint $table) {
             $table->id();
-            $table->string('sleeve_name', 100)->unique();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
+            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
+            $table->decimal('price', 12, 2);
+            $table->timestamps();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('material_sleeves');
+        Schema::dropIfExists('extra_services');
     }
 };

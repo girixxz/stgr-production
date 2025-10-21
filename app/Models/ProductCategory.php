@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductCategory extends Model
 {
-    // kasih tau nama tabel yang benar
-    protected $table = 'product_categories';
+    protected $fillable = [
+        'product_name',
+    ];
 
-    protected $fillable = ['product_name'];
-
-    public function orders()
+    /**
+     * Get all orders for this product category
+     */
+    public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'product_category_id');
     }
 }

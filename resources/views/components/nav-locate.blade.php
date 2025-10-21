@@ -9,13 +9,13 @@
             @endphp
 
             @if (!$loop->first)
-                <li class="mx-2 text-gray-400 select-none">/</li>
+                <li class="mx-2 text-font-muted select-none">/</li>
             @endif
 
             <li class="inline-flex items-center">
                 <span
                     class="px-3 py-1 rounded-md
-                 {{ $loop->last ? 'bg-green-200 text-green-700' : 'text-gray-700 hover:bg-gray-100' }}">
+                 {{ $loop->last ? 'bg-primary text-white' : 'text-font-base hover:bg-gray-light' }}">
                     {{ $label }}
                 </span>
             </li>

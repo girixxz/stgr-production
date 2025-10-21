@@ -3,29 +3,29 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DesignVariant extends Model
 {
-    use HasFactory;
-
-    // kolom yang boleh diisi mass-assignment
     protected $fillable = [
         'order_id',
         'design_name',
     ];
 
-    // 🔗 Relasi
-
-    // setiap varian desain dimiliki oleh 1 order
-    public function order()
+    /**
+     * Get the order this design variant belongs to
+     */
+    public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id');
     }
 
-    // setiap varian desain bisa punya banyak item (ukuran, lengan, dll.)
-    public function orderItems()
+    /**
+     * Get all order items for this design variant
+     */
+    public function orderItems(): HasMany
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class, 'design_variant_id');
     }
 }

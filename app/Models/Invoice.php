@@ -3,12 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Invoice extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'order_id',
         'invoice_no',
@@ -20,20 +19,24 @@ class Invoice extends Model
     ];
 
     protected $casts = [
-        'total_bill' => 'integer',
-        'amount_paid' => 'integer',
-        'amount_due' => 'integer',
+        'total_bill' => 'decimal:2',
+        'amount_paid' => 'decimal:2',
+        'amount_due' => 'decimal:2',
     ];
 
-    // 🔗 Relasi
-
-    public function order()
+    /**
+     * Get the order this invoice belongs to
+     */
+    public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id');
     }
 
-    public function payments()
+    /**
+     * Get all payments for this invoice
+     */
+    public function payments(): HasMany
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 'invoice_id');
     }
 }

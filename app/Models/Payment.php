@@ -3,12 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'invoice_id',
         'paid_at',
@@ -21,13 +19,14 @@ class Payment extends Model
 
     protected $casts = [
         'paid_at' => 'datetime',
-        'amount' => 'integer',
+        'amount' => 'decimal:2',
     ];
 
-    // 🔗 Relasi
-
-    public function invoice()
+    /**
+     * Get the invoice this payment belongs to
+     */
+    public function invoice(): BelongsTo
     {
-        return $this->belongsTo(Invoice::class);
+        return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 }

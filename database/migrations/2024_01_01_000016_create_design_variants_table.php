@@ -13,14 +13,9 @@ return new class extends Migration
     {
         Schema::create('design_variants', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('order_id')
-                ->constrained('orders')
-                ->onDelete('cascade');
-
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->string('design_name', 100);
-
-            $table->timestamps(); // otomatis CURRENT_TIMESTAMP
+            $table->timestamps();
         });
     }
 
