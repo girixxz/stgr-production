@@ -11,7 +11,7 @@
         }
     }
 
-    $base = 'block w-full px-6 py-3 rounded-md pl-15';
+    $base = 'block w-full px-6 py-3 pl-15';
     // Sama persis seperti item utama: bg-green-200 + text-green-700
     $classes = $active ? "$base  bg-primary-light font-semibold" : "$base text-font-base hover:bg-gray-light";
 @endphp

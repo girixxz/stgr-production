@@ -53,6 +53,14 @@ class Order extends Model
     }
 
     /**
+     * Alias for sales() - for consistency
+     */
+    public function sale(): BelongsTo
+    {
+        return $this->sales();
+    }
+
+    /**
      * Get the product category for this order
      */
     public function productCategory(): BelongsTo

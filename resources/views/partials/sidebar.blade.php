@@ -37,7 +37,7 @@
                         open: @js(request()->routeIs('owner.manage-data.products.*') || request()->is('owner/manage-data/products/*') || request()->routeIs('owner.manage-data.work-order.*') || request()->is('owner/manage-data/work-order/*') || request()->routeIs('owner.manage-data.users-sales.*') || request()->is('owner/manage-data/users-sales/*'))
                     }">
                         <button type="button" @click="open = !open"
-                            class="flex items-center justify-between w-full pl-6 pr-4 py-3 rounded-md hover:bg-gray-light focus:outline-none cursor-pointer">
+                            class="flex items-center justify-between w-full pl-6 pr-4 py-3 hover:bg-gray-light focus:outline-none cursor-pointer">
                             <span class="flex items-center">
                                 @php
                                     $mdActive =
@@ -106,6 +106,13 @@
                         <x-sidebar-menu.main-menu href="{{ route('admin.orders.index') }}" :pattern="'admin.orders.*'">
                             <x-icons.orders class="text-current" />
                             <span class="ml-2">Orders</span>
+                        </x-sidebar-menu.main-menu>
+                    </li>
+                    <!-- Delivery Orders -->
+                    <li>
+                        <x-sidebar-menu.main-menu href="{{ route('admin.delivery-orders') }}" :pattern="'admin.delivery-orders'">
+                            <x-icons.delivery-orders class="text-current" />
+                            <span class="ml-2">Delivery Orders</span>
                         </x-sidebar-menu.main-menu>
                     </li>
                     <li>

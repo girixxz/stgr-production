@@ -177,14 +177,14 @@
             <div class="mt-5 overflow-x-auto">
                 <div class="max-h-168 overflow-y-auto">
                     <table class="min-w-[900px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-md">No</th>
                                 <th class="py-2 px-4 text-left">Name</th>
                                 <th class="py-2 px-4 text-left">Total Order</th>
                                 <th class="py-2 px-4 text-left">Total QTY</th>
                                 <th class="py-2 px-4 text-left">Address</th>
-                                <th class="py-2 px-4 text-right">Action</th>
+                                <th class="py-2 px-4 text-right rounded-r-md">Action</th>
                             </tr>
                         </thead>
                         <tbody>

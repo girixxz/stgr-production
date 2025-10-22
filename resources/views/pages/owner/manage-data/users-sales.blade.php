@@ -14,14 +14,14 @@
     }" class="grid grid-cols-1 gap-6">
 
         {{-- ===================== USERS ===================== --}}
-        <section class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section class="bg-white border border-gray-200 rounded-md p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 <h2 class="text-xl font-semibold text-gray-900">Users</h2>
 
                 <div class="md:ml-auto flex items-center gap-2 w-full md:w-auto">
                     {{-- Search --}}
-                    <div class="w-full md:w-72">
+                    <div class="flex-1">
                         <div class="relative">
                             <x-icons.search />
                             <input type="text" x-model="searchUser" placeholder="Search User"
@@ -40,16 +40,16 @@
 
             {{-- Table Users --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-96 overflow-y-auto">
+                <div class="max-h-72 overflow-y-auto">
                     <table class="min-w-[750px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-md">No</th>
                                 <th class="py-2 px-4 text-left">User</th>
                                 <th class="py-2 px-4 text-left">Username</th>
                                 <th class="py-2 px-4 text-left">Phone</th>
                                 <th class="py-2 px-4 text-left">Role</th>
-                                <th class="py-2 px-4 text-right">Action</th>
+                                <th class="py-2 px-4 text-right rounded-r-md">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -118,7 +118,7 @@
         </section>
 
         {{-- ===================== SALES ===================== --}}
-        <section class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section class="bg-white border border-gray-200 rounded-md p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 <h2 class="text-xl font-semibold text-gray-900">Sales</h2>
@@ -144,11 +144,11 @@
 
             {{-- Table --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-96 overflow-y-auto">
+                <div class="max-h-72 overflow-y-auto">
                     <table class="min-w-[450px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-md">No</th>
                                 <th class="py-2 px-4 text-left">Sales Name</th>
                                 <th class="py-2 px-4 text-left">Phone</th>
                                 <th class="py-2 px-4 text-right">Action</th>

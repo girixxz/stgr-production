@@ -16,7 +16,7 @@ use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\Main\ManageUsersSalesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
-use App\Http\Controllers\Main\OrderController;
+use App\Http\Controllers\OrderController;
 
 /* ================= DEFAULT INDEX / LOGIN ================= */
 
@@ -90,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
         // Orders
         Route::resource('orders', OrderController::class)->except(['show']);
 
+        Route::get('delivery-orders', fn() => view('pages.admin.delivery-orders'))->name('delivery-orders');
         Route::get('work-orders', fn() => view('pages.admin.work-orders'))->name('work-orders');
         Route::get('payment-history', fn() => view('pages.admin.payment-history'))->name('payment-history');
 

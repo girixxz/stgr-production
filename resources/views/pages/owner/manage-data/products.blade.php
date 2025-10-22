@@ -21,10 +21,10 @@
         editSize: {},
         editService: {},
         editShipping: {},
-    }" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    }" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
         {{-- ===================== Product Category ===================== --}}
-        <section id="product-categories" class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section id="product-categories" class="bg-white border border-gray-200 rounded-md p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
@@ -53,13 +53,13 @@
 
             {{-- Table Product Category --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-72 overflow-y-auto">
+                <div class="max-h-124 overflow-y-auto">
                     <table class="min-w-[300px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-md">No</th>
                                 <th class="py-2 px-4 text-left">Product Name</th>
-                                <th class="py-2 px-4 text-right">Action</th>
+                                <th class="py-2 px-4 text-right rounded-r-md">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -108,7 +108,7 @@
         </section>
 
         {{-- ===================== Material Category ===================== --}}
-        <section id="material-categories" class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section id="material-categories" class="bg-white border border-gray-200 rounded-md p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
@@ -137,13 +137,13 @@
 
             {{-- Table Material Category --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-72 overflow-y-auto">
+                <div class="max-h-124 overflow-y-auto">
                     <table class="min-w-[300px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-sm">No</th>
                                 <th class="py-2 px-4 text-left">Material Name</th>
-                                <th class="py-2 px-4 text-right">Action</th>
+                                <th class="py-2 px-4 text-right rounded-r-sm">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -192,7 +192,7 @@
         </section>
 
         {{-- ===================== Material Texture ===================== --}}
-        <section id="material-textures" class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section id="material-textures" class="bg-white border border-gray-200 rounded-md p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
@@ -221,13 +221,13 @@
 
             {{-- Table Material Texture --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-72 overflow-y-auto">
+                <div class="max-h-124 overflow-y-auto">
                     <table class="min-w-[300px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-md">No</th>
                                 <th class="py-2 px-4 text-left">Texture Name</th>
-                                <th class="py-2 px-4 text-right">Action</th>
+                                <th class="py-2 px-4 text-right rounded-r-md">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -278,7 +278,7 @@
         </section>
 
         {{-- ===================== Material Sleeve ===================== --}}
-        <section id="material-sleeves" class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section id="material-sleeves" class="bg-white border border-gray-200 rounded-md p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 <h2 class="text-xl font-semibold text-gray-900 flex-shrink-0">
@@ -305,13 +305,13 @@
 
             {{-- Table --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-72 overflow-y-auto">
+                <div class="max-h-124 overflow-y-auto">
                     <table class="min-w-[300px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-md">No</th>
                                 <th class="py-2 px-4 text-left">Sleeve Name</th>
-                                <th class="py-2 px-4 text-right">Action</th>
+                                <th class="py-2 px-4 text-right rounded-r-md">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -359,7 +359,7 @@
         </section>
 
         {{-- ===================== Material Size ===================== --}}
-        <section id="material-sizes" class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section id="material-sizes" class="bg-white border border-gray-200 rounded-md p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
@@ -389,14 +389,14 @@
 
             {{-- Table Material Size --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-72 overflow-y-auto">
+                <div class="max-h-124 overflow-y-auto">
                     <table class="min-w-[300px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-md">No</th>
                                 <th class="py-2 px-4 text-left">Size Name</th>
                                 <th class="py-2 px-4 text-right">Extra Price</th>
-                                <th class="py-2 px-4 text-right">Action</th>
+                                <th class="py-2 px-4 text-right rounded-r-md">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -448,7 +448,7 @@
         </section>
 
         {{-- ===================== Service ===================== --}}
-        <section id="services" class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section id="services" class="bg-white border border-gray-200 rounded-md p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
@@ -478,13 +478,13 @@
 
             {{-- Table Services --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-72 overflow-y-auto">
+                <div class="max-h-124 overflow-y-auto">
                     <table class="min-w-[300px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-md">No</th>
                                 <th class="py-2 px-4 text-left">Service Name</th>
-                                <th class="py-2 px-4 text-right">Action</th>
+                                <th class="py-2 px-4 text-right rounded-r-md">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -535,7 +535,7 @@
         </section>
 
         {{-- ===================== Shipping ===================== --}}
-        <section id="shippings" class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section id="shippings" class="bg-white border border-gray-200 rounded-md p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
                 {{-- Judul --}}
@@ -565,13 +565,13 @@
 
             {{-- Table Product Category --}}
             <div class="mt-5 overflow-x-auto">
-                <div class="max-h-72 overflow-y-auto">
+                <div class="max-h-124 overflow-y-auto">
                     <table class="min-w-[300px] w-full text-sm">
-                        <thead class="sticky top-0 bg-white text-gray-600 z-10">
+                        <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
-                                <th class="py-2 px-4 text-left">No</th>
+                                <th class="py-2 px-4 text-left rounded-l-md">No</th>
                                 <th class="py-2 px-4 text-left">Shipping Name</th>
-                                <th class="py-2 px-4 text-right">Action</th>
+                                <th class="py-2 px-4 text-right rounded-r-md">Action</th>
                             </tr>
                         </thead>
                         <tbody>
