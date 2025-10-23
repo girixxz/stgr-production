@@ -759,7 +759,7 @@
             <div class="flex items-center justify-center min-h-screen p-4">
                 <div @click.away="openModal = ''" class="bg-white rounded-xl shadow-lg w-full max-w-lg">
                     {{-- Header --}}
-                    <div class="flex items-center justify-between p-5 border-b border-gray-200 border-gray-200">
+                    <div class="flex items-center justify-between p-5 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900">Add Customer</h3>
                         <button @click="openModal = ''" type="button"
                             class="text-gray-400 hover:text-gray-600 cursor-pointer">
