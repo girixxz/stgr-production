@@ -132,6 +132,7 @@ class OrderController extends Controller
             'materialSizes' => MaterialSize::orderBy('size_name')->get(),
             'services' => Service::orderBy('service_name')->get(),
             'shippings' => Shipping::orderBy('shipping_name')->get(),
+            'provinces' => \App\Models\Province::orderBy('province_name')->get(),
         ];
 
         return view('pages.admin.orders.create', $data);

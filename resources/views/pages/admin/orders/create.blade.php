@@ -17,27 +17,32 @@
         @material_category_id-selected.window="material_category_id = $event.detail"
         @material_texture_id-selected.window="material_texture_id = $event.detail"
         @shipping_id-selected.window="shipping_id = $event.detail" method="POST" action="{{ route('admin.orders.store') }}"
-        class="bg-white border border-gray-200 rounded-2xl p-6 space-y-8">
+        class="bg-white border border-gray-200 rounded-2xl p-4 md:p-6 space-y-6 md:space-y-8">
         @csrf
 
         {{-- ================= Header ================= --}}
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-8">
+        <div class="space-y-6 border-b border-gray-200 pb-6 md:pb-8">
             <h2 class="text-xl font-semibold text-gray-900">Create Order</h2>
-            <div class="flex flex-col md:flex-row gap-x-4 md:gap-x-6 gap-y-4 w-full md:w-auto">
+        </div>
+
+        {{-- Priority, Order Date & Deadline --}}
+        <div class="border-b border-gray-200 pb-8 md:pb-12">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {{-- Priority --}}
-                <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 w-full md:w-auto">
-                    <label for="priority" class="text-sm text-gray-600 md:w-16">Priority</label>
+                <div class="space-y-2">
+                    <label for="priority" class="block text-sm font-medium text-gray-600">Priority</label>
                     <select id="priority" name="priority" x-model="priority"
-                        class="w-full md:w-40 rounded-md px-3 py-2 text-sm border border-gray-300 focus:border-primary focus:ring-primary/20 focus:outline-none focus:ring-2 text-gray-700">
+                        class="w-full rounded-md px-3 py-2 text-sm border border-gray-300 focus:border-primary focus:ring-primary/20 focus:outline-none focus:ring-2 text-gray-700">
                         <option value="normal">Normal</option>
                         <option value="high">High</option>
                     </select>
                 </div>
 
                 {{-- Order Date --}}
-                <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 w-full md:w-auto">
-                    <label for="order_date" class="text-sm text-gray-600 md:w-20">Order Date</label>
-                    <div class="relative w-full md:w-55">
+                <div class="space-y-2">
+                    <label for="order_date" class="block text-sm font-medium text-gray-600">Order Date</label>
+                    <div class="relative">
                         <input id="order_date" name="order_date" type="date" x-model="order_date"
                             value="{{ old('order_date', date('Y-m-d')) }}"
                             class="w-full rounded-md px-3 py-2 text-sm border border-gray-300 focus:border-primary focus:ring-primary/20 focus:outline-none focus:ring-2 text-gray-700" />
@@ -48,9 +53,9 @@
                 </div>
 
                 {{-- Deadline --}}
-                <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 w-full md:w-auto">
-                    <label for="deadline" class="text-sm text-gray-600 md:w-16">Deadline</label>
-                    <div class="relative w-full md:w-55">
+                <div class="space-y-2">
+                    <label for="deadline" class="block text-sm font-medium text-gray-600">Deadline</label>
+                    <div class="relative">
                         <input id="deadline" name="deadline" type="date" x-model="deadline"
                             value="{{ old('deadline') }}"
                             class="w-full rounded-md px-3 py-2 text-sm border border-gray-300 focus:border-primary focus:ring-primary/20 focus:outline-none focus:ring-2 text-gray-700" />
@@ -63,18 +68,29 @@
         </div>
 
         {{-- ================= Customers & Sales ================= --}}
-        <section class="space-y-5 border-b pb-12">
+        <section class="space-y-4 md:space-y-5 border-b border-gray-200 pb-8 md:pb-12">
             <h3 class="text-lg font-semibold text-gray-800">Data Customers & Sales</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                <div class="relative flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
-                    <label class="text-sm text-gray-600 md:w-24">Customer</label>
+                <div class="relative flex flex-col md:flex-row md:items-start gap-2 md:gap-3">
+                    <label class="text-sm text-gray-600 md:w-24 md:mt-2">Customer</label>
 
-                    <x-select-form name="customer_id" label="Customer" placeholder="-- Select Customer --" :options="$customers"
-                        display="customer_name" :old="old('customer_id')" />
+                    <div class="w-full space-y-2">
+                        <x-select-form name="customer_id" label="Customer" placeholder="-- Select Customer --"
+                            :options="$customers" display="customer_name" :old="old('customer_id')" />
+
+                        <button type="button" @click="$dispatch('open-add-customer')"
+                            class="text-sm text-primary hover:text-primary-dark font-medium flex items-center gap-1 group">
+                            <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add new customer
+                        </button>
+                    </div>
                 </div>
 
-                <div class="relative flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
-                    <label class="text-sm text-gray-600 md:w-24">Sales</label>
+                <div class="relative flex flex-col md:flex-row md:items-start gap-2 md:gap-3">
+                    <label class="text-sm text-gray-600 md:w-24 md:mt-2">Sales</label>
 
                     <x-select-form name="sales_id" label="Sales" placeholder="-- Select Sales --" :options="$sales"
                         display="sales_name" :old="old('sales_id')" />
@@ -85,7 +101,7 @@
         </section>
 
         {{-- ================= Detail Products ================= --}}
-        <section class="space-y-5 border-b pb-12">
+        <section class="space-y-4 md:space-y-5 border-b border-gray-200 pb-8 md:pb-12">
             <h3 class="text-lg font-semibold text-gray-800">Detail Products</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 <div class="space-y-7">
@@ -143,7 +159,7 @@
         </section>
 
         {{-- ================= Detail Orders ================= --}}
-        <section class="space-y-5 border-b pb-8">
+        <section class="space-y-4 md:space-y-5 border-b border-gray-200 pb-8">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-800">Detail Orders</h3>
                 @error('designs')
@@ -176,15 +192,15 @@
                                 class="absolute left-0 -bottom-5 text-xs text-red-600"></span>
                         </div>
 
-                        <div class="flex gap-2 items-center">
+                        <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
                             <button type="button" @click="if(design.name.trim() !== '') addSleeveVariant(dIndex)"
                                 :class="design.name.trim() === '' ?
                                     'cursor-not-allowed bg-gray-300 text-white' :
                                     'bg-primary hover:bg-primary-dark text-white'"
-                                class="px-3 py-2 rounded-md text-sm">
+                                class="px-3 py-2 rounded-md text-sm whitespace-nowrap w-full md:w-auto">
                                 + Add Sleeve
                             </button>
-                            <span class="italic text-xs text-gray-400">(Fill design name first)</span>
+                            <span class="italic text-xs text-gray-400 hidden md:inline">(Fill design name first)</span>
                         </div>
                     </div>
 
@@ -229,22 +245,31 @@
 
                                             {{-- Dropdown --}}
                                             <div x-show="open" @click.away="open = false" x-cloak
-                                                class="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                                                <div class="p-2">
-                                                    <input type="text" x-model="search" placeholder="Search sleeve..."
-                                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                                class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
+                                                <div class="relative px-4 py-2">
+                                                    <div
+                                                        class="absolute inset-y-0 left-7 flex items-center pointer-events-none">
+                                                        <svg class="w-4 h-4 text-gray-400" fill="none"
+                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                        </svg>
+                                                    </div>
+                                                    <input type="text" x-model="search" placeholder="Search..."
+                                                        class="block w-full h-10 pl-10 pr-3 text-gray-600 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary">
                                                 </div>
-                                                <ul class="py-1">
+                                                <ul class="max-h-60 overflow-y-auto">
                                                     <template x-for="sleeve in filteredOptions" :key="sleeve.id">
                                                         <li @click="selectSleeve(sleeve)"
-                                                            class="px-3 py-2 text-sm hover:bg-primary/10 cursor-pointer"
-                                                            :class="variant.sleeve == sleeve.id ? 'bg-primary/20 font-medium' :
+                                                            class="px-5 py-2 text-sm hover:bg-primary/5 cursor-pointer"
+                                                            :class="variant.sleeve == sleeve.id ? 'bg-primary/10 font-medium' :
                                                                 ''"
                                                             x-text="sleeve.sleeve_name">
                                                         </li>
                                                     </template>
                                                     <li x-show="filteredOptions.length === 0"
-                                                        class="px-3 py-2 text-sm text-gray-400 text-center">
+                                                        class="px-5 py-2 text-sm text-gray-400 text-center">
                                                         No results found
                                                     </li>
                                                 </ul>
@@ -271,32 +296,33 @@
                                     </div>
 
                                     {{-- Add Size --}}
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex flex-col md:flex-row md:items-center gap-2">
                                         <button type="button"
                                             @click="if(variant.sleeve !== '' && variant.basePrice > 0) { openModal = 'addSize'; selectedDesign = dIndex; selectedVariant = vIndex }"
                                             :class="(variant.sleeve === '' || variant.basePrice <= 0) ?
                                             'cursor-not-allowed bg-gray-300 text-white' :
                                             'bg-primary hover:bg-primary-dark text-white'"
-                                            class="w-full md:w-auto px-3 py-2 rounded-md text-sm">
+                                            class="w-full md:w-auto px-3 py-2 rounded-md text-sm whitespace-nowrap">
                                             + Add Size
                                         </button>
-                                        <span class="italic text-xs text-gray-400">(Select sleeve & set base price
+                                        <span class="italic text-xs text-gray-400 hidden md:inline">(Select sleeve & set
+                                            base price
                                             first)</span>
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Table --}}
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-sm">
+                            <div class="overflow-x-auto -mx-4 md:mx-0">
+                                <table class="w-full text-sm min-w-[640px]">
                                     <thead class="bg-gray-50 text-gray-600">
                                         <tr>
-                                            <th class="py-2 px-4 text-left">No</th>
-                                            <th class="py-2 px-4 text-left">Size</th>
-                                            <th class="py-2 px-4 text-left">Unit Price</th>
-                                            <th class="py-2 px-4 text-left">QTY</th>
-                                            <th class="py-2 px-4 text-left">Total Price</th>
-                                            <th class="py-2 px-4 text-right">Action</th>
+                                            <th class="py-2 px-4 text-left w-12">No</th>
+                                            <th class="py-2 px-4 text-left min-w-[100px]">Size</th>
+                                            <th class="py-2 px-4 text-left min-w-[160px]">Unit Price</th>
+                                            <th class="py-2 px-4 text-left min-w-[140px]">QTY</th>
+                                            <th class="py-2 px-4 text-left min-w-[140px]">Total Price</th>
+                                            <th class="py-2 px-4 text-right w-16">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -310,8 +336,15 @@
                                                     </span>
                                                 </td>
                                                 <td class="py-2 px-4">
-                                                    <span class="font-medium text-gray-900"
-                                                        x-text="'Rp ' + row.unitPrice.toLocaleString('id-ID')"></span>
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-gray-600 text-sm">Rp</span>
+                                                        <input type="number" x-model.number="row.unitPrice"
+                                                            min="0" step="1000"
+                                                            @focus="if(row.unitPrice == 0) row.unitPrice = ''"
+                                                            @blur="if(row.unitPrice === '' || row.unitPrice === null) row.unitPrice = 0"
+                                                            :class="row.unitPrice === 0 ? 'border-red-500' : 'border-gray-300'"
+                                                            class="w-32 rounded-md border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                                                    </div>
                                                 </td>
                                                 <td class="py-2 px-4">
                                                     <div class="flex items-center gap-2">
@@ -356,40 +389,46 @@
 
             {{-- Button Add Design Variant --}}
             <button type="button" @click="addDesignVariant()"
-                class="px-3 py-2 rounded-md text-sm font-medium cursor-pointer bg-primary hover:bg-green-700 text-white">
+                class="w-full md:w-auto px-3 py-2 rounded-md text-sm font-medium cursor-pointer bg-primary hover:bg-green-700 text-white">
                 + Add Design Variant
             </button>
             {{-- ================= Modal Add Size ================= --}}
             <div x-show="openModal === 'addSize'" x-cloak
                 class="fixed inset-0 z-50 flex items-center justify-center bg-gray-500/50 backdrop-blur-sm px-4">
-                <div @click.away="openModal=null" class="bg-white rounded-xl shadow-lg w-full max-w-2xl p-6 space-y-6">
-                    <div class="flex justify-between items-center border-b border-gray-200 pb-3">
-                        <h3 class="text-lg font-semibold text-gray-900">Select Sizes</h3>
+                <div @click.away="openModal=null" class="bg-white rounded-xl shadow-lg w-full max-w-3xl p-6 space-y-5">
+                    <div class="flex justify-between items-center pb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Select Sizes</h3>
                         <button type="button" @click="openModal=null"
-                            class="text-gray-400 hover:text-gray-600 text-2xl leading-none">✕</button>
+                            class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
 
                     {{-- Size Cards --}}
-                    <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 max-h-96 overflow-y-auto">
+                    <div
+                        class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 max-h-96 overflow-y-auto py-2">
                         <template x-for="size in sizes" :key="size.id">
                             <div @click="toggleSize(size)"
                                 :class="selectedSizes.find(s => s.id === size.id) ?
-                                    'bg-primary text-white border-primary ring-2 ring-primary/30' :
-                                    'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
-                                class="cursor-pointer rounded-lg border-2 px-3 py-2 text-center text-sm font-medium transition-all">
-                                <span x-text="size.size_name"></span>
+                                    'bg-primary text-white border-primary shadow-md scale-105' :
+                                    'bg-white text-gray-700 border-gray-300 hover:border-primary/50 hover:shadow-sm'"
+                                class="cursor-pointer rounded-lg border-2 px-4 py-3 text-center text-sm font-medium transition-all duration-200">
+                                <span x-text="size.size_name" class="block"></span>
                             </div>
                         </template>
                     </div>
 
                     {{-- Footer --}}
-                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-gray-200">
                         <button type="button" @click="openModal=null"
-                            class="px-4 py-2 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+                            class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium transition-colors">
                             Cancel
                         </button>
                         <button type="button" @click="applySizes"
-                            class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark">
+                            class="px-5 py-2.5 rounded-lg bg-primary text-white hover:bg-primary-dark font-medium transition-colors shadow-sm">
                             Add Size
                         </button>
                     </div>
@@ -398,7 +437,7 @@
         </section>
 
         {{-- ================= Additionals & Final ================= --}}
-        <section class="space-y-5 border-b pb-12">
+        <section class="space-y-4 md:space-y-5 border-b border-gray-200 pb-8 md:pb-12">
             <h3 class="text-lg font-semibold text-gray-800">Additionals</h3>
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-6">
                 <div>
@@ -407,7 +446,7 @@
                     {{-- List Input Additionals --}}
                     <template x-for="(item, index) in additionals" :key="index">
                         <div class="flex flex-col gap-3 mb-4">
-                            <div class="flex gap-3">
+                            <div class="flex flex-col md:flex-row gap-3">
                                 <div class="flex-1 relative" x-data="additionalServiceSelect(index, item.service_id)"
                                     @service-selected.window="if($event.detail.index === index) item.service_id = $event.detail.value">
 
@@ -426,38 +465,49 @@
 
                                     {{-- Dropdown --}}
                                     <div x-show="open" @click.away="open = false" x-cloak
-                                        class="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                                        <div class="p-2">
-                                            <input type="text" x-model="search" placeholder="Search service..."
-                                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                        class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
+                                        <div class="relative px-4 py-2">
+                                            <div class="absolute inset-y-0 left-7 flex items-center pointer-events-none">
+                                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                </svg>
+                                            </div>
+                                            <input type="text" x-model="search" placeholder="Search..."
+                                                class="block w-full h-10 pl-10 pr-3 text-gray-600 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary">
                                         </div>
-                                        <ul class="py-1">
+                                        <ul class="max-h-60 overflow-y-auto">
                                             <template x-for="service in filteredOptions" :key="service.id">
                                                 <li @click="selectService(service)"
-                                                    class="px-3 py-2 text-sm hover:bg-primary/10 cursor-pointer"
-                                                    :class="item.service_id == service.id ? 'bg-primary/20 font-medium' : ''"
+                                                    class="px-5 py-2 text-sm hover:bg-primary/5 cursor-pointer"
+                                                    :class="item.service_id == service.id ? 'bg-primary/10 font-medium' : ''"
                                                     x-text="service.service_name">
                                                 </li>
                                             </template>
                                             <li x-show="filteredOptions.length === 0"
-                                                class="px-3 py-2 text-sm text-gray-400 text-center">
+                                                class="px-5 py-2 text-sm text-gray-400 text-center">
                                                 No results found
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
 
-                                <div class="relative">
+                                <div class="relative w-full md:w-32">
                                     <input type="number" x-model="item.price" min="0"
                                         @focus="if(item.price == 0) item.price = ''"
                                         @blur="if(item.price === '' || item.price === null) item.price = 0"
                                         placeholder="Price"
-                                        class="w-32 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                                 </div>
 
                                 <button type="button" @click="removeAdditional(index)"
-                                    class="px-3 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 text-sm">
-                                    Delete
+                                    class="w-full md:w-auto p-2 rounded-md bg-red-500 text-white hover:bg-red-600 transition-colors">
+                                    <svg class="w-5 h-5 mx-auto md:mx-0" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
                                 </button>
                             </div>
 
@@ -525,7 +575,7 @@
 
                     {{-- Button Add --}}
                     <button type="button" @click="addAdditional"
-                        class="px-6 py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-sm font-medium">
+                        class="w-full md:w-auto px-6 py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-sm font-medium">
                         + Add Additional
                     </button>
                 </div>
@@ -543,7 +593,7 @@
 
         {{-- ================= Discount, Final Price & Create ================= --}}
         <div class="flex justify-end mt-6">
-            <div class="w-full md:w-1/3 space-y-4">
+            <div class="w-full lg:w-1/2 xl:w-1/3 space-y-4">
                 <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
                     <label class="text-sm text-gray-600 md:w-24">Discount</label>
                     <input type="number" x-model="discount" min="0" @focus="if(discount == 0) discount = ''"
@@ -553,11 +603,12 @@
                 </div>
                 <div class="border border-gray-200 rounded-lg p-4 text-center">
                     <p class="text-sm text-gray-600">Final Price</p>
-                    <p class="text-lg font-bold text-gray-900" x-text="'Rp ' + getFinalPrice().toLocaleString('id-ID')">
+                    <p class="text-2xl md:text-lg font-bold text-gray-900"
+                        x-text="'Rp ' + getFinalPrice().toLocaleString('id-ID')">
                     </p>
                 </div>
                 <button type="submit"
-                    class="w-full px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-sm font-medium">
+                    class="w-full px-4 py-3 md:py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-base md:text-sm font-medium">
                     Create Order
                 </button>
             </div>
@@ -609,6 +660,273 @@
         <input type="hidden" name="grand_total" :value="getFinalPrice()">
 
     </form>
+
+    {{-- ===================== MODAL ADD CUSTOMER (Outside main form) ===================== --}}
+    <div x-data="{
+        openModal: @if ($errors->addCustomer->any()) 'addCustomer' @else '' @endif,
+        addProvince: '{{ old('province_id') }}',
+        addCity: '{{ old('city_id') }}',
+        addDistrict: '{{ old('district_id') }}',
+        addVillage: '{{ old('village_id') }}',
+        addCities: [],
+        addDistricts: [],
+        addVillages: [],
+    
+        async init() {
+            // Restore Add Customer state from old input
+            const oldProvince = '{{ old('province_id') }}' ? parseInt('{{ old('province_id') }}') : '';
+            const oldCity = '{{ old('city_id') }}' ? parseInt('{{ old('city_id') }}') : '';
+            const oldDistrict = '{{ old('district_id') }}' ? parseInt('{{ old('district_id') }}') : '';
+            const oldVillage = '{{ old('village_id') }}' ? parseInt('{{ old('village_id') }}') : '';
+    
+            if (oldProvince) {
+                this.addProvince = oldProvince;
+                await this.fetchCities(oldProvince);
+    
+                if (oldCity) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    this.addCity = oldCity;
+                    await this.fetchDistricts(oldCity);
+    
+                    if (oldDistrict) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        this.addDistrict = oldDistrict;
+                        await this.fetchVillages(oldDistrict);
+    
+                        if (oldVillage) {
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                            this.addVillage = oldVillage;
+                        }
+                    }
+                }
+            }
+        },
+    
+        async fetchCities(provinceId) {
+            if (!provinceId) {
+                this.addCities = [];
+                this.addDistricts = [];
+                this.addVillages = [];
+                this.addCity = '';
+                this.addDistrict = '';
+                this.addVillage = '';
+                return;
+            }
+            try {
+                const response = await fetch(`/admin/customers/api/cities/${provinceId}`);
+                const data = await response.json();
+                this.addCities = data;
+            } catch (error) {
+                console.error('Error fetching cities:', error);
+            }
+        },
+    
+        async fetchDistricts(cityId) {
+            if (!cityId) {
+                this.addDistricts = [];
+                this.addVillages = [];
+                this.addDistrict = '';
+                this.addVillage = '';
+                return;
+            }
+            try {
+                const response = await fetch(`/admin/customers/api/districts/${cityId}`);
+                const data = await response.json();
+                this.addDistricts = data;
+            } catch (error) {
+                console.error('Error fetching districts:', error);
+            }
+        },
+    
+        async fetchVillages(districtId) {
+            if (!districtId) {
+                this.addVillages = [];
+                this.addVillage = '';
+                return;
+            }
+            try {
+                const response = await fetch(`/admin/customers/api/villages/${districtId}`);
+                const data = await response.json();
+                this.addVillages = data;
+            } catch (error) {
+                console.error('Error fetching villages:', error);
+            }
+        }
+    }" @keydown.escape.window="openModal = ''"
+        @open-add-customer.window="openModal = 'addCustomer'">
+        <div x-show="openModal === 'addCustomer'" x-transition.opacity x-cloak
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div @click.away="openModal = ''" class="bg-white rounded-xl shadow-lg w-full max-w-lg">
+                    {{-- Header --}}
+                    <div class="flex items-center justify-between p-5 border-b border-gray-200 border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Add Customer</h3>
+                        <button @click="openModal = ''" type="button"
+                            class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                            ✕
+                        </button>
+                    </div>
+
+                    {{-- Form --}}
+                    <form action="{{ route('admin.customers.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="from_create_order" value="1">
+                        <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+                            {{-- Customer Name --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Customer Name <span class="text-red-600">*</span>
+                                </label>
+                                <input type="text" name="customer_name" value="{{ old('customer_name') }}"
+                                    @class([
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'customer_name'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'customer_name'),
+                                    ]) />
+                                @error('customer_name', 'addCustomer')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Phone --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Phone <span class="text-red-600">*</span>
+                                </label>
+                                <input type="text" name="phone" value="{{ old('phone') }}"
+                                    @class([
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'phone'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'phone'),
+                                    ]) />
+                                @error('phone', 'addCustomer')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Province --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Province</label>
+                                <select x-model="addProvince" name="province_id" @change="fetchCities(addProvince)"
+                                    @class([
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'province_id'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'province_id'),
+                                    ])>
+                                    <option value="">Select Province</option>
+                                    @foreach ($provinces as $province)
+                                        <option value="{{ $province->id }}"
+                                            {{ old('province_id') == $province->id ? 'selected' : '' }}>
+                                            {{ $province->province_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('province_id', 'addCustomer')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- City --}}
+                            <div x-show="addProvince" x-transition>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                <select x-model="addCity" name="city_id" @change="fetchDistricts(addCity)"
+                                    @class([
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'city_id'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'city_id'),
+                                    ])>
+                                    <option value="">Select City</option>
+                                    <template x-for="city in addCities" :key="city.id">
+                                        <option :value="city.id" x-text="city.city_name"></option>
+                                    </template>
+                                </select>
+                                @error('city_id', 'addCustomer')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- District --}}
+                            <div x-show="addCity" x-transition>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">District</label>
+                                <select x-model="addDistrict" name="district_id" @change="fetchVillages(addDistrict)"
+                                    @class([
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'district_id'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'district_id'),
+                                    ])>
+                                    <option value="">Select District</option>
+                                    <template x-for="district in addDistricts" :key="district.id">
+                                        <option :value="district.id" x-text="district.district_name"></option>
+                                    </template>
+                                </select>
+                                @error('district_id', 'addCustomer')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Village --}}
+                            <div x-show="addDistrict" x-transition>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Village</label>
+                                <select x-model="addVillage" name="village_id" @class([
+                                    'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                    'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                        'village_id'),
+                                    'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                        'village_id'),
+                                ])>
+                                    <option value="">Select Village</option>
+                                    <template x-for="village in addVillages" :key="village.id">
+                                        <option :value="village.id" x-text="village.village_name"></option>
+                                    </template>
+                                </select>
+                                @error('village_id', 'addCustomer')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Address --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Address Detail</label>
+                                <textarea name="address" rows="3" @class([
+                                    'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                    'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                        'address'),
+                                    'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                        'address'),
+                                ])>{{ old('address') }}</textarea>
+                                @error('address', 'addCustomer')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Footer --}}
+                        <div class="flex items-center justify-end gap-3 p-5 border-t border-gray-200">
+                            <button @click="openModal = ''" type="button"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark">
+                                Save Customer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 @push('scripts')
     <script>
@@ -627,6 +945,17 @@
                     }
                     // ⬇️ dispatch event biar orderForm tahu
                     this.$dispatch(`${this.fieldName}-selected`, this.selectedId || '');
+
+                    // Listen untuk auto-select dari orderForm (untuk customer_id)
+                    window.addEventListener(`${this.fieldName}-selected`, (e) => {
+                        if (e.detail) {
+                            const option = this.options.find(o => String(o.id) === String(e.detail));
+                            if (option) {
+                                this.selected = option;
+                                this.selectedId = option.id;
+                            }
+                        }
+                    });
                 },
 
                 select(option) {
@@ -738,6 +1067,15 @@
 
                 // INIT
                 init() {
+                    // Set customer_id if new customer was just added
+                    @if (session('select_customer_id'))
+                        this.customer_id = '{{ session('select_customer_id') }}';
+                        // Dispatch event to update select-form component
+                        window.dispatchEvent(new CustomEvent('customer_id-selected', {
+                            detail: '{{ session('select_customer_id') }}'
+                        }));
+                    @endif
+
                     // Restore from old input if validation fails
                     @if (old('designs'))
                         this.restoreFromOldInput();

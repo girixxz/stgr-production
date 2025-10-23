@@ -58,7 +58,15 @@ class CustomerController extends Controller
             'address.required' => 'Address is required.',
         ]);
 
-        Customer::create($validated);
+        $customer = Customer::create($validated);
+
+        // Check if request is from create order page
+        if ($request->has('from_create_order') && $request->from_create_order == '1') {
+            return redirect()->route('admin.orders.create')
+                ->with('message', 'Customer added successfully.')
+                ->with('alert-type', 'success')
+                ->with('select_customer_id', $customer->id);
+        }
 
         return redirect()->route('admin.customers.index')
             ->with('message', 'Customer added successfully.')

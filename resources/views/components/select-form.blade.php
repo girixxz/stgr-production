@@ -19,7 +19,7 @@
     <div x-show="open" @click.away="open = false" x-cloak
         class="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg">
         <div class="relative px-4 py-2">
-            <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <div class="absolute inset-y-0 left-5 flex items-center pointer-events-none">
                 <x-icons.search />
             </div>
             <input type="text" placeholder="Search..." x-model="search"
