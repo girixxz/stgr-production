@@ -241,7 +241,7 @@ class OrderController extends Controller
             // Create Extra Services
             if (!empty($request->additionals)) {
                 foreach ($request->additionals as $additional) {
-                    if (!empty($additional['service_id']) && !empty($additional['price'])) {
+                    if (!empty($additional['service_id']) && isset($additional['price'])) {
                         ExtraService::create([
                             'order_id' => $order->id,
                             'service_id' => $additional['service_id'],
@@ -306,7 +306,7 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         $data = [
-            'order' => $order,
+            'order' => $order->load(['orderItems.designVariant', 'orderItems.size', 'orderItems.sleeve', 'extraServices']),
             'customers' => Customer::orderBy('customer_name')->get(),
             'sales' => Sale::orderBy('sales_name')->get(),
             'productCategories' => ProductCategory::orderBy('product_name')->get(),
@@ -343,7 +343,16 @@ class OrderController extends Controller
             'subtotal' => 'required|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
             'grand_total' => 'required|numeric|min:0',
-            'production_status' => 'required|in:pending,wip,finished,cancelled',
+            'designs' => 'required|array|min:1',
+            'designs.*.items' => 'required|array|min:1',
+            'designs.*.items.*.design_name' => 'required|string',
+            'designs.*.items.*.sleeve_id' => 'required|exists:material_sleeves,id',
+            'designs.*.items.*.size_id' => 'required|exists:material_sizes,id',
+            'designs.*.items.*.qty' => 'required|integer|min:1',
+            'designs.*.items.*.unit_price' => 'required|numeric|min:0',
+            'additionals' => 'nullable|array',
+            'additionals.*.service_id' => 'required_with:additionals|exists:services,id',
+            'additionals.*.price' => 'required_with:additionals|numeric|min:0',
         ], [
             'priority.required' => 'Priority is required.',
             'customer_id.required' => 'Customer is required.',
@@ -356,17 +365,103 @@ class OrderController extends Controller
             'material_category_id.required' => 'Material category is required.',
             'material_texture_id.required' => 'Material texture is required.',
             'shipping_id.required' => 'Shipping option is required.',
-            'total_qty.required' => 'Total quantity is required.',
-            'subtotal.required' => 'Subtotal is required.',
-            'grand_total.required' => 'Grand total is required.',
-            'production_status.required' => 'Production status is required.',
+            'designs.required' => 'At least one design variant is required.',
+            'designs.*.items.required' => 'At least one item is required for each design.',
+            'additionals.*.service_id.required_with' => 'Service selection is required.',
+            'additionals.*.service_id.exists' => 'Selected service is invalid.',
+            'additionals.*.price.required_with' => 'Price is required.',
+            'additionals.*.price.min' => 'Price must be at least 0.',
         ]);
 
-        $order->update($validated);
+        DB::beginTransaction();
 
-        return redirect()->route('admin.orders.index')
-            ->with('message', 'Order updated successfully.')
-            ->with('alert-type', 'success');
+        try {
+            // Update Order
+            $order->update([
+                'priority' => $validated['priority'],
+                'customer_id' => $validated['customer_id'],
+                'sales_id' => $validated['sales_id'],
+                'order_date' => $validated['order_date'],
+                'deadline' => $validated['deadline'],
+                'product_category_id' => $validated['product_category_id'],
+                'product_color' => $validated['product_color'],
+                'material_category_id' => $validated['material_category_id'],
+                'material_texture_id' => $validated['material_texture_id'],
+                'shipping_id' => $validated['shipping_id'],
+                'notes' => $validated['notes'],
+                'total_qty' => $validated['total_qty'],
+                'subtotal' => $validated['subtotal'],
+                'discount' => $validated['discount'] ?? 0,
+                'grand_total' => $validated['grand_total'],
+            ]);
+
+            // Delete existing design variants, order items will be cascade deleted
+            $order->designVariants()->delete();
+            $order->orderItems()->delete();
+
+            // Recreate Design Variants and Order Items
+            foreach ($request->designs as $designData) {
+                // Group items by design_name
+                $designName = $designData['items'][0]['design_name'];
+                
+                $designVariant = DesignVariant::create([
+                    'order_id' => $order->id,
+                    'design_name' => $designName,
+                ]);
+
+                foreach ($designData['items'] as $item) {
+                    $subtotal = $item['qty'] * $item['unit_price'];
+                    
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'design_variant_id' => $designVariant->id,
+                        'sleeve_id' => $item['sleeve_id'],
+                        'size_id' => $item['size_id'],
+                        'qty' => $item['qty'],
+                        'unit_price' => $item['unit_price'],
+                        'subtotal' => $subtotal,
+                    ]);
+                }
+            }
+
+            // Delete existing extra services
+            $order->extraServices()->delete();
+
+            // Recreate Extra Services
+            if (!empty($request->additionals)) {
+                foreach ($request->additionals as $additional) {
+                    if (!empty($additional['service_id']) && isset($additional['price'])) {
+                        ExtraService::create([
+                            'order_id' => $order->id,
+                            'service_id' => $additional['service_id'],
+                            'price' => $additional['price'],
+                        ]);
+                    }
+                }
+            }
+
+            // Update Invoice if exists
+            if ($order->invoice) {
+                $order->invoice->update([
+                    'total_bill' => $validated['grand_total'],
+                    'amount_due' => $validated['grand_total'] - $order->invoice->amount_paid,
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('admin.orders.index')
+                ->with('message', 'Order updated successfully.')
+                ->with('alert-type', 'success');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            return redirect()->back()
+                ->withInput()
+                ->with('message', 'Failed to update order: ' . $e->getMessage())
+                ->with('alert-type', 'error');
+        }
     }
 
     /**

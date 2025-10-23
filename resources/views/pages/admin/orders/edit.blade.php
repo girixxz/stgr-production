@@ -1,28 +1,29 @@
 @extends('layouts.app')
 
-@section('title', 'Create Orders')
+@section('title', 'Edit Order')
 
 @section('content')
-
     @php
         $role = auth()->user()?->role;
         $root = $role === 'owner' ? 'Admin' : 'Menu';
     @endphp
 
-    <x-nav-locate :items="[$root, 'Orders', 'Create Order']" />
+    <x-nav-locate :items="[$root, 'Orders', 'Edit Order']" />
 
     <form x-data="orderForm()" @customer_id-selected.window="customer_id = $event.detail"
         @sales_id-selected.window="sales_id = $event.detail"
         @product_category_id-selected.window="product_category_id = $event.detail"
         @material_category_id-selected.window="material_category_id = $event.detail"
         @material_texture_id-selected.window="material_texture_id = $event.detail"
-        @shipping_id-selected.window="shipping_id = $event.detail" method="POST" action="{{ route('admin.orders.store') }}"
+        @shipping_id-selected.window="shipping_id = $event.detail" method="POST"
+        action="{{ route('admin.orders.update', $order->id) }}"
         class="bg-white border border-gray-200 rounded-2xl p-4 md:p-6 space-y-6 md:space-y-8">
         @csrf
+        @method('PUT')
 
         {{-- ================= Header ================= --}}
         <div class="space-y-6 border-b border-gray-200 pb-6 md:pb-8">
-            <h2 class="text-xl font-semibold text-gray-900">Create Order</h2>
+            <h2 class="text-xl font-semibold text-gray-900">Edit Order</h2>
         </div>
 
         {{-- Priority, Order Date & Deadline --}}
@@ -39,26 +40,24 @@
                     </select>
                 </div>
 
-                {{-- Order Date --}}
+                {{-- Order Date (READONLY) --}}
                 <div class="space-y-2">
                     <label for="order_date" class="block text-sm font-medium text-gray-600">Order Date</label>
                     <div class="relative">
-                        <input id="order_date" name="order_date" type="date" x-model="order_date"
-                            value="{{ old('order_date', date('Y-m-d')) }}"
-                            class="w-full rounded-md px-3 py-2 text-sm border border-gray-300 focus:border-primary focus:ring-primary/20 focus:outline-none focus:ring-2 text-gray-700" />
+                        <input id="order_date" name="order_date" type="date" x-model="order_date" readonly
+                            class="w-full rounded-md px-3 py-2 text-sm border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed" />
                         @error('order_date')
                             <p class="absolute left-0 -bottom-5 text-[10px] md:text-xs text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
 
-                {{-- Deadline --}}
+                {{-- Deadline (READONLY) --}}
                 <div class="space-y-2">
                     <label for="deadline" class="block text-sm font-medium text-gray-600">Deadline</label>
                     <div class="relative">
-                        <input id="deadline" name="deadline" type="date" x-model="deadline"
-                            value="{{ old('deadline') }}"
-                            class="w-full rounded-md px-3 py-2 text-sm border border-gray-300 focus:border-primary focus:ring-primary/20 focus:outline-none focus:ring-2 text-gray-700" />
+                        <input id="deadline" name="deadline" type="date" x-model="deadline" readonly
+                            class="w-full rounded-md px-3 py-2 text-sm border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed" />
                         @error('deadline')
                             <p class="absolute left-0 -bottom-5 text-[10px] md:text-xs text-red-600">{{ $message }}</p>
                         @enderror
@@ -67,33 +66,34 @@
             </div>
         </div>
 
-        {{-- ================= Customers & Sales ================= --}}
+        {{-- ================= Customers & Sales (DISABLED) ================= --}}
         <section class="space-y-4 md:space-y-5 border-b border-gray-200 pb-8 md:pb-12">
             <h3 class="text-lg font-semibold text-gray-800">Data Customers & Sales</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 <div class="relative flex flex-col md:flex-row md:items-start gap-2 md:gap-3">
                     <label class="text-sm text-gray-600 md:w-24 md:mt-2">Customer</label>
 
-                    <div class="w-full space-y-2">
-                        <x-select-form name="customer_id" label="Customer" placeholder="-- Select Customer --"
-                            :options="$customers" display="customer_name" :old="old('customer_id')" />
-
-                        <button type="button" @click="$dispatch('open-add-customer')"
-                            class="text-sm text-primary hover:text-primary-dark font-medium flex items-center gap-1 group">
-                            <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add new customer
-                        </button>
+                    <div class="w-full">
+                        {{-- Customer Disabled Display --}}
+                        <div
+                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-gray-100 text-gray-600 cursor-not-allowed">
+                            {{ $order->customer->customer_name }}
+                        </div>
+                        <input type="hidden" name="customer_id" value="{{ $order->customer_id }}">
                     </div>
                 </div>
 
                 <div class="relative flex flex-col md:flex-row md:items-start gap-2 md:gap-3">
                     <label class="text-sm text-gray-600 md:w-24 md:mt-2">Sales</label>
 
-                    <x-select-form name="sales_id" label="Sales" placeholder="-- Select Sales --" :options="$sales"
-                        display="sales_name" :old="old('sales_id')" />
+                    {{-- Sales Disabled Display --}}
+                    <div class="w-full">
+                        <div
+                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-gray-100 text-gray-600 cursor-not-allowed">
+                            {{ $order->sales->sales_name }}
+                        </div>
+                        <input type="hidden" name="sales_id" value="{{ $order->sales_id }}">
+                    </div>
                 </div>
 
 
@@ -110,7 +110,7 @@
                         <label class="text-sm text-gray-600 md:w-24">Product</label>
 
                         <x-select-form name="product_category_id" label="Product" placeholder="-- Select Product --"
-                            :options="$productCategories" display="product_name" :old="old('product_category_id')" />
+                            :options="$productCategories" display="product_name" :old="old('product_category_id', $order->product_category_id)" />
                     </div>
 
                     {{-- Color --}}
@@ -118,7 +118,7 @@
                         <label class="text-sm text-gray-600 md:w-24">Color</label>
                         <div class="relative w-full">
                             <input type="text" name="product_color" x-model="product_color"
-                                value="{{ old('product_color') }}"
+                                value="{{ old('product_color', $order->product_color) }}"
                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700
                                 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                                 placeholder="Enter color" />
@@ -133,10 +133,10 @@
                         <label class="text-sm text-gray-600 md:w-24">Material</label>
                         <div class="flex flex-col md:flex-row gap-2 gap-y-6 md:gap-3 w-full">
                             <x-select-form name="material_category_id" label="Product" placeholder="-- Select Material --"
-                                :options="$materialCategories" display="material_name" :old="old('material_category_id')" />
+                                :options="$materialCategories" display="material_name" :old="old('material_category_id', $order->material_category_id)" />
 
                             <x-select-form name="material_texture_id" label="Product" placeholder="-- Select Texture --"
-                                :options="$materialTextures" display="texture_name" :old="old('material_texture_id')" />
+                                :options="$materialTextures" display="texture_name" :old="old('material_texture_id', $order->material_texture_id)" />
                         </div>
                     </div>
 
@@ -149,7 +149,7 @@
                         <textarea rows="3" name="notes" x-model="notes"
                             class="w-full min-h-[165px] rounded-md border border-gray-300 px-3 py-2 text-sm
                             focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                            placeholder="Write notes here...">{{ old('notes') }}</textarea>
+                            placeholder="Write notes here...">{{ old('notes', $order->notes) }}</textarea>
                         @error('notes')
                             <p class="absolute left-0 -bottom-5 text-xs text-red-600">{{ $message }}</p>
                         @enderror
@@ -585,7 +585,7 @@
                     <label class="text-sm text-gray-600 md:w-24">Shipping</label>
 
                     <x-select-form name="shipping_id" label="Shipping" placeholder="-- Select Shipping --"
-                        :options="$shippings" display="shipping_name" :old="old('shipping_id')" />
+                        :options="$shippings" display="shipping_name" :old="old('shipping_id', $order->shipping_id)" />
                 </div>
 
             </div>
@@ -609,7 +609,7 @@
                 </div>
                 <button type="submit"
                     class="w-full px-4 py-3 md:py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-base md:text-sm font-medium">
-                    Create Order
+                    Update Order
                 </button>
             </div>
         </div>
@@ -661,272 +661,6 @@
 
     </form>
 
-    {{-- ===================== MODAL ADD CUSTOMER (Outside main form) ===================== --}}
-    <div x-data="{
-        openModal: @if ($errors->addCustomer->any()) 'addCustomer' @else '' @endif,
-        addProvince: '{{ old('province_id') }}',
-        addCity: '{{ old('city_id') }}',
-        addDistrict: '{{ old('district_id') }}',
-        addVillage: '{{ old('village_id') }}',
-        addCities: [],
-        addDistricts: [],
-        addVillages: [],
-    
-        async init() {
-            // Restore Add Customer state from old input
-            const oldProvince = '{{ old('province_id') }}' ? parseInt('{{ old('province_id') }}') : '';
-            const oldCity = '{{ old('city_id') }}' ? parseInt('{{ old('city_id') }}') : '';
-            const oldDistrict = '{{ old('district_id') }}' ? parseInt('{{ old('district_id') }}') : '';
-            const oldVillage = '{{ old('village_id') }}' ? parseInt('{{ old('village_id') }}') : '';
-    
-            if (oldProvince) {
-                this.addProvince = oldProvince;
-                await this.fetchCities(oldProvince);
-    
-                if (oldCity) {
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                    this.addCity = oldCity;
-                    await this.fetchDistricts(oldCity);
-    
-                    if (oldDistrict) {
-                        await new Promise(resolve => setTimeout(resolve, 100));
-                        this.addDistrict = oldDistrict;
-                        await this.fetchVillages(oldDistrict);
-    
-                        if (oldVillage) {
-                            await new Promise(resolve => setTimeout(resolve, 100));
-                            this.addVillage = oldVillage;
-                        }
-                    }
-                }
-            }
-        },
-    
-        async fetchCities(provinceId) {
-            if (!provinceId) {
-                this.addCities = [];
-                this.addDistricts = [];
-                this.addVillages = [];
-                this.addCity = '';
-                this.addDistrict = '';
-                this.addVillage = '';
-                return;
-            }
-            try {
-                const response = await fetch(`/admin/customers/api/cities/${provinceId}`);
-                const data = await response.json();
-                this.addCities = data;
-            } catch (error) {
-                console.error('Error fetching cities:', error);
-            }
-        },
-    
-        async fetchDistricts(cityId) {
-            if (!cityId) {
-                this.addDistricts = [];
-                this.addVillages = [];
-                this.addDistrict = '';
-                this.addVillage = '';
-                return;
-            }
-            try {
-                const response = await fetch(`/admin/customers/api/districts/${cityId}`);
-                const data = await response.json();
-                this.addDistricts = data;
-            } catch (error) {
-                console.error('Error fetching districts:', error);
-            }
-        },
-    
-        async fetchVillages(districtId) {
-            if (!districtId) {
-                this.addVillages = [];
-                this.addVillage = '';
-                return;
-            }
-            try {
-                const response = await fetch(`/admin/customers/api/villages/${districtId}`);
-                const data = await response.json();
-                this.addVillages = data;
-            } catch (error) {
-                console.error('Error fetching villages:', error);
-            }
-        }
-    }" @keydown.escape.window="openModal = ''"
-        @open-add-customer.window="openModal = 'addCustomer'">
-        <div x-show="openModal === 'addCustomer'" x-transition.opacity x-cloak
-            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div @click.away="openModal = ''" class="bg-white rounded-xl shadow-lg w-full max-w-lg">
-                    {{-- Header --}}
-                    <div class="flex items-center justify-between p-5 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">Add Customer</h3>
-                        <button @click="openModal = ''" type="button"
-                            class="text-gray-400 hover:text-gray-600 cursor-pointer">
-                            ✕
-                        </button>
-                    </div>
-
-                    {{-- Form --}}
-                    <form action="{{ route('admin.customers.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="from_create_order" value="1">
-                        <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
-                            {{-- Customer Name --}}
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Customer Name <span class="text-red-600">*</span>
-                                </label>
-                                <input type="text" name="customer_name" value="{{ old('customer_name') }}"
-                                    @class([
-                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
-                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
-                                            'customer_name'),
-                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
-                                            'customer_name'),
-                                    ]) />
-                                @error('customer_name', 'addCustomer')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- Phone --}}
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Phone <span class="text-red-600">*</span>
-                                </label>
-                                <input type="text" name="phone" value="{{ old('phone') }}"
-                                    @class([
-                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
-                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
-                                            'phone'),
-                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
-                                            'phone'),
-                                    ]) />
-                                @error('phone', 'addCustomer')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- Province --}}
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Province</label>
-                                <select x-model="addProvince" name="province_id" @change="fetchCities(addProvince)"
-                                    @class([
-                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
-                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
-                                            'province_id'),
-                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
-                                            'province_id'),
-                                    ])>
-                                    <option value="">Select Province</option>
-                                    @foreach ($provinces as $province)
-                                        <option value="{{ $province->id }}"
-                                            {{ old('province_id') == $province->id ? 'selected' : '' }}>
-                                            {{ $province->province_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('province_id', 'addCustomer')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- City --}}
-                            <div x-show="addProvince" x-transition>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
-                                <select x-model="addCity" name="city_id" @change="fetchDistricts(addCity)"
-                                    @class([
-                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
-                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
-                                            'city_id'),
-                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
-                                            'city_id'),
-                                    ])>
-                                    <option value="">Select City</option>
-                                    <template x-for="city in addCities" :key="city.id">
-                                        <option :value="city.id" x-text="city.city_name"></option>
-                                    </template>
-                                </select>
-                                @error('city_id', 'addCustomer')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- District --}}
-                            <div x-show="addCity" x-transition>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">District</label>
-                                <select x-model="addDistrict" name="district_id" @change="fetchVillages(addDistrict)"
-                                    @class([
-                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
-                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
-                                            'district_id'),
-                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
-                                            'district_id'),
-                                    ])>
-                                    <option value="">Select District</option>
-                                    <template x-for="district in addDistricts" :key="district.id">
-                                        <option :value="district.id" x-text="district.district_name"></option>
-                                    </template>
-                                </select>
-                                @error('district_id', 'addCustomer')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- Village --}}
-                            <div x-show="addDistrict" x-transition>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Village</label>
-                                <select x-model="addVillage" name="village_id" @class([
-                                    'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
-                                    'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
-                                        'village_id'),
-                                    'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
-                                        'village_id'),
-                                ])>
-                                    <option value="">Select Village</option>
-                                    <template x-for="village in addVillages" :key="village.id">
-                                        <option :value="village.id" x-text="village.village_name"></option>
-                                    </template>
-                                </select>
-                                @error('village_id', 'addCustomer')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- Address --}}
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Address Detail</label>
-                                <textarea name="address" rows="3" @class([
-                                    'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
-                                    'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
-                                        'address'),
-                                    'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
-                                        'address'),
-                                ])>{{ old('address') }}</textarea>
-                                @error('address', 'addCustomer')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-
-                        {{-- Footer --}}
-                        <div class="flex items-center justify-end gap-3 p-5 border-t border-gray-200">
-                            <button @click="openModal = ''" type="button"
-                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
-                                Cancel
-                            </button>
-                            <button type="submit"
-                                class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark">
-                                Save Customer
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
 @endsection
 @push('scripts')
     <script>
@@ -943,27 +677,13 @@
                     if (this.selectedId) {
                         this.selected = this.options.find(o => String(o.id) === String(this.selectedId)) || null;
                     }
-                    // ⬇️ dispatch event biar orderForm tahu
                     this.$dispatch(`${this.fieldName}-selected`, this.selectedId || '');
-
-                    // Listen untuk auto-select dari orderForm (untuk customer_id)
-                    window.addEventListener(`${this.fieldName}-selected`, (e) => {
-                        if (e.detail) {
-                            const option = this.options.find(o => String(o.id) === String(e.detail));
-                            if (option) {
-                                this.selected = option;
-                                this.selectedId = option.id;
-                            }
-                        }
-                    });
                 },
 
                 select(option) {
                     this.selected = option;
                     this.selectedId = option.id;
                     this.open = false;
-
-                    // ⬇️ dispatch lagi setiap kali select berubah
                     this.$dispatch(`${this.fieldName}-selected`, this.selectedId);
                 }
             }
@@ -1038,18 +758,18 @@
         function orderForm() {
             return {
                 // ====== STATE UTAMA ======
-                priority: '{{ old('priority', 'normal') }}',
-                order_date: '{{ old('order_date', date('Y-m-d')) }}',
-                deadline: '{{ old('deadline') }}',
-                customer_id: '{{ old('customer_id') }}',
-                sales_id: '{{ old('sales_id') }}',
-                product_category_id: '{{ old('product_category_id') }}',
-                product_color: '{{ old('product_color') }}',
-                material_category_id: '{{ old('material_category_id') }}',
-                material_texture_id: '{{ old('material_texture_id') }}',
-                notes: '{{ old('notes') }}',
-                discount: {{ old('discount', 0) }},
-                shipping_id: '{{ old('shipping_id') }}',
+                priority: '{{ old('priority', $order->priority) }}',
+                order_date: '{{ old('order_date', $order->order_date->format('Y-m-d')) }}',
+                deadline: '{{ old('deadline', $order->deadline->format('Y-m-d')) }}',
+                customer_id: '{{ old('customer_id', $order->customer_id) }}',
+                sales_id: '{{ old('sales_id', $order->sales_id) }}',
+                product_category_id: '{{ old('product_category_id', $order->product_category_id) }}',
+                product_color: '{{ old('product_color', $order->product_color) }}',
+                material_category_id: '{{ old('material_category_id', $order->material_category_id) }}',
+                material_texture_id: '{{ old('material_texture_id', $order->material_texture_id) }}',
+                notes: '{{ old('notes', $order->notes) }}',
+                discount: {{ old('discount', $order->discount ?? 0) }},
+                shipping_id: '{{ old('shipping_id', $order->shipping_id) }}',
 
                 // ====== DETAIL ======
                 designVariants: [],
@@ -1067,18 +787,12 @@
 
                 // INIT
                 init() {
-                    // Set customer_id if new customer was just added
-                    @if (session('select_customer_id'))
-                        this.customer_id = '{{ session('select_customer_id') }}';
-                        // Dispatch event to update select-form component
-                        window.dispatchEvent(new CustomEvent('customer_id-selected', {
-                            detail: '{{ session('select_customer_id') }}'
-                        }));
-                    @endif
-
-                    // Restore from old input if validation fails
                     @if (old('designs'))
+                        // If validation error, restore from old input
                         this.restoreFromOldInput();
+                    @else
+                        // Load existing order data
+                        this.loadExistingData();
                     @endif
 
                     @if (old('additionals'))
@@ -1089,10 +803,80 @@
                                 error: ''
                             });
                         @endforeach
+                    @else
+                        // Load existing additionals
+                        @foreach ($order->extraServices as $extra)
+                            this.additionals.push({
+                                service_id: '{{ $extra->service_id }}',
+                                price: {{ $extra->price }},
+                                error: ''
+                            });
+                        @endforeach
                     @endif
                 },
 
-                // Restore design variants from old input
+                // Load existing order data
+                loadExistingData() {
+                    const orderItems = @json($order->orderItems()->with(['designVariant', 'size', 'sleeve'])->get());
+                    const designMap = {};
+
+                    // Group items by design name
+                    orderItems.forEach(item => {
+                        const designName = item.design_variant.design_name;
+                        if (!designMap[designName]) {
+                            designMap[designName] = [];
+                        }
+                        designMap[designName].push(item);
+                    });
+
+                    // Rebuild design variants structure
+                    Object.keys(designMap).forEach(designName => {
+                        const items = designMap[designName];
+                        const sleeveMap = {};
+
+                        // Group by sleeve_id
+                        items.forEach(item => {
+                            if (!sleeveMap[item.sleeve_id]) {
+                                sleeveMap[item.sleeve_id] = [];
+                            }
+                            sleeveMap[item.sleeve_id].push(item);
+                        });
+
+                        const sleeveVariants = [];
+                        Object.keys(sleeveMap).forEach(sleeveId => {
+                            const sleeveItems = sleeveMap[sleeveId];
+                            const basePrice = sleeveItems[0].unit_price - (this.sizes.find(s => s.id ==
+                                sleeveItems[0].size_id)?.extra_price || 0);
+
+                            const rows = sleeveItems.map(item => {
+                                const size = this.sizes.find(s => s.id == item.size_id);
+                                return {
+                                    size_id: item.size_id,
+                                    size: item.size?.size_name || '',
+                                    extraPrice: parseFloat(item.size?.extra_price || 0),
+                                    unitPrice: parseFloat(item.unit_price),
+                                    qty: parseInt(item.qty || 0)
+                                };
+                            });
+
+                            sleeveVariants.push({
+                                sleeve: sleeveId,
+                                basePrice: basePrice,
+                                rows: rows,
+                                error: '',
+                                basePriceError: ''
+                            });
+                        });
+
+                        this.designVariants.push({
+                            name: designName,
+                            sleeveVariants: sleeveVariants,
+                            error: ''
+                        });
+                    });
+                },
+
+                // Restore design variants from old input (for validation errors)
                 restoreFromOldInput() {
                     const oldDesigns = @json(old('designs', []));
                     const designMap = {};
