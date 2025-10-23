@@ -43,11 +43,19 @@ class CustomerController extends Controller
         $validated = $request->validateWithBag('addCustomer', [
             'customer_name' => 'required|string|max:100',
             'phone' => 'required|string|max:20',
-            'province_id' => 'nullable|exists:provinces,id',
-            'city_id' => 'nullable|exists:cities,id',
-            'district_id' => 'nullable|exists:districts,id',
-            'village_id' => 'nullable|exists:villages,id',
-            'address' => 'nullable|string',
+            'province_id' => 'required|exists:provinces,id',
+            'city_id' => 'required|exists:cities,id',
+            'district_id' => 'required|exists:districts,id',
+            'village_id' => 'required|exists:villages,id',
+            'address' => 'required|string|max:255',
+        ], [
+            'customer_name.required' => 'Customer name is required.',
+            'phone.required' => 'Phone number is required.',
+            'province_id.required' => 'Province is required.',
+            'city_id.required' => 'City is required.',
+            'district_id.required' => 'District is required.',
+            'village_id.required' => 'Village is required.',
+            'address.required' => 'Address is required.',
         ]);
 
         Customer::create($validated);
@@ -68,16 +76,22 @@ class CustomerController extends Controller
         $validated = $request->validateWithBag('editCustomer', [
             'customer_name' => 'required|string|max:100',
             'phone' => 'required|string|max:20',
-            'province_id' => 'nullable|exists:provinces,id',
-            'city_id' => 'nullable|exists:cities,id',
-            'district_id' => 'nullable|exists:districts,id',
-            'village_id' => 'nullable|exists:villages,id',
-            'address' => 'nullable|string',
+            'province_id' => 'required|exists:provinces,id',
+            'city_id' => 'required|exists:cities,id',
+            'district_id' => 'required|exists:districts,id',
+            'village_id' => 'required|exists:villages,id',
+            'address' => 'required|string|max:255',
+        ], [
+            'customer_name.required' => 'Customer name is required.',
+            'phone.required' => 'Phone number is required.',
+            'province_id.required' => 'Province is required.',
+            'city_id.required' => 'City is required.',
+            'district_id.required' => 'District is required.',
+            'village_id.required' => 'Village is required.',
+            'address.required' => 'Address is required.',
         ]);
 
-        $customer->update(array_filter($validated, function($value) {
-            return $value !== null;
-        }));
+        $customer->update($validated);
 
         return redirect()->route('admin.customers.index')
             ->with('message', 'Customer updated successfully.')

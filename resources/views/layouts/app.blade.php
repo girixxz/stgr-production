@@ -29,42 +29,42 @@
 {{-- tambahkan x-data + listener event toggle --}}
 
 <body x-data="{
-    sidebarOpen: window.matchMedia('(min-width: 768px)').matches,
+    sidebarOpen: window.matchMedia('(min-width: 1024px)').matches,
     init() {
         // Listen untuk perubahan ukuran layar
         window.addEventListener('resize', () => {
-            const isMdOrLarger = window.matchMedia('(min-width: 768px)').matches;
-            // Auto tutup sidebar jika di mobile, auto buka jika di MD+
-            this.sidebarOpen = isMdOrLarger;
+            const isLgOrLarger = window.matchMedia('(min-width: 1024px)').matches;
+            // Auto tutup sidebar jika di mobile/tablet, auto buka jika di LG+
+            this.sidebarOpen = isLgOrLarger;
         });
     }
 }" @sidebar-toggle.window="sidebarOpen = !sidebarOpen" class="h-screen flex bg-gray-light">
 
     {{-- SIDEBAR WRAPPER + OVERLAY --}}
-    {{-- Di mobile: sidebar overlay (fixed), di MD+: sidebar push konten (flex) --}}
-    <div class="hidden md:block relative z-40 flex-shrink-0 overflow-hidden transition-all duration-300 ease-out"
+    {{-- Di mobile/tablet: sidebar overlay (fixed), di LG+: sidebar push konten (flex) --}}
+    <div class="hidden lg:block relative z-40 flex-shrink-0 overflow-hidden transition-all duration-300 ease-out"
         x-bind:class="sidebarOpen ? 'w-64' : 'w-0'">
-        {{-- container sidebar untuk MD+ --}}
+        {{-- container sidebar untuk LG+ --}}
         <div class="fixed inset-y-0 left-0 w-64 transform transition-transform duration-300 ease-out"
             x-bind:class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
             @include('partials.sidebar')
         </div>
     </div>
 
-    {{-- Sidebar Mobile: Overlay di atas konten --}}
-    <div class="md:hidden">
-        {{-- overlay gelap saat sidebar terbuka (hanya di mobile) --}}
+    {{-- Sidebar Mobile/Tablet: Overlay di atas konten --}}
+    <div class="lg:hidden">
+        {{-- overlay gelap saat sidebar terbuka (hanya di mobile/tablet) --}}
         <div x-cloak x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 bg-black/40 z-40"
             @click="$dispatch('sidebar-toggle')" aria-hidden="true"></div>
 
-        {{-- container sidebar mobile: overlay --}}
+        {{-- container sidebar mobile/tablet: overlay --}}
         <div class="fixed inset-y-0 left-0 w-64 transform transition-transform duration-300 ease-out z-50"
             x-bind:class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
             @include('partials.sidebar')
         </div>
     </div>
 
-    {{-- MAIN - konten akan otomatis adjust sesuai lebar sidebar di MD+ --}}
+    {{-- MAIN - konten akan otomatis adjust sesuai lebar sidebar di LG+ --}}
     <div class="flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-out">
         @include('partials.navbar')
 

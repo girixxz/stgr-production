@@ -11,10 +11,10 @@
         editCustomer: {},
         searchCustomer: '',
         // For Add Customer
-        addProvince: '',
-        addCity: '',
-        addDistrict: '',
-        addVillage: '',
+        addProvince: '{{ old('province_id') }}',
+        addCity: '{{ old('city_id') }}',
+        addDistrict: '{{ old('district_id') }}',
+        addVillage: '{{ old('village_id') }}',
         addCities: [],
         addDistricts: [],
         addVillages: [],
@@ -27,7 +27,62 @@
         editDistricts: [],
         editVillages: [],
     
-        async fetchCities(provinceId, mode = 'add') {
+        async init() {
+            // Watch for modal changes and scroll to modal
+            this.$watch('openModal', value => {
+                if (value) {
+                    setTimeout(() => {
+                        const modalEl = document.querySelector('[x-show=\'openModal === \\\'' + value + '\\\'\']');
+                        if (modalEl) {
+                            modalEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }, 100);
+                }
+            });
+    
+            // Restore Add Customer state from old input
+            // Convert to integer because API returns integer IDs
+            const oldProvince = '{{ old('province_id') }}' ? parseInt('{{ old('province_id') }}') : '';
+            const oldCity = '{{ old('city_id') }}' ? parseInt('{{ old('city_id') }}') : '';
+            const oldDistrict = '{{ old('district_id') }}' ? parseInt('{{ old('district_id') }}') : '';
+            const oldVillage = '{{ old('village_id') }}' ? parseInt('{{ old('village_id') }}') : '';
+    
+            console.log('🔍 OLD VALUES:', {
+                province: oldProvince,
+                city: oldCity,
+                district: oldDistrict,
+                village: oldVillage
+            });
+    
+            if (oldProvince) {
+                this.addProvince = oldProvince;
+                await this.fetchCities(oldProvince, 'add', true);
+    
+                if (oldCity) {
+                    // Wait for cities to be populated
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    this.addCity = oldCity;
+                    console.log('✅ City set to:', oldCity, 'Available cities:', this.addCities.length);
+                    await this.fetchDistricts(oldCity, 'add', true);
+    
+                    if (oldDistrict) {
+                        // Wait for districts to be populated
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        this.addDistrict = oldDistrict;
+                        console.log('✅ District set to:', oldDistrict, 'Available districts:', this.addDistricts.length);
+                        await this.fetchVillages(oldDistrict, 'add', true);
+    
+                        if (oldVillage) {
+                            // Wait for villages to be populated
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                            this.addVillage = oldVillage;
+                            console.log('✅ Village set to:', oldVillage, 'Available villages:', this.addVillages.length);
+                        }
+                    }
+                }
+            }
+        },
+        async fetchCities(provinceId, mode = 'add', preserveValue = false) {
             if (!provinceId) {
                 if (mode === 'add') {
                     this.addCities = [];
@@ -51,25 +106,29 @@
                 const cities = await response.json();
                 if (mode === 'add') {
                     this.addCities = cities;
-                    this.addDistricts = [];
-                    this.addVillages = [];
-                    this.addCity = '';
-                    this.addDistrict = '';
-                    this.addVillage = '';
+                    if (!preserveValue) {
+                        this.addDistricts = [];
+                        this.addVillages = [];
+                        this.addCity = '';
+                        this.addDistrict = '';
+                        this.addVillage = '';
+                    }
                 } else {
                     this.editCities = cities;
-                    this.editDistricts = [];
-                    this.editVillages = [];
-                    this.editCity = '';
-                    this.editDistrict = '';
-                    this.editVillage = '';
+                    if (!preserveValue) {
+                        this.editDistricts = [];
+                        this.editVillages = [];
+                        this.editCity = '';
+                        this.editDistrict = '';
+                        this.editVillage = '';
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching cities:', error);
             }
         },
     
-        async fetchDistricts(cityId, mode = 'add') {
+        async fetchDistricts(cityId, mode = 'add', preserveValue = false) {
             if (!cityId) {
                 if (mode === 'add') {
                     this.addDistricts = [];
@@ -89,21 +148,25 @@
                 const districts = await response.json();
                 if (mode === 'add') {
                     this.addDistricts = districts;
-                    this.addVillages = [];
-                    this.addDistrict = '';
-                    this.addVillage = '';
+                    if (!preserveValue) {
+                        this.addVillages = [];
+                        this.addDistrict = '';
+                        this.addVillage = '';
+                    }
                 } else {
                     this.editDistricts = districts;
-                    this.editVillages = [];
-                    this.editDistrict = '';
-                    this.editVillage = '';
+                    if (!preserveValue) {
+                        this.editVillages = [];
+                        this.editDistrict = '';
+                        this.editVillage = '';
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching districts:', error);
             }
         },
     
-        async fetchVillages(districtId, mode = 'add') {
+        async fetchVillages(districtId, mode = 'add', preserveValue = false) {
             if (!districtId) {
                 if (mode === 'add') {
                     this.addVillages = [];
@@ -119,10 +182,14 @@
                 const villages = await response.json();
                 if (mode === 'add') {
                     this.addVillages = villages;
-                    this.addVillage = '';
+                    if (!preserveValue) {
+                        this.addVillage = '';
+                    }
                 } else {
                     this.editVillages = villages;
-                    this.editVillage = '';
+                    if (!preserveValue) {
+                        this.editVillage = '';
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching villages:', error);
@@ -149,25 +216,23 @@
     }" class="grid grid-cols-1">
 
         {{-- ===================== CUSTOMERS ===================== --}}
-        <section class="bg-white border border-gray-200 rounded-2xl p-5">
+        <section class="bg-white border border-gray-200 rounded-lg p-5">
             {{-- Header --}}
             <div class="flex flex-col gap-3 md:flex-row md:items-center">
-                <h2 class="text-xl font-semibold text-gray-900">Customers</h2>
+                <h2 class="text-xl font-semibold text-gray-900 flex-shrink-0">Customers</h2>
 
-                <div class="md:ml-auto flex items-center gap-2 w-full md:w-auto">
+                <div class="md:ml-auto flex items-center gap-2 w-full md:w-auto min-w-0">
                     {{-- Search --}}
-                    <div class="w-full md:w-72">
-                        <div class="relative">
-                            <x-icons.search />
-                            <input type="text" x-model="searchCustomer" placeholder="Search Customer"
-                                class="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm
-                                      focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
-                        </div>
+                    <div class="relative flex-1 md:w-72">
+                        <x-icons.search />
+                        <input type="text" x-model="searchCustomer" placeholder="Search Customer"
+                            class="w-full rounded-md border border-gray-200 pl-9 pr-3 py-2 text-sm text-gray-700
+                                  focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                     </div>
 
                     {{-- Add Customer --}}
                     <button @click="openModal = 'addCustomer'"
-                        class="cursor-pointer w-40 whitespace-nowrap px-3 py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-sm text-center">
+                        class="cursor-pointer flex-shrink-0 w-40 whitespace-nowrap px-3 py-2 rounded-md bg-primary text-white hover:bg-primary-dark text-sm text-center">
                         + Add Customer
                     </button>
                 </div>
@@ -180,7 +245,7 @@
                         <thead class="sticky top-0 bg-primary-light text-font-base z-10">
                             <tr>
                                 <th class="py-2 px-4 text-left rounded-l-md">No</th>
-                                <th class="py-2 px-4 text-left">Name</th>
+                                <th class="py-2 px-4 text-left">Customer</th>
                                 <th class="py-2 px-4 text-left">Total Order</th>
                                 <th class="py-2 px-4 text-left">Total QTY</th>
                                 <th class="py-2 px-4 text-left">Address</th>
@@ -225,20 +290,58 @@
                                         </div>
                                     </td>
                                     <td class="py-2 px-4 text-right">
-                                        <div class="relative inline-block text-left" x-data="{ open: false }">
+                                        <div class="relative inline-block text-left" x-data="{
+                                            open: false,
+                                            dropdownStyle: {},
+                                            checkPosition() {
+                                                const button = this.$refs.button;
+                                                const rect = button.getBoundingClientRect();
+                                                const spaceBelow = window.innerHeight - rect.bottom;
+                                                const spaceAbove = rect.top;
+                                                const dropUp = spaceBelow < 200 && spaceAbove > spaceBelow;
+                                        
+                                                if (dropUp) {
+                                                    this.dropdownStyle = {
+                                                        position: 'fixed',
+                                                        top: (rect.top - 130) + 'px',
+                                                        left: (rect.right - 160) + 'px',
+                                                        width: '160px'
+                                                    };
+                                                } else {
+                                                    this.dropdownStyle = {
+                                                        position: 'fixed',
+                                                        top: (rect.bottom + 8) + 'px',
+                                                        left: (rect.right - 160) + 'px',
+                                                        width: '160px'
+                                                    };
+                                                }
+                                            }
+                                        }"
+                                            x-init="$watch('open', value => {
+                                                if (value) {
+                                                    const scrollContainer = $el.closest('.overflow-y-auto');
+                                                    const mainContent = document.querySelector('main');
+                                                    const closeOnScroll = () => { open = false; };
+                                            
+                                                    scrollContainer?.addEventListener('scroll', closeOnScroll);
+                                                    mainContent?.addEventListener('scroll', closeOnScroll);
+                                                    window.addEventListener('resize', closeOnScroll);
+                                                }
+                                            })">
                                             {{-- Tombol Titik 3 Horizontal --}}
-                                            <button @click="open = !open" type="button"
+                                            <button x-ref="button" @click="checkPosition(); open = !open" type="button"
                                                 class="cursor-pointer inline-flex items-center justify-center w-8 h-8 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100"
                                                 title="Actions">
                                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                                     <path
-                                                        d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                                        d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                                 </svg>
                                             </button>
 
-                                            {{-- Dropdown Menu --}}
+                                            {{-- Dropdown Menu with Fixed Position --}}
                                             <div x-show="open" @click.away="open = false" x-transition
-                                                class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                                                :style="dropdownStyle"
+                                                class="rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[9999]">
                                                 <div class="py-1">
                                                     {{-- Detail --}}
                                                     <button
@@ -292,8 +395,8 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="py-8 text-center text-gray-500">
-                                        No customers found
+                                    <td colspan="6" class="py-3 px-4 text-center text-red-500 border-t border-gray-200">
+                                        No Customers found.
                                     </td>
                                 </tr>
                             @endforelse
@@ -304,19 +407,15 @@
         </section>
 
         {{-- ===================== MODAL DETAIL CUSTOMER ===================== --}}
-        <div x-show="openModal === 'detailCustomer'" x-transition.opacity
-            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm" x-cloak>
+        <div x-show="openModal === 'detailCustomer'" x-transition.opacity x-cloak
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm">
             <div class="flex items-center justify-center min-h-screen p-4">
-                <div @click.away="openModal = ''" class="bg-white rounded-lg shadow-xl w-full max-w-md">
+                <div @click.away="openModal = ''" class="bg-white rounded-xl shadow-lg w-full max-w-md">
                     {{-- Header --}}
-                    <div class="flex items-center justify-between p-5 border-b">
+                    <div class="flex items-center justify-between p-5 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900">Customer Detail</h3>
-                        <button @click="openModal = ''" class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                        <button @click="openModal = ''" class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                            ✕
                         </button>
                     </div>
 
@@ -373,9 +472,9 @@
                     </div>
 
                     {{-- Footer --}}
-                    <div class="flex justify-end gap-2 p-5 border-t">
+                    <div class="flex justify-end gap-3 p-5 border-t border-gray-200">
                         <button @click="openModal = ''"
-                            class="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                            class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">
                             Close
                         </button>
                     </div>
@@ -384,19 +483,15 @@
         </div>
 
         {{-- ===================== MODAL ADD CUSTOMER ===================== --}}
-        <div x-show="openModal === 'addCustomer'" x-transition.opacity
-            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm" x-cloak>
+        <div x-show="openModal === 'addCustomer'" x-transition.opacity x-cloak
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm">
             <div class="flex items-center justify-center min-h-screen p-4">
-                <div @click.away="openModal = ''" class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+                <div @click.away="openModal = ''" class="bg-white rounded-xl shadow-lg w-full max-w-lg">
                     {{-- Header --}}
-                    <div class="flex items-center justify-between p-5 border-b">
+                    <div class="flex items-center justify-between p-5 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900">Add Customer</h3>
-                        <button @click="openModal = ''" class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                        <button @click="openModal = ''" class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                            ✕
                         </button>
                     </div>
 
@@ -407,32 +502,36 @@
                             {{-- Customer Name --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Customer Name <span class="text-alert-danger">*</span>
+                                    Customer Name <span class="text-red-600">*</span>
                                 </label>
-                                <input type="text" name="customer_name" value="{{ old('customer_name') }}" required
+                                <input type="text" name="customer_name" value="{{ old('customer_name') }}"
                                     @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->addCustomer->has('customer_name'),
-                                        'border-gray-300' => !$errors->addCustomer->has('customer_name'),
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'customer_name'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'customer_name'),
                                     ]) />
                                 @error('customer_name', 'addCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             {{-- Phone --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Phone <span class="text-alert-danger">*</span>
+                                    Phone <span class="text-red-600">*</span>
                                 </label>
-                                <input type="text" name="phone" value="{{ old('phone') }}" required
+                                <input type="text" name="phone" value="{{ old('phone') }}"
                                     @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->addCustomer->has('phone'),
-                                        'border-gray-300' => !$errors->addCustomer->has('phone'),
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'phone'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'phone'),
                                     ]) />
                                 @error('phone', 'addCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -441,9 +540,11 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Province</label>
                                 <select x-model="addProvince" name="province_id"
                                     @change="fetchCities(addProvince, 'add')" @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->addCustomer->has('province_id'),
-                                        'border-gray-300' => !$errors->addCustomer->has('province_id'),
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'province_id'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'province_id'),
                                     ])>
                                     <option value="">Select Province</option>
                                     @foreach ($provinces as $province)
@@ -454,18 +555,20 @@
                                     @endforeach
                                 </select>
                                 @error('province_id', 'addCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             {{-- City (shown when province selected) --}}
-                            <div x-show="addProvince && addCities.length > 0" x-transition>
+                            <div x-show="addProvince" x-transition>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
                                 <select x-model="addCity" name="city_id" @change="fetchDistricts(addCity, 'add')"
                                     @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->addCustomer->has('city_id'),
-                                        'border-gray-300' => !$errors->addCustomer->has('city_id'),
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'city_id'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'city_id'),
                                     ])>
                                     <option value="">Select City</option>
                                     <template x-for="city in addCities" :key="city.id">
@@ -473,18 +576,20 @@
                                     </template>
                                 </select>
                                 @error('city_id', 'addCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             {{-- District (shown when city selected) --}}
-                            <div x-show="addCity && addDistricts.length > 0" x-transition>
+                            <div x-show="addCity" x-transition>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">District</label>
                                 <select x-model="addDistrict" name="district_id"
                                     @change="fetchVillages(addDistrict, 'add')" @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->addCustomer->has('district_id'),
-                                        'border-gray-300' => !$errors->addCustomer->has('district_id'),
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                            'district_id'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                            'district_id'),
                                     ])>
                                     <option value="">Select District</option>
                                     <template x-for="district in addDistricts" :key="district.id">
@@ -492,17 +597,19 @@
                                     </template>
                                 </select>
                                 @error('district_id', 'addCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             {{-- Village (shown when district selected) --}}
-                            <div x-show="addDistrict && addVillages.length > 0" x-transition>
+                            <div x-show="addDistrict" x-transition>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Village</label>
                                 <select x-model="addVillage" name="village_id" @class([
-                                    'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                    'border-alert-danger' => $errors->addCustomer->has('village_id'),
-                                    'border-gray-300' => !$errors->addCustomer->has('village_id'),
+                                    'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                    'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                        'village_id'),
+                                    'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                        'village_id'),
                                 ])>
                                     <option value="">Select Village</option>
                                     <template x-for="village in addVillages" :key="village.id">
@@ -510,7 +617,7 @@
                                     </template>
                                 </select>
                                 @error('village_id', 'addCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -518,24 +625,26 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Address Detail</label>
                                 <textarea name="address" rows="3" @class([
-                                    'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                    'border-alert-danger' => $errors->addCustomer->has('address'),
-                                    'border-gray-300' => !$errors->addCustomer->has('address'),
+                                    'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                    'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->addCustomer->has(
+                                        'address'),
+                                    'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->addCustomer->has(
+                                        'address'),
                                 ])>{{ old('address') }}</textarea>
                                 @error('address', 'addCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
 
                         {{-- Footer --}}
-                        <div class="flex justify-end gap-2 p-5 border-t bg-gray-50">
+                        <div class="flex justify-end gap-3 p-5 border-t border-gray-200">
                             <button type="button" @click="openModal = ''"
-                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">
                                 Cancel
                             </button>
                             <button type="submit"
-                                class="px-4 py-2 text-sm text-white bg-primary rounded-md hover:bg-primary-dark">
+                                class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">
                                 Add Customer
                             </button>
                         </div>
@@ -545,19 +654,15 @@
         </div>
 
         {{-- ===================== MODAL EDIT CUSTOMER ===================== --}}
-        <div x-show="openModal === 'editCustomer'" x-transition.opacity
-            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm" x-cloak>
+        <div x-show="openModal === 'editCustomer'" x-transition.opacity x-cloak
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm">
             <div class="flex items-center justify-center min-h-screen p-4">
-                <div @click.away="openModal = ''" class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+                <div @click.away="openModal = ''" class="bg-white rounded-xl shadow-lg w-full max-w-2xl">
                     {{-- Header --}}
-                    <div class="flex items-center justify-between p-5 border-b">
+                    <div class="flex items-center justify-between p-5 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-900">Edit Customer</h3>
-                        <button @click="openModal = ''" class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                        <button @click="openModal = ''" class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                            ✕
                         </button>
                     </div>
 
@@ -569,32 +674,36 @@
                             {{-- Customer Name --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Customer Name <span class="text-alert-danger">*</span>
+                                    Customer Name <span class="text-red-600">*</span>
                                 </label>
                                 <input type="text" name="customer_name" x-model="editCustomer.customer_name"
-                                    :value="editCustomer.customer_name" required @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->editCustomer->has('customer_name'),
-                                        'border-gray-300' => !$errors->editCustomer->has('customer_name'),
+                                    :value="editCustomer.customer_name" @class([
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->editCustomer->has(
+                                            'customer_name'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->editCustomer->has(
+                                            'customer_name'),
                                     ]) />
                                 @error('customer_name', 'editCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             {{-- Phone --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    Phone <span class="text-alert-danger">*</span>
+                                    Phone <span class="text-red-600">*</span>
                                 </label>
                                 <input type="text" name="phone" x-model="editCustomer.phone"
-                                    :value="editCustomer.phone" required @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->editCustomer->has('phone'),
-                                        'border-gray-300' => !$errors->editCustomer->has('phone'),
+                                    :value="editCustomer.phone" @class([
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->editCustomer->has(
+                                            'phone'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->editCustomer->has(
+                                            'phone'),
                                     ]) />
                                 @error('phone', 'editCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -603,9 +712,11 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Province</label>
                                 <select x-model="editProvince" name="province_id"
                                     @change="fetchCities(editProvince, 'edit')" @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->editCustomer->has('province_id'),
-                                        'border-gray-300' => !$errors->editCustomer->has('province_id'),
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->editCustomer->has(
+                                            'province_id'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->editCustomer->has(
+                                            'province_id'),
                                     ])>
                                     <option value="">Select Province</option>
                                     @foreach ($provinces as $province)
@@ -615,7 +726,7 @@
                                     @endforeach
                                 </select>
                                 @error('province_id', 'editCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -624,9 +735,11 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
                                 <select x-model="editCity" name="city_id" @change="fetchDistricts(editCity, 'edit')"
                                     @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->editCustomer->has('city_id'),
-                                        'border-gray-300' => !$errors->editCustomer->has('city_id'),
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->editCustomer->has(
+                                            'city_id'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->editCustomer->has(
+                                            'city_id'),
                                     ])>
                                     <option value="">Select City</option>
                                     <template x-for="city in editCities" :key="city.id">
@@ -634,7 +747,7 @@
                                     </template>
                                 </select>
                                 @error('city_id', 'editCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -643,9 +756,11 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">District</label>
                                 <select x-model="editDistrict" name="district_id"
                                     @change="fetchVillages(editDistrict, 'edit')" @class([
-                                        'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                        'border-alert-danger' => $errors->editCustomer->has('district_id'),
-                                        'border-gray-300' => !$errors->editCustomer->has('district_id'),
+                                        'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->editCustomer->has(
+                                            'district_id'),
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->editCustomer->has(
+                                            'district_id'),
                                     ])>
                                     <option value="">Select District</option>
                                     <template x-for="district in editDistricts" :key="district.id">
@@ -653,7 +768,7 @@
                                     </template>
                                 </select>
                                 @error('district_id', 'editCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -661,9 +776,11 @@
                             <div x-show="editDistrict && editVillages.length > 0" x-transition>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Village</label>
                                 <select x-model="editVillage" name="village_id" @class([
-                                    'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                    'border-alert-danger' => $errors->editCustomer->has('village_id'),
-                                    'border-gray-300' => !$errors->editCustomer->has('village_id'),
+                                    'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                    'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->editCustomer->has(
+                                        'village_id'),
+                                    'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->editCustomer->has(
+                                        'village_id'),
                                 ])>
                                     <option value="">Select Village</option>
                                     <template x-for="village in editVillages" :key="village.id">
@@ -671,7 +788,7 @@
                                     </template>
                                 </select>
                                 @error('village_id', 'editCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -679,24 +796,26 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Address Detail</label>
                                 <textarea name="address" rows="3" x-model="editCustomer.address" @class([
-                                    'w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
-                                    'border-alert-danger' => $errors->editCustomer->has('address'),
-                                    'border-gray-300' => !$errors->editCustomer->has('address'),
+                                    'w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700',
+                                    'border-red-500 focus:border-red-500 focus:ring-red-200' => $errors->editCustomer->has(
+                                        'address'),
+                                    'border-gray-200 focus:border-primary focus:ring-primary/20' => !$errors->editCustomer->has(
+                                        'address'),
                                 ])></textarea>
                                 @error('address', 'editCustomer')
-                                    <p class="mt-1 text-xs text-alert-danger">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
 
                         {{-- Footer --}}
-                        <div class="flex justify-end gap-2 p-5 border-t bg-gray-50">
+                        <div class="flex justify-end gap-3 p-5 border-t border-gray-200">
                             <button type="button" @click="openModal = ''"
-                                class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                                class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer">
                                 Cancel
                             </button>
                             <button type="submit"
-                                class="px-4 py-2 text-sm text-white bg-primary rounded-md hover:bg-primary-dark">
+                                class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer">
                                 Save
                             </button>
                         </div>
