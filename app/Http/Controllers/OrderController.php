@@ -139,6 +139,58 @@ class OrderController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(Order $order)
+    {
+        // Load all relationships
+        $order->load([
+            'customer.village.district',
+            'sale',
+            'productCategory',
+            'materialCategory',
+            'materialTexture',
+            'shipping',
+            'invoice.payments',
+            'orderItems.designVariant',
+            'orderItems.size',
+            'orderItems.sleeve',
+            'extraServices.service'
+        ]);
+
+        // Group order items by design variant and sleeve
+        $designVariants = [];
+        
+        foreach ($order->orderItems as $item) {
+            $designName = $item->designVariant->design_name;
+            $sleeveId = $item->sleeve_id;
+            $sleeveName = $item->sleeve->sleeve_name;
+            
+            if (!isset($designVariants[$designName])) {
+                $designVariants[$designName] = [];
+            }
+            
+            if (!isset($designVariants[$designName][$sleeveId])) {
+                // Calculate base price from first item (unit_price - extra_price)
+                $basePrice = $item->unit_price - ($item->size->extra_price ?? 0);
+                
+                $designVariants[$designName][$sleeveId] = [
+                    'sleeve_name' => $sleeveName,
+                    'base_price' => $basePrice,
+                    'items' => []
+                ];
+            }
+            
+            $designVariants[$designName][$sleeveId]['items'][] = $item;
+        }
+
+        return view('pages.admin.orders.show', [
+            'order' => $order,
+            'designVariants' => $designVariants
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)

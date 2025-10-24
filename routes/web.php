@@ -88,7 +88,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('dashboard', fn() => view('pages.admin.dashboard'))->name('dashboard');
 
         // Orders
-        Route::resource('orders', OrderController::class)->except(['show']);
+        Route::resource('orders', OrderController::class);
         Route::patch('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
         // Payments
