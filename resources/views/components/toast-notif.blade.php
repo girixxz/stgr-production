@@ -1,7 +1,15 @@
 <div x-data="{ show: false, message: '', type: '' }" x-init="@if (session('message')) message = '{{ session('message') }}';
             type = '{{ session('alert-type', 'success') }}';
             show = true;
-            setTimeout(() => show = false, 4000); @endif" class="fixed top-5 right-5 z-[9999]">
+            setTimeout(() => show = false, 4000); @endif
+
+// Listen for custom toast events
+window.addEventListener('show-toast', (event) => {
+    message = event.detail.message;
+    type = event.detail.type || 'success';
+    show = true;
+    setTimeout(() => show = false, 4000);
+});" class="fixed top-5 right-5 z-[9999]">
 
     <template x-if="show">
         <div x-transition:enter="transform transition ease-out duration-300"

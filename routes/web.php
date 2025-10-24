@@ -89,6 +89,12 @@ Route::middleware(['auth'])->group(function () {
 
         // Orders
         Route::resource('orders', OrderController::class)->except(['show']);
+        Route::patch('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+
+        // Payments
+        Route::post('payments', [\App\Http\Controllers\PaymentController::class, 'store'])->name('payments.store');
+        Route::delete('payments/{payment}', [\App\Http\Controllers\PaymentController::class, 'destroy'])->name('payments.destroy');
+        Route::get('invoices/{invoice}/payments', [\App\Http\Controllers\PaymentController::class, 'getPaymentsByInvoice'])->name('invoices.payments');
 
         Route::get('delivery-orders', fn() => view('pages.admin.delivery-orders'))->name('delivery-orders');
         Route::get('work-orders', fn() => view('pages.admin.work-orders'))->name('work-orders');

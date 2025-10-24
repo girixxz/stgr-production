@@ -465,6 +465,26 @@ class OrderController extends Controller
     }
 
     /**
+     * Cancel the specified order.
+     */
+    public function cancel(Order $order)
+    {
+        if ($order->production_status === 'cancelled') {
+            return redirect()->back()
+                ->with('message', 'Order is already cancelled.')
+                ->with('alert-type', 'warning');
+        }
+
+        $order->update([
+            'production_status' => 'cancelled'
+        ]);
+
+        return redirect()->route('admin.orders.index')
+            ->with('message', 'Order cancelled successfully.')
+            ->with('alert-type', 'success');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Order $order)
