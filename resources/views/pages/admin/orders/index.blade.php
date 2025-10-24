@@ -707,8 +707,8 @@
                                 class="text-red-500">*</span></label>
                         <select x-model="payment_method"
                             :class="errors.payment_method ? 'border-red-500' : 'border-gray-300'"
-                            class="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                            <option value="">Select payment method</option>
+                            class="appearance-none w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            <option value="">-- Select Payment Method --</option>
                             <option value="tranfer">Transfer</option>
                             <option value="cash">Cash</option>
                         </select>
@@ -719,11 +719,11 @@
 
                     {{-- Payment Type --}}
                     <div class="space-y-2">
-                        <label class="block text-sm font-medium text-gray-700">Payment Type <span
+                        <label class="block text-sm text-gray-600">Payment Type <span
                                 class="text-red-500">*</span></label>
                         <select x-model="payment_type" :class="errors.payment_type ? 'border-red-500' : 'border-gray-300'"
-                            class="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                            <option value="">Select payment type</option>
+                            class="appearance-none w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            <option value="">-- Select Payment Type --</option>
                             <option value="dp">Down Payment (DP)</option>
                             <option value="repayment">Repayment</option>
                             <option value="full_payment">Full Payment</option>
