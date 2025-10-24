@@ -75,32 +75,42 @@ class OrderController extends Controller
         if ($dateRange) {
             $today = now();
             switch ($dateRange) {
-                case 'yesterday':
-                    $startDate = $today->copy()->subDay()->startOfDay()->format('Y-m-d');
-                    $endDate = $today->copy()->subDay()->endOfDay()->format('Y-m-d');
-                    break;
-                case 'today':
-                    $startDate = $today->copy()->startOfDay()->format('Y-m-d');
-                    $endDate = $today->copy()->endOfDay()->format('Y-m-d');
+                case 'last_month':
+                    // Bulan kemarin - dari tanggal 1 sampai akhir bulan kemarin
+                    $startDate = $today->copy()->subMonth()->startOfMonth()->format('Y-m-d');
+                    $endDate = $today->copy()->subMonth()->endOfMonth()->format('Y-m-d');
                     break;
                 case 'last_7_days':
-                    $startDate = $today->copy()->subDays(6)->startOfDay()->format('Y-m-d');
-                    $endDate = $today->copy()->endOfDay()->format('Y-m-d');
+                    // 1 minggu yang lalu - dari 7 hari lalu sampai hari ini
+                    $startDate = $today->copy()->subDays(7)->format('Y-m-d');
+                    $endDate = $today->copy()->format('Y-m-d');
                     break;
-                case 'last_30_days':
-                    $startDate = $today->copy()->subDays(29)->startOfDay()->format('Y-m-d');
-                    $endDate = $today->copy()->endOfDay()->format('Y-m-d');
+                case 'yesterday':
+                    // Kemarin saja
+                    $startDate = $today->copy()->subDay()->format('Y-m-d');
+                    $endDate = $today->copy()->subDay()->format('Y-m-d');
+                    break;
+                case 'today':
+                    // Hari ini saja
+                    $startDate = $today->copy()->format('Y-m-d');
+                    $endDate = $today->copy()->format('Y-m-d');
                     break;
                 case 'this_month':
+                    // Bulan ini - dari tanggal 1 sampai akhir bulan ini
                     $startDate = $today->copy()->startOfMonth()->format('Y-m-d');
                     $endDate = $today->copy()->endOfMonth()->format('Y-m-d');
                     break;
             }
-        } elseif (!$startDate && !$endDate) {
-            // Default: This month
-            $today = now();
-            $startDate = $today->copy()->startOfMonth()->format('Y-m-d');
-            $endDate = $today->copy()->endOfMonth()->format('Y-m-d');
+        }
+        
+        // Set default to this month if no date parameters at all
+        if (!$dateRange && !$startDate && !$endDate) {
+            // Redirect dengan parameter this_month agar terlihat di URL
+            return redirect()->route('admin.orders.index', [
+                'filter' => $filter,
+                'search' => $search,
+                'date_range' => 'this_month',
+            ]);
         }
 
         if ($startDate) {
@@ -114,7 +124,19 @@ class OrderController extends Controller
             ->paginate(15)
             ->appends($request->except('page'));
 
-        return view('pages.admin.orders.index', compact('orders'));
+        // Calculate statistics
+        $stats = [
+            'total_orders' => Order::count(),
+            'total_qty' => OrderItem::sum('qty'),
+            'total_bill' => Invoice::sum('total_bill'),
+            'remaining_due' => Invoice::sum('amount_due'),
+            'pending' => Order::where('production_status', 'pending')->count(),
+            'wip' => Order::where('production_status', 'wip')->count(),
+            'finished' => Order::where('production_status', 'finished')->count(),
+            'cancelled' => Order::where('production_status', 'cancelled')->count(),
+        ];
+
+        return view('pages.admin.orders.index', compact('orders', 'stats', 'dateRange', 'startDate', 'endDate'));
     }
 
     /**
