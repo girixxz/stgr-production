@@ -98,7 +98,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('delivery-orders', fn() => view('pages.admin.delivery-orders'))->name('delivery-orders');
         Route::get('work-orders', fn() => view('pages.admin.work-orders'))->name('work-orders');
-        Route::get('payment-history', fn() => view('pages.admin.payment-history'))->name('payment-history');
+        Route::get('payment-history', [\App\Http\Controllers\PaymentHistoryController::class, 'index'])->name('payment-history');
 
         // Customers
         Route::resource('customers', CustomerController::class)->except(['show']);
