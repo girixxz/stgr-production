@@ -276,7 +276,8 @@
                                                     {{ $item->size->size_name ?? 'N/A' }}
                                                     @if (($item->size->extra_price ?? 0) > 0)
                                                         <span class="text-xs text-gray-500">
-                                                            (+{{ number_format($item->size->extra_price, 0, ',', '.') }})
+                                                            (+Rp
+                                                            {{ number_format($item->size->extra_price, 0, ',', '.') }})
                                                         </span>
                                                     @endif
                                                 </td>
@@ -346,8 +347,8 @@
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Discount</span>
                             <span class="font-medium text-red-600">
-                                @if (($order->invoice->discount ?? 0) > 0)
-                                    - Rp {{ number_format($order->invoice->discount, 0, ',', '.') }}
+                                @if (($order->discount ?? 0) > 0)
+                                    - Rp {{ number_format($order->discount, 0, ',', '.') }}
                                 @else
                                     Rp 0
                                 @endif

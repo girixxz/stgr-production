@@ -690,6 +690,7 @@
             :value="designVariants.reduce((sum, d) => sum + d.sleeveVariants.reduce((s, v) => s + v.rows.reduce((r, row) => r +
                 parseInt(row.qty || 0), 0), 0), 0)">
         <input type="hidden" name="subtotal" :value="getSubTotal()">
+        <input type="hidden" name="discount" :value="discount || 0">
         <input type="hidden" name="grand_total" :value="getFinalPrice()">
 
     </form>

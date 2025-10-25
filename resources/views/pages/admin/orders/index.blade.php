@@ -21,6 +21,34 @@
         showDateCustomRange: false,
         datePreset: '',
         showCancelConfirm: null,
+        showAddPaymentModal: false,
+        selectedOrderForPayment: null,
+        paymentAmount: '',
+        paymentErrors: {},
+        isSubmittingPayment: false,
+        init() {
+            // Check for toast message from sessionStorage
+            const toastMessage = sessionStorage.getItem('toast_message');
+            const toastType = sessionStorage.getItem('toast_type');
+            if (toastMessage) {
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('show-toast', {
+                        detail: { message: toastMessage, type: toastType || 'success' }
+                    }));
+                    sessionStorage.removeItem('toast_message');
+                    sessionStorage.removeItem('toast_type');
+                }, 300);
+            }
+        },
+        resetPaymentForm() {
+            this.paymentAmount = '';
+            this.paymentErrors = {};
+            this.selectedOrderForPayment = null;
+            this.isSubmittingPayment = false;
+            setTimeout(() => {
+                document.getElementById('addPaymentForm')?.reset();
+            }, 100);
+        },
         getDateLabel() {
             if (this.dateRange === 'last_month') return 'Bulan Lalu';
             if (this.dateRange === 'last_7_days') return '1 Minggu Yang Lalu';
@@ -490,25 +518,31 @@
                                             dropdownStyle: {},
                                             checkPosition() {
                                                 const button = this.$refs.button;
+                                                const dropdown = this.$refs.dropdown;
                                                 const rect = button.getBoundingClientRect();
                                                 const spaceBelow = window.innerHeight - rect.bottom;
                                                 const spaceAbove = rect.top;
-                                                const dropUp = spaceBelow < 200 && spaceAbove > spaceBelow;
+                                        
+                                                // Get dropdown height (estimate or actual)
+                                                const dropdownHeight = dropdown ? dropdown.offsetHeight : 150;
+                                                const dropUp = spaceBelow < (dropdownHeight + 20) && spaceAbove > spaceBelow;
                                         
                                                 // Position fixed dropdown
                                                 if (dropUp) {
                                                     this.dropdownStyle = {
                                                         position: 'fixed',
-                                                        top: (rect.top - 140) + 'px',
+                                                        bottom: (window.innerHeight - rect.top + 8) + 'px',
                                                         left: (rect.right - 180) + 'px',
-                                                        width: '180px'
+                                                        width: '180px',
+                                                        top: 'auto'
                                                     };
                                                 } else {
                                                     this.dropdownStyle = {
                                                         position: 'fixed',
                                                         top: (rect.bottom + 8) + 'px',
                                                         left: (rect.right - 180) + 'px',
-                                                        width: '180px'
+                                                        width: '180px',
+                                                        bottom: 'auto'
                                                     };
                                                 }
                                             }
@@ -535,7 +569,8 @@
                                             </button>
 
                                             {{-- Dropdown Menu with Fixed Position --}}
-                                            <div x-show="open" @click.away="open = false" x-cloak :style="dropdownStyle"
+                                            <div x-show="open" @click.away="open = false" x-cloak x-ref="dropdown"
+                                                :style="dropdownStyle"
                                                 class="bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1">
                                                 {{-- View Detail --}}
                                                 <a href="{{ route('admin.orders.show', $order->id) }}"
@@ -563,6 +598,21 @@
                                                         </svg>
                                                         Edit
                                                     </a>
+                                                @endif
+
+                                                {{-- Add Payment (Hidden if no invoice, fully paid, or cancelled) --}}
+                                                @if ($order->invoice && $order->invoice->amount_due > 0 && $order->production_status !== 'cancelled')
+                                                    <button type="button"
+                                                        @click="selectedOrderForPayment = {{ json_encode(['id' => $order->id, 'invoice_no' => $order->invoice->invoice_no ?? 'N/A', 'invoice_id' => $order->invoice->id ?? null, 'remaining_due' => $order->invoice->amount_due ?? 0]) }}; showAddPaymentModal = true; paymentErrors = {}; open = false"
+                                                        class="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 flex items-center gap-2">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                        </svg>
+                                                        Add Payment
+                                                    </button>
                                                 @endif
 
                                                 {{-- Cancel (Hidden for cancelled) --}}
@@ -668,6 +718,189 @@
                             class="w-full px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors">
                             Yes, Cancel Order
                         </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- ================= ADD PAYMENT MODAL ================= --}}
+        <div x-show="showAddPaymentModal" x-cloak x-transition.opacity
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div @click.away="showAddPaymentModal = false; resetPaymentForm()"
+                    class="bg-white rounded-xl shadow-lg w-full max-w-lg">
+                    {{-- Header --}}
+                    <div class="flex items-center justify-between p-5 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Add Payment</h3>
+                        <button @click="showAddPaymentModal = false; resetPaymentForm()"
+                            class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                            ✕
+                        </button>
+                    </div>
+
+                    {{-- Form --}}
+                    <form id="addPaymentForm"
+                        @submit.prevent="
+                            isSubmittingPayment = true;
+                            const formData = new FormData($event.target);
+                            fetch('{{ route('admin.payments.store') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Success - reload with toast
+                                    sessionStorage.setItem('toast_message', 'Payment added successfully');
+                                    sessionStorage.setItem('toast_type', 'success');
+                                    window.location.reload();
+                                } else {
+                                    isSubmittingPayment = false;
+                                    paymentErrors = data.errors || {};
+                                    if (data.message && !data.errors) {
+                                        // Show toast for general errors
+                                        window.dispatchEvent(new CustomEvent('show-toast', {
+                                            detail: { message: data.message, type: 'error' }
+                                        }));
+                                    }
+                                }
+                            })
+                            .catch(err => {
+                                isSubmittingPayment = false;
+                                window.dispatchEvent(new CustomEvent('show-toast', {
+                                    detail: { message: 'Failed to add payment. Please try again.', type: 'error' }
+                                }));
+                                console.error(err);
+                            });
+                        ">
+                        <input type="hidden" name="invoice_id" :value="selectedOrderForPayment?.invoice_id">
+
+                        <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+                            {{-- Invoice Info --}}
+                            <div class="bg-gray-50 border border-gray-200 rounded-md p-3">
+                                <p class="text-xs text-gray-500">Invoice No</p>
+                                <p class="text-sm font-semibold text-gray-900"
+                                    x-text="selectedOrderForPayment?.invoice_no || '-'"></p>
+                                <p class="text-xs text-gray-500 mt-2">Remaining Due</p>
+                                <p class="text-sm font-semibold text-orange-600"
+                                    x-text="'Rp ' + Math.floor(selectedOrderForPayment?.remaining_due || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')">
+                                </p>
+                            </div>
+
+                            {{-- Payment Method --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Payment Method <span class="text-red-600">*</span>
+                                </label>
+                                <select name="payment_method"
+                                    :class="paymentErrors.payment_method ?
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' :
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20'"
+                                    class="w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700">
+                                    <option value="">Select Method</option>
+                                    <option value="tranfer">Transfer</option>
+                                    <option value="cash">Cash</option>
+                                </select>
+                                <p x-show="paymentErrors.payment_method" x-cloak
+                                    x-text="paymentErrors.payment_method?.[0]" class="mt-1 text-sm text-red-600"></p>
+                            </div>
+
+                            {{-- Payment Type --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Payment Type <span class="text-red-600">*</span>
+                                </label>
+                                <select name="payment_type"
+                                    :class="paymentErrors.payment_type ?
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' :
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20'"
+                                    class="w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700">
+                                    <option value="">Select Type</option>
+                                    <option value="dp">DP (Down Payment)</option>
+                                    <option value="repayment">Repayment</option>
+                                    <option value="full_payment">Full Payment</option>
+                                </select>
+                                <p x-show="paymentErrors.payment_type" x-cloak x-text="paymentErrors.payment_type?.[0]"
+                                    class="mt-1 text-sm text-red-600"></p>
+                            </div>
+
+                            {{-- Amount --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Amount <span class="text-red-600">*</span>
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">Rp</span>
+                                    <input type="text" x-model="paymentAmount"
+                                        @input="
+                                            let value = $event.target.value.replace(/[^\d]/g, '');
+                                            paymentAmount = parseInt(value || 0).toLocaleString('id-ID');
+                                            $event.target.nextElementSibling.value = value;
+                                        "
+                                        placeholder="0"
+                                        :class="paymentErrors.amount ?
+                                            'border-red-500 focus:border-red-500 focus:ring-red-200' :
+                                            'border-gray-200 focus:border-primary focus:ring-primary/20'"
+                                        class="w-full rounded-md pl-10 pr-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700">
+                                    <input type="hidden" name="amount" :value="paymentAmount.replace(/[^\d]/g, '')">
+                                </div>
+                                <p x-show="paymentErrors.amount" x-cloak x-text="paymentErrors.amount?.[0]"
+                                    class="mt-1 text-sm text-red-600"></p>
+                            </div>
+
+                            {{-- Payment Proof Image --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Payment Proof <span class="text-red-600">*</span>
+                                </label>
+                                <input type="file" name="image" accept="image/jpeg,image/png,image/jpg"
+                                    :class="paymentErrors.image ?
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' :
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20'"
+                                    class="w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700">
+                                <p class="mt-1 text-xs text-gray-500">Max 10MB. Format: JPG, PNG, JPEG</p>
+                                <p x-show="paymentErrors.image" x-cloak x-text="paymentErrors.image?.[0]"
+                                    class="mt-1 text-sm text-red-600"></p>
+                            </div>
+
+                            {{-- Notes --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                                <textarea name="notes" rows="3"
+                                    :class="paymentErrors.notes ?
+                                        'border-red-500 focus:border-red-500 focus:ring-red-200' :
+                                        'border-gray-200 focus:border-primary focus:ring-primary/20'"
+                                    placeholder="Optional payment notes..."
+                                    class="w-full rounded-md px-4 py-2 text-sm border focus:outline-none focus:ring-2 text-gray-700"></textarea>
+                                <p x-show="paymentErrors.notes" x-cloak x-text="paymentErrors.notes?.[0]"
+                                    class="mt-1 text-sm text-red-600"></p>
+                            </div>
+                        </div>
+
+                        {{-- Footer --}}
+                        <div class="flex justify-end gap-3 p-5 border-t border-gray-200">
+                            <button type="button" @click="showAddPaymentModal = false; resetPaymentForm()"
+                                :disabled="isSubmittingPayment"
+                                class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                                Cancel
+                            </button>
+                            <button type="submit" :disabled="isSubmittingPayment"
+                                class="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-dark cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2">
+                                {{-- Loading Spinner --}}
+                                <svg x-show="isSubmittingPayment" x-cloak class="animate-spin h-4 w-4 text-white"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                        stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                <span x-text="isSubmittingPayment ? 'Processing...' : 'Add Payment'"></span>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

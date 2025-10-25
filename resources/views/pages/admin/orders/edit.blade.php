@@ -283,13 +283,22 @@
                                     {{-- Base Price --}}
                                     <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
                                         <label class="text-sm text-gray-600">Base Price</label>
-                                        <div class="relative">
-                                            <input type="number" x-model.number="variant.basePrice" min="0"
-                                                @input="updateUnitPrices(dIndex, vIndex)"
-                                                @focus="if(variant.basePrice == 0) variant.basePrice = ''"
-                                                @blur="if(variant.basePrice === '' || variant.basePrice === null) { variant.basePrice = 0; updateUnitPrices(dIndex, vIndex) }"
+                                        <div class="relative w-full md:w-40">
+                                            <span
+                                                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 text-sm font-medium">
+                                                Rp
+                                            </span>
+                                            <input type="text"
+                                                :value="variant.basePrice ? parseInt(variant.basePrice).toLocaleString(
+                                                    'id-ID') : ''"
+                                                @input="
+                                                    let value = $event.target.value.replace(/[^0-9]/g, '');
+                                                    variant.basePrice = value ? parseInt(value) : 0;
+                                                    $event.target.value = variant.basePrice ? variant.basePrice.toLocaleString('id-ID') : '';
+                                                    updateUnitPrices(dIndex, vIndex);
+                                                "
                                                 placeholder="0"
-                                                class="w-full md:w-32 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                                                class="w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                                             <span x-show="variant.basePriceError" x-text="variant.basePriceError"
                                                 class="absolute left-0 -bottom-5 text-xs text-red-600"></span>
                                         </div>
@@ -332,17 +341,22 @@
                                                 <td class="py-2 px-4">
                                                     <span x-text="row.size"></span>
                                                     <span class="text-xs text-gray-500" x-show="row.extraPrice > 0">
-                                                        (+<span x-text="row.extraPrice.toLocaleString('id-ID')"></span>)
+                                                        (+Rp <span x-text="row.extraPrice.toLocaleString('id-ID')"></span>)
                                                     </span>
                                                 </td>
                                                 <td class="py-2 px-4">
                                                     <div class="flex items-center gap-2">
                                                         <span class="text-gray-600 text-sm">Rp</span>
-                                                        <input type="number" x-model.number="row.unitPrice"
-                                                            min="0" step="1000"
-                                                            @focus="if(row.unitPrice == 0) row.unitPrice = ''"
-                                                            @blur="if(row.unitPrice === '' || row.unitPrice === null) row.unitPrice = 0"
+                                                        <input type="text"
+                                                            :value="row.unitPrice ? parseInt(row.unitPrice).toLocaleString(
+                                                                'id-ID') : ''"
+                                                            @input="
+                                                                let value = $event.target.value.replace(/[^0-9]/g, '');
+                                                                row.unitPrice = value ? parseInt(value) : 0;
+                                                                $event.target.value = row.unitPrice ? row.unitPrice.toLocaleString('id-ID') : '';
+                                                            "
                                                             :class="row.unitPrice === 0 ? 'border-red-500' : 'border-gray-300'"
+                                                            placeholder="0"
                                                             class="w-32 rounded-md border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                                                     </div>
                                                 </td>
@@ -493,12 +507,20 @@
                                     </div>
                                 </div>
 
-                                <div class="relative w-full md:w-32">
-                                    <input type="number" x-model="item.price" min="0"
-                                        @focus="if(item.price == 0) item.price = ''"
-                                        @blur="if(item.price === '' || item.price === null) item.price = 0"
-                                        placeholder="Price"
-                                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
+                                <div class="relative w-full md:w-48">
+                                    <span
+                                        class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 text-sm font-medium">
+                                        Rp
+                                    </span>
+                                    <input type="text"
+                                        :value="item.price ? parseInt(item.price).toLocaleString('id-ID') : ''"
+                                        @input="
+                                            let value = $event.target.value.replace(/[^0-9]/g, '');
+                                            item.price = value ? parseInt(value) : 0;
+                                            $event.target.value = item.price ? item.price.toLocaleString('id-ID') : '';
+                                        "
+                                        placeholder="0"
+                                        class="w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                                 </div>
 
                                 <button type="button" @click="removeAdditional(index)"
@@ -596,10 +618,19 @@
             <div class="w-full lg:w-1/2 xl:w-1/3 space-y-4">
                 <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
                     <label class="text-sm text-gray-600 md:w-24">Discount</label>
-                    <input type="number" x-model="discount" min="0" @focus="if(discount == 0) discount = ''"
-                        @blur="if(discount === '' || discount=== null) discount = 0"
-                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400" />
-
+                    <div class="relative w-full">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 text-sm font-medium">
+                            Rp
+                        </span>
+                        <input type="text" :value="discount ? parseInt(discount).toLocaleString('id-ID') : ''"
+                            @input="
+                                let value = $event.target.value.replace(/[^0-9]/g, '');
+                                discount = value ? parseInt(value) : 0;
+                                $event.target.value = discount ? discount.toLocaleString('id-ID') : '';
+                            "
+                            placeholder="0"
+                            class="w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-400" />
+                    </div>
                 </div>
                 <div class="border border-gray-200 rounded-lg p-4 text-center">
                     <p class="text-sm text-gray-600">Final Price</p>
@@ -657,6 +688,7 @@
             :value="designVariants.reduce((sum, d) => sum + d.sleeveVariants.reduce((s, v) => s + v.rows.reduce((r, row) => r +
                 parseInt(row.qty || 0), 0), 0), 0)">
         <input type="hidden" name="subtotal" :value="getSubTotal()">
+        <input type="hidden" name="discount" :value="discount || 0">
         <input type="hidden" name="grand_total" :value="getFinalPrice()">
 
     </form>

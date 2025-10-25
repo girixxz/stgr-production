@@ -106,11 +106,20 @@ class OrderController extends Controller
         // Set default to this month if no date parameters at all
         if (!$dateRange && !$startDate && !$endDate) {
             // Redirect dengan parameter this_month agar terlihat di URL
-            return redirect()->route('admin.orders.index', [
+            // Preserve session flash message if exists
+            $redirect = redirect()->route('admin.orders.index', [
                 'filter' => $filter,
                 'search' => $search,
                 'date_range' => 'this_month',
             ]);
+            
+            // Re-flash session message if it exists (so it survives the redirect)
+            if (session()->has('message')) {
+                $redirect->with('message', session('message'))
+                        ->with('alert-type', session('alert-type', 'success'));
+            }
+            
+            return $redirect;
         }
 
         if ($startDate) {
@@ -339,7 +348,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.orders.index')
+            return redirect()->route('admin.orders.index', ['date_range' => 'this_month'])
                 ->with('message', 'Order and invoice created successfully.')
                 ->with('alert-type', 'success');
 
@@ -524,7 +533,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.orders.index')
+            return redirect()->route('admin.orders.index', ['date_range' => 'this_month'])
                 ->with('message', 'Order updated successfully.')
                 ->with('alert-type', 'success');
 
@@ -553,7 +562,7 @@ class OrderController extends Controller
             'production_status' => 'cancelled'
         ]);
 
-        return redirect()->route('admin.orders.index')
+        return redirect()->route('admin.orders.index', ['date_range' => 'this_month'])
             ->with('message', 'Order cancelled successfully.')
             ->with('alert-type', 'success');
     }
@@ -565,7 +574,7 @@ class OrderController extends Controller
     {
         $order->delete();
 
-        return redirect()->route('admin.orders.index')
+        return redirect()->route('admin.orders.index', ['date_range' => 'this_month'])
             ->with('message', 'Order deleted successfully.')
             ->with('alert-type', 'success');
     }
