@@ -167,10 +167,10 @@
             </div>
         @endif
 
-        {{-- ================= KARYAWAN MENU ================= --}}
-        @if (in_array($role, ['owner', 'karyawan']))
+        {{-- ================= KARYAWAN MENU (for Admin, PM, and Karyawan) ================= --}}
+        @if (in_array($role, ['owner', 'admin', 'pm', 'karyawan']))
             <div class="mb-4">
-                @if ($role === 'owner')
+                @if (in_array($role, ['owner', 'admin', 'pm']))
                     <p class="px-4 text-xs font-semibold text-gray-dark uppercase mb-2">KARYAWAN</p>
                 @elseif ($role === 'karyawan')
                     <p class="px-4 text-xs font-semibold text-gray-dark uppercase mb-2">MENU</p>

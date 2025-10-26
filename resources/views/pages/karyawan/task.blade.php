@@ -7,11 +7,15 @@
         $role = auth()->user()?->role;
         if ($role === 'owner') {
             $root = 'Karyawan';
+        } elseif ($role === 'admin') {
+            $root = 'Admin';
+        } elseif ($role === 'pm') {
+            $root = 'PM';
         } else {
             $root = 'Menu';
         }
     @endphp
-    <x-nav-locate :items="[$root, 'Task']" />
+    <x-nav-locate :items="[$root, 'Task Karyawan']" />
 
     {{-- Root Alpine State --}}
     <div x-data="{

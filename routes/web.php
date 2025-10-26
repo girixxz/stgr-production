@@ -121,7 +121,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     /* ---------- KARYAWAN ---------- */
-    Route::prefix('karyawan')->name('karyawan.')->middleware('role:karyawan')->group(function () {
+    Route::prefix('karyawan')->name('karyawan.')->middleware('role:karyawan,admin,pm')->group(function () {
         Route::get('dashboard', fn() => view('pages.karyawan.dashboard'))->name('dashboard');
         Route::get('task', [App\Http\Controllers\Karyawan\TaskController::class, 'index'])->name('task');
         Route::post('task/mark-done', [App\Http\Controllers\Karyawan\TaskController::class, 'markAsDone'])->name('task.mark-done');
