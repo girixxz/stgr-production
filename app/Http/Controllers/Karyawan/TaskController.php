@@ -22,11 +22,13 @@ class TaskController extends Controller
         // For each stage, get order stages that have deadline today or are in progress
         $stagesWithOrders = $productionStages->map(function ($stage) use ($today, $todayEnd) {
             // Get order stages for this production stage where:
-            // 1. Deadline is today, OR
-            // 2. Status is 'in_progress' or 'pending', OR
-            // 3. Start date is today or before today and deadline is today or after today
+            // 1. Status is NOT 'done' (exclude completed tasks)
+            // 2. Deadline is today, OR
+            // 3. Status is 'in_progress' or 'pending', OR
+            // 4. Start date is today or before today and deadline is today or after today
             $orderStages = OrderStage::with(['order.invoice', 'order.productCategory', 'order.customer'])
                 ->where('stage_id', $stage->id)
+                ->where('status', '!=', 'done') // Exclude done tasks
                 ->whereHas('order', function ($query) {
                     $query->where('production_status', '!=', 'cancelled')
                           ->where('production_status', '!=', 'finished');
@@ -52,5 +54,32 @@ class TaskController extends Controller
         });
 
         return view('pages.karyawan.task', compact('stagesWithOrders'));
+    }
+
+    /**
+     * Mark order stage as done
+     */
+    public function markAsDone(Request $request)
+    {
+        $validated = $request->validate([
+            'order_stage_id' => 'required|exists:order_stages,id',
+        ]);
+
+        try {
+            $orderStage = OrderStage::findOrFail($validated['order_stage_id']);
+            
+            // Update status to done
+            $orderStage->update(['status' => 'done']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Task marked as done successfully!',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to mark task as done: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -789,7 +789,7 @@
                                             </div>
                                         </div>
 
-                                        {{-- Status Buttons - ONLY PENDING AND DONE --}}
+                                        {{-- Status Buttons - PENDING, IN PROGRESS, and DONE --}}
                                         <div class="flex gap-2">
                                             <button type="button" @click="updateStageStatus(stage.id, 'pending')"
                                                 :disabled="isUpdatingStatus"
@@ -797,6 +797,13 @@
                                                     'bg-white hover:bg-gray-100'"
                                                 class="px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                                 Pending
+                                            </button>
+                                            <button type="button" @click="updateStageStatus(stage.id, 'in_progress')"
+                                                :disabled="isUpdatingStatus"
+                                                :class="stage.status === 'in_progress' ? 'bg-blue-100 border-blue-300' :
+                                                    'bg-white hover:bg-blue-50'"
+                                                class="px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                                In Progress
                                             </button>
                                             <button type="button" @click="updateStageStatus(stage.id, 'done')"
                                                 :disabled="isUpdatingStatus"

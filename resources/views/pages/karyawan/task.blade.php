@@ -17,7 +17,54 @@
     <div x-data="{
         showModal: false,
         modalStage: null,
-        modalOrders: []
+        modalOrders: [],
+        showConfirmDone: false,
+        selectedOrderStage: null,
+        isSubmitting: false,
+        async markAsDone(orderStageId, invoiceNo, productName) {
+            this.selectedOrderStage = { id: orderStageId, invoice: invoiceNo, product: productName };
+            this.showConfirmDone = true;
+        },
+        async confirmDone() {
+            if (!this.selectedOrderStage || this.isSubmitting) return;
+    
+            this.isSubmitting = true;
+    
+            try {
+                const response = await fetch('{{ route('karyawan.task.mark-done') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_stage_id: this.selectedOrderStage.id
+                    })
+                });
+    
+                const data = await response.json();
+    
+                if (data.success) {
+                    // Show success toast
+                    window.dispatchEvent(new CustomEvent('show-toast', {
+                        detail: { message: data.message, type: 'success' }
+                    }));
+    
+                    // Reload page after short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    throw new Error(data.message || 'Failed to mark as done');
+                }
+            } catch (error) {
+                window.dispatchEvent(new CustomEvent('show-toast', {
+                    detail: { message: error.message || 'An error occurred', type: 'error' }
+                }));
+                this.isSubmitting = false;
+            }
+        }
     }">
 
         {{-- Page Title --}}
@@ -63,27 +110,20 @@
                                                     {{ $orderStage->order->customer->customer_name ?? 'N/A' }}
                                                 </p>
                                             </div>
-                                            {{-- Status Icon --}}
+                                            {{-- Done Button (only if not done yet) --}}
                                             <div class="flex-shrink-0">
-                                                @if ($orderStage->status === 'done')
+                                                @if ($orderStage->status !== 'done')
+                                                    <button type="button"
+                                                        @click="markAsDone({{ $orderStage->id }}, '{{ $orderStage->order->invoice->invoice_no ?? 'N/A' }}', '{{ $orderStage->order->productCategory->product_name ?? 'N/A' }}')"
+                                                        class="px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded text-[10px] font-semibold transition-colors cursor-pointer"
+                                                        title="Mark as Done">
+                                                        Done
+                                                    </button>
+                                                @else
                                                     <svg class="w-4 h-4 text-green-500" fill="currentColor"
                                                         viewBox="0 0 20 20">
                                                         <path fill-rule="evenodd"
                                                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                @elseif($orderStage->status === 'in_progress')
-                                                    <svg class="w-4 h-4 text-blue-500" fill="currentColor"
-                                                        viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd"
-                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                @else
-                                                    <svg class="w-4 h-4 text-gray-400" fill="currentColor"
-                                                        viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd"
-                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
                                                             clip-rule="evenodd" />
                                                     </svg>
                                                 @endif
@@ -196,6 +236,56 @@
                         <button @click="showModal = false"
                             class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium cursor-pointer transition-colors">
                             Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Confirmation Modal - Mark as Done --}}
+        <div x-show="showConfirmDone" x-cloak x-transition.opacity
+            class="fixed inset-0 z-50 overflow-y-auto bg-gray-500/50 backdrop-blur-sm">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div @click.away="showConfirmDone = false; isSubmitting = false"
+                    class="bg-white rounded-xl shadow-lg w-full max-w-md">
+                    {{-- Modal Header --}}
+                    <div class="flex items-center justify-center p-6 border-b border-gray-200">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    {{-- Modal Body --}}
+                    <div class="p-6 text-center">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Mark Task as Done?</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            You are about to mark this task as completed:
+                        </p>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
+                            <p class="text-sm font-medium text-gray-900">
+                                <span x-text="selectedOrderStage?.invoice"></span>
+                                <span x-text="selectedOrderStage?.product"></span>
+                            </p>
+                        </div>
+                        <p class="text-xs text-gray-500">
+                            This action will update the stage status in PM Manage Task.
+                        </p>
+                    </div>
+
+                    {{-- Modal Footer --}}
+                    <div class="flex gap-3 p-6 border-t border-gray-200">
+                        <button type="button" @click="showConfirmDone = false; isSubmitting = false"
+                            :disabled="isSubmitting"
+                            class="flex-1 px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            Cancel
+                        </button>
+                        <button type="button" @click="confirmDone()" :disabled="isSubmitting"
+                            class="flex-1 px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white text-sm font-medium cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span x-show="!isSubmitting">Yes, Mark as Done</span>
+                            <span x-show="isSubmitting">Processing...</span>
                         </button>
                     </div>
                 </div>
