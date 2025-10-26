@@ -123,4 +123,12 @@ class Order extends Model
     {
         return $this->hasOne(Invoice::class, 'order_id');
     }
+
+    /**
+     * Get all order stages for this order
+     */
+    public function orderStages(): HasMany
+    {
+        return $this->hasMany(OrderStage::class, 'order_id');
+    }
 }

@@ -17,6 +17,7 @@ use App\Http\Controllers\Main\ManageUsersSalesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ManageTaskController;
 
 /* ================= DEFAULT INDEX / LOGIN ================= */
 
@@ -112,7 +113,11 @@ Route::middleware(['auth'])->group(function () {
     /* ---------- PROJECT MANAGER ---------- */
     Route::prefix('pm')->name('pm.')->middleware('role:pm')->group(function () {
         Route::get('dashboard', fn() => view('pages.pm.dashboard'))->name('dashboard');
-        Route::get('manage-task', fn() => view('pages.pm.manage-task'))->name('manage-task');
+        
+        // Manage Task
+        Route::get('manage-task', [ManageTaskController::class, 'index'])->name('manage-task');
+        Route::post('manage-task/update-stage', [ManageTaskController::class, 'updateStage'])->name('manage-task.update-stage');
+        Route::post('manage-task/update-stage-status', [ManageTaskController::class, 'updateStageStatus'])->name('manage-task.update-stage-status');
     });
 
     /* ---------- KARYAWAN ---------- */

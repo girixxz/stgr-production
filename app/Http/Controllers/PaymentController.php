@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\Invoice;
+use App\Models\OrderStage;
+use App\Models\ProductionStage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -132,6 +134,22 @@ class PaymentController extends Controller
                 $order->update([
                     'production_status' => 'wip'
                 ]);
+
+                // Auto-create order_stages for all production stages when order becomes WIP
+                $productionStages = ProductionStage::all();
+                foreach ($productionStages as $stage) {
+                    OrderStage::firstOrCreate(
+                        [
+                            'order_id' => $order->id,
+                            'stage_id' => $stage->id,
+                        ],
+                        [
+                            'start_date' => null,
+                            'deadline' => null,
+                            'status' => 'pending',
+                        ]
+                    );
+                }
             }
 
             DB::commit();
