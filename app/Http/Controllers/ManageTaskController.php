@@ -26,7 +26,7 @@ class ManageTaskController extends Controller
 
         $query = Order::with([
             'customer',
-            'invoice',
+            'invoice.payments',
             'productCategory',
             'orderStages.productionStage'
         ])
@@ -104,7 +104,15 @@ class ManageTaskController extends Controller
             $query->whereDate('order_date', '<=', $endDate);
         }
 
-        $orders = $query->orderBy('created_at', 'desc')
+        // Sort by first payment date (DP/payment pertama kali)
+        // Join with payments table and get the earliest payment date
+        // DESC = data baru di atas (dari bawah ke atas)
+        $orders = $query
+            ->leftJoin('invoices', 'orders.id', '=', 'invoices.order_id')
+            ->leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
+            ->select('orders.*', DB::raw('MIN(payments.created_at) as first_payment_date'))
+            ->groupBy('orders.id')
+            ->orderByRaw('first_payment_date DESC, orders.created_at DESC')
             ->paginate(15)
             ->appends($request->except('page'));
 

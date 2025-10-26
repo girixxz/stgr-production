@@ -123,7 +123,7 @@ Route::middleware(['auth'])->group(function () {
     /* ---------- KARYAWAN ---------- */
     Route::prefix('karyawan')->name('karyawan.')->middleware('role:karyawan')->group(function () {
         Route::get('dashboard', fn() => view('pages.karyawan.dashboard'))->name('dashboard');
-        Route::get('task', fn() => view('pages.karyawan.task'))->name('task');
+        Route::get('task', [App\Http\Controllers\Karyawan\TaskController::class, 'index'])->name('task');
     });
 
     /* ---------- ALL ROLE ---------- */
