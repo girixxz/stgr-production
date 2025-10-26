@@ -100,7 +100,8 @@
                                             ? 'bg-yellow-100 border-yellow-300 text-yellow-800'
                                             : 'bg-gray-100 border-gray-300 text-gray-700';
                                     @endphp
-                                    <div class="px-3 py-2 rounded-lg border {{ $bubbleClass }} text-xs font-medium">
+                                    <div class="px-3 py-2 rounded-lg border {{ $bubbleClass }} text-xs font-medium"
+                                        x-data="{ showDropdown: false }">
                                         <div class="flex items-start justify-between gap-2">
                                             <div class="flex-1 min-w-0">
                                                 <p class="truncate">
@@ -114,15 +115,49 @@
                                                     {{ $orderStage->order->customer->customer_name ?? 'N/A' }}
                                                 </p>
                                             </div>
-                                            {{-- Done Button (only if not done yet) --}}
-                                            <div class="flex-shrink-0">
+                                            {{-- Three Dot Button --}}
+                                            <div class="flex-shrink-0 relative">
                                                 @if ($orderStage->status !== 'done')
-                                                    <button type="button"
-                                                        @click="markAsDone({{ $orderStage->id }}, '{{ $orderStage->order->invoice->invoice_no ?? 'N/A' }}', '{{ $orderStage->order->productCategory->product_name ?? 'N/A' }}')"
-                                                        class="px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded text-[10px] font-semibold transition-colors cursor-pointer"
-                                                        title="Mark as Done">
-                                                        Done
+                                                    <button type="button" @click="showDropdown = !showDropdown"
+                                                        class="p-1 hover:bg-gray-200 rounded transition-colors cursor-pointer"
+                                                        title="Actions">
+                                                        <svg class="w-4 h-4 text-gray-600" fill="currentColor"
+                                                            viewBox="0 0 20 20">
+                                                            <path
+                                                                d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                        </svg>
                                                     </button>
+
+                                                    {{-- Dropdown Menu --}}
+                                                    <div x-show="showDropdown" @click.away="showDropdown = false" x-cloak
+                                                        class="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-50 py-1">
+                                                        {{-- View Detail --}}
+                                                        <button type="button"
+                                                            @click="showDropdown = false; alert('View Detail - Coming Soon')"
+                                                            class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-2 cursor-pointer">
+                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                            </svg>
+                                                            View Detail
+                                                        </button>
+                                                        {{-- Mark as Done --}}
+                                                        <button type="button"
+                                                            @click="showDropdown = false; markAsDone({{ $orderStage->id }}, '{{ $orderStage->order->invoice->invoice_no ?? 'N/A' }}', '{{ $orderStage->order->productCategory->product_name ?? 'N/A' }}')"
+                                                            class="w-full text-left px-4 py-2 text-xs text-green-700 hover:bg-green-50 flex items-center gap-2 cursor-pointer">
+                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                            Done
+                                                        </button>
+                                                    </div>
                                                 @else
                                                     <svg class="w-4 h-4 text-green-500" fill="currentColor"
                                                         viewBox="0 0 20 20">
@@ -255,7 +290,8 @@
                     {{-- Modal Header --}}
                     <div class="flex items-center justify-center p-6 border-b border-gray-200">
                         <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
