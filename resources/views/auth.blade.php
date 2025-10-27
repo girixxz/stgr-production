@@ -11,8 +11,8 @@
 <body class="min-h-screen bg-gray-light flex items-center justify-center">
     <main class="w-full max-w-md px-4 py-10">
         <!-- Logo -->
-        <div class="flex justify-center mb-8">
-            <img src="{{ Vite::asset('resources/images/brand.svg') }}" alt="Berkah Bermanfaat" class="h-24 md:h-28 w-auto">
+        <div class="mb-6 flex justify-center">
+            <img src="{{ asset('images/brand.svg') }}" alt="Logo" class="h-24">
         </div>
 
         @if ($errors->has('username') || $errors->has('password') || session('auth_error'))
