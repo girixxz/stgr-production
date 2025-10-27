@@ -107,12 +107,15 @@ class ManageTaskController extends Controller
         // Sort by first payment date (DP/payment pertama kali)
         // Join with payments table and get the earliest payment date
         // DESC = data baru di atas (dari bawah ke atas)
+        // Use subquery to avoid GROUP BY issues with MySQL strict mode
         $orders = $query
-            ->leftJoin('invoices', 'orders.id', '=', 'invoices.order_id')
-            ->leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
-            ->select('orders.*', DB::raw('MIN(payments.created_at) as first_payment_date'))
-            ->groupBy('orders.id')
-            ->orderByRaw('first_payment_date DESC, orders.created_at DESC')
+            ->leftJoin(DB::raw('(SELECT invoices.order_id, MIN(payments.created_at) as first_payment_date 
+                FROM invoices 
+                LEFT JOIN payments ON invoices.id = payments.invoice_id 
+                GROUP BY invoices.order_id) as payment_dates'), 
+                'orders.id', '=', 'payment_dates.order_id')
+            ->select('orders.*', 'payment_dates.first_payment_date')
+            ->orderByRaw('payment_dates.first_payment_date DESC, orders.created_at DESC')
             ->paginate(15)
             ->appends($request->except('page'));
 
