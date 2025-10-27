@@ -124,14 +124,12 @@ chmod -R 775 storage/logs
 ### FASE 5: SETUP DATABASE (2 menit)
 
 ```bash
-# Import semua migrations (termasuk indexes optimasi)
-php artisan migrate --force
+# Import semua migrations & seed data sekaligus (RECOMMENDED)
+php artisan migrate:fresh --seed --force
 
-# Seed data (user, kategori, dll)
-php artisan db:seed --force
-
-# Atau gabung sekaligus:
-# php artisan migrate:fresh --seed --force
+# ATAU jika ingin manual (tidak recommended untuk deployment pertama):
+# php artisan migrate --force
+# php artisan db:seed --force
 ```
 
 **Output yang diharapkan:**

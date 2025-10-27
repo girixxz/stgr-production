@@ -31,8 +31,7 @@ nano .env  # Edit: DB credentials, APP_DEBUG=false, CACHE_STORE=file
 # 4. Install & Setup
 composer install --optimize-autoloader --no-dev
 php artisan key:generate
-php artisan migrate --force
-php artisan db:seed --force
+php artisan migrate:fresh --seed --force
 php artisan optimize
 php artisan storage:link
 chmod -R 755 storage bootstrap/cache
@@ -82,8 +81,7 @@ nano .env
 
 # Run migrations
 php artisan key:generate
-php artisan migrate --force
-php artisan db:seed --force
+php artisan migrate:fresh --seed --force
 php artisan optimize
 php artisan storage:link
 chmod -R 755 storage bootstrap/cache
