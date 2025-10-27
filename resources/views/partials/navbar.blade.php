@@ -41,15 +41,8 @@
         @php
             $profile_name = auth()->user()?->fullname;
 
-            // Ganti 'photo_url' dengan nama kolom avatar di tabel users milikmu
-            $raw = auth()->user()?->img_url;
-
-            // Jika path lokal, konversi ke URL publik; jika sudah http(s), pakai apa adanya
-            $avatarUrl = !empty($raw)
-                ? (\Illuminate\Support\Str::startsWith($raw, ['http://', 'https://'])
-                    ? $raw
-                    : \Illuminate\Support\Facades\Storage::url($raw))
-                : 'https://i.pravatar.cc/40?u=' . urlencode(auth()->user()->id ?? auth()->user()->username);
+            // Default avatar from pravatar (random avatar based on username)
+            $avatarUrl = 'https://i.pravatar.cc/40?u=' . urlencode(auth()->user()->username ?? auth()->user()->id);
         @endphp
         <div class="flex items-center space-x-4">
             <div x-data="{ open: false }" class="relative">
