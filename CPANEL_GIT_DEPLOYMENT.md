@@ -6,9 +6,9 @@ Menggunakan **Git Version Control** bawaan cPanel (tanpa SSH).
 
 **Struktur:**
 
--   Repository di-clone ke `/home/username/repositories/stgr-production`
+-   Repository di-clone ke `/home/username/stgr-production`
 -   Folder `public` dipindah ke `/home/username/public_html`
--   Aplikasi Laravel di root repository
+-   Aplikasi Laravel di `/home/username/stgr-production`
 
 ---
 
@@ -27,7 +27,7 @@ Menggunakan **Git Version Control** bawaan cPanel (tanpa SSH).
 | Field           | Value                                            |
 | --------------- | ------------------------------------------------ |
 | Clone URL       | `https://github.com/girixxz/stgr-production.git` |
-| Repository Path | `/home/username/repositories/stgr-production`    |
+| Repository Path | `/home/username/stgr-production`                 |
 | Repository Name | `stgr-production`                                |
 
 **Klik "Create"** ✅
@@ -41,12 +41,12 @@ Menggunakan **Git Version Control** bawaan cPanel (tanpa SSH).
 ### A. Via cPanel File Manager
 
 1. Buka **File Manager** di cPanel
-2. Navigate ke `/home/username/repositories/stgr-production/`
+2. Navigate ke `/home/username/stgr-production/`
 3. Cari folder **`public`**
 4. **Klik kanan** → **Copy**
 5. Navigate ke `/home/username/`
 6. **Paste** folder `public` (akan jadi `/home/username/public`)
-7. **Rename** folder `public` menjadi **`public_html_backup`** (backup folder lama)
+7. **Rename** folder `public_html` lama menjadi **`public_html_backup`** (backup)
 8. **Rename** folder `public` (yang baru dicopy) menjadi **`public_html`**
 
 ### B. Atau via Terminal cPanel
@@ -57,7 +57,7 @@ cd ~
 mv public_html public_html_backup
 
 # Copy public dari repository
-cp -r repositories/stgr-production/public public_html
+cp -r stgr-production/public public_html
 
 # Verify
 ls -la public_html
@@ -83,8 +83,8 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 4. **Ganti menjadi:**
 
 ```php
-require __DIR__.'/../repositories/stgr-production/vendor/autoload.php';
-$app = require_once __DIR__.'/../repositories/stgr-production/bootstrap/app.php';
+require __DIR__.'/../stgr-production/vendor/autoload.php';
+$app = require_once __DIR__.'/../stgr-production/bootstrap/app.php';
 ```
 
 5. **Save** file
@@ -116,7 +116,7 @@ nano index.php
 Via File Manager atau Terminal:
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 cp .env.example .env
 ```
 
@@ -191,7 +191,7 @@ MAIL_FROM_NAME="${APP_NAME}"
 ### C. Generate Application Key
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 php artisan key:generate
 ```
 
@@ -200,7 +200,7 @@ php artisan key:generate
 ## ✅ LANGKAH 5: INSTALL DEPENDENCIES (3 menit)
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 
 # Install Composer dependencies (tanpa dev packages)
 composer install --optimize-autoloader --no-dev
@@ -253,7 +253,7 @@ DB_PASSWORD=your_generated_password
 ### C. Run Migrations & Seeding
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 
 # Run migrations (create tables + indexes)
 php artisan migrate:fresh --seed --force
@@ -287,7 +287,7 @@ Database\Seeders\ProductionStageSeeder ..... DONE
 ## ✅ LANGKAH 7: SET PERMISSIONS (2 menit)
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 
 # Set permissions untuk storage & cache
 chmod -R 755 storage bootstrap/cache
@@ -299,10 +299,50 @@ php artisan storage:link
 
 ---
 
-## ✅ LANGKAH 8: OPTIMIZE APLIKASI (2 menit)
+## ✅ LANGKAH 8: FIX VITE MANIFEST & OPTIMIZE (5 menit)
+
+### A. Update vite.config.js untuk Production
+
+Edit file `vite.config.js` di local (Windows):
+
+```javascript
+import { defineConfig } from "vite";
+import laravel from "laravel-vite-plugin";
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ["resources/css/app.css", "resources/js/app.js"],
+            refresh: true,
+        }),
+    ],
+    build: {
+        manifest: true,
+        outDir: "public/build",
+        rollupOptions: {
+            output: {
+                manualChunks: undefined,
+            },
+        },
+    },
+});
+```
+
+Commit & push perubahan:
+
+```powershell
+git add vite.config.js
+git commit -m "Fix vite config for production"
+git push origin main
+```
+
+### B. Pull Update di Server & Optimize
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
+
+# Pull latest changes
+git pull origin main
 
 # Cache configuration
 php artisan config:cache
@@ -361,8 +401,8 @@ cd ~/public_html
 # Backup original
 cp .htaccess .htaccess.backup
 
-# Copy optimized version
-cp ~/repositories/stgr-production/public/.htaccess.optimized .htaccess
+# Copy optimized version (jika ada)
+cp ~/stgr-production/public/.htaccess.optimized .htaccess
 ```
 
 Atau edit manual `.htaccess` untuk GZIP compression & caching.
@@ -404,10 +444,10 @@ https://yourdomain.com
 
 ```bash
 # Via Terminal
-tail -f ~/repositories/stgr-production/storage/logs/laravel.log
+tail -f ~/stgr-production/storage/logs/laravel.log
 
 # Via File Manager
-# Navigate ke: repositories/stgr-production/storage/logs/
+# Navigate ke: stgr-production/storage/logs/
 # Buka file: laravel-YYYY-MM-DD.log
 ```
 
@@ -429,7 +469,7 @@ Ketika ada update code di GitHub:
 ### Via Terminal:
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 
 # Pull latest code
 git pull origin main
@@ -450,12 +490,12 @@ chmod -R 755 storage bootstrap/cache
 ### Jika ada perubahan di folder public:
 
 ```bash
-# Copy updated files dari repositories/stgr-production/public
+# Copy updated files dari stgr-production/public
 # Ke public_html (kecuali index.php yang sudah di-custom)
 
 # Contoh copy files tertentu:
-cp ~/repositories/stgr-production/public/robots.txt ~/public_html/
-cp -r ~/repositories/stgr-production/public/images/* ~/public_html/images/
+cp ~/stgr-production/public/robots.txt ~/public_html/
+cp -r ~/stgr-production/public/images/* ~/public_html/images/
 
 # Build assets baru (di local)
 # Upload folder public/build yang baru ke public_html/build
@@ -468,7 +508,7 @@ cp -r ~/repositories/stgr-production/public/images/* ~/public_html/images/
 ### Error 500 - Internal Server Error
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 
 # Check logs
 tail -100 storage/logs/laravel.log
@@ -495,7 +535,7 @@ chmod -R 755 storage bootstrap/cache
 1. Check `public_html/.htaccess` exists
 2. Check `index.php` path sudah benar:
     ```php
-    require __DIR__.'/../repositories/stgr-production/vendor/autoload.php';
+    require __DIR__.'/../stgr-production/vendor/autoload.php';
     ```
 3. Check Apache `mod_rewrite` enabled (hubungi hosting support)
 
@@ -503,7 +543,7 @@ chmod -R 755 storage bootstrap/cache
 
 ```bash
 # Test connection
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 php artisan db:show
 
 # Check credentials di .env
@@ -514,15 +554,40 @@ cat .env | grep DB_
 
 ### CSS/JS Not Loading
 
-1. Check folder `public_html/build` exists
-2. Check `vite.config.js` base path
+**Penyebab:** Vite manifest error atau build folder tidak ada
+
+**Solusi:**
+
+```bash
+cd ~/stgr-production
+
+# Clear Vite cache
+rm -rf public/build
+rm -rf node_modules/.vite
+
+# Di local Windows, rebuild:
+# npm install
+# npm run build
+# Upload folder public/build ke server
+```
+
+Atau check `resources/views/layouts/*.blade.php`:
+
+```blade
+{{-- Pastikan menggunakan @vite directive --}}
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+```
+
+1. Check folder `public_html/build` exists & berisi `manifest.json`
+2. Check `vite.config.js` sudah di-update (lihat Langkah 8)
 3. Upload ulang `public/build` dari local
 4. Clear browser cache (Ctrl+Shift+R)
+5. Check console browser untuk error spesifik
 
 ### Class Not Found / Autoload Error
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 
 # Regenerate autoload
 composer dump-autoload
@@ -535,7 +600,7 @@ php artisan config:clear
 ### Permission Denied
 
 ```bash
-cd ~/repositories/stgr-production
+cd ~/stgr-production
 
 # Fix permissions
 chmod -R 755 storage bootstrap/cache
@@ -580,16 +645,16 @@ du -sh ~/public_html
 
 ```bash
 # Check error logs (last 50 lines)
-tail -50 ~/repositories/stgr-production/storage/logs/laravel.log
+tail -50 ~/stgr-production/storage/logs/laravel.log
 
 # Check specific date
-cat ~/repositories/stgr-production/storage/logs/laravel-2025-10-27.log
+cat ~/stgr-production/storage/logs/laravel-2025-10-27.log
 ```
 
 ### 3. Clear Old Logs (Monthly)
 
 ```bash
-cd ~/repositories/stgr-production/storage/logs
+cd ~/stgr-production/storage/logs
 
 # Delete logs older than 30 days
 find . -name "laravel-*.log" -mtime +30 -delete
@@ -618,10 +683,10 @@ mysql -u your_db_user -p your_database < backup-20251027.sql
 
 ```bash
 # Check slow queries
-grep "Slow Query" ~/repositories/stgr-production/storage/logs/laravel.log
+grep "Slow Query" ~/stgr-production/storage/logs/laravel.log
 
 # Check N+1 queries (if APP_ENV=local temporarily)
-grep "N+1" ~/repositories/stgr-production/storage/logs/laravel.log
+grep "N+1" ~/stgr-production/storage/logs/laravel.log
 ```
 
 ---
@@ -631,8 +696,8 @@ grep "N+1" ~/repositories/stgr-production/storage/logs/laravel.log
 ```
 /home/username/
 │
-├── public_html/                          # Document root (dari repositories/.../public)
-│   ├── index.php                         # Modified dengan path ke repositories/
+├── public_html/                          # Document root (dari stgr-production/public)
+│   ├── index.php                         # Modified dengan path ke ../stgr-production/
 │   ├── .htaccess                         # Optimized
 │   ├── robots.txt
 │   ├── hot                               # Vite dev server (production: tidak ada)
@@ -645,29 +710,29 @@ grep "N+1" ~/repositories/stgr-production/storage/logs/laravel.log
 │
 ├── public_html_backup/                   # Backup folder public_html lama
 │
-└── repositories/
-    └── stgr-production/                  # Laravel application
-        ├── app/
-        ├── bootstrap/
-        ├── config/
-        ├── database/
-        │   ├── migrations/
-        │   └── seeders/
-        ├── public/                       # Original public (tidak dipakai langsung)
-        ├── resources/
-        ├── routes/
-        ├── storage/                      # PERLU WRITE PERMISSION
-        │   ├── app/
-        │   ├── framework/
-        │   │   ├── cache/                # PERLU WRITE PERMISSION
-        │   │   ├── sessions/
-        │   │   └── views/
-        │   └── logs/                     # PERLU WRITE PERMISSION
-        ├── vendor/                       # Composer packages
-        ├── .env                          # PRODUCTION CONFIG
-        ├── composer.json
-        ├── artisan
-        └── ...
+└── stgr-production/                      # Laravel application (clone dari Git)
+    ├── app/
+    ├── bootstrap/
+    ├── config/
+    ├── database/
+    │   ├── migrations/
+    │   └── seeders/
+    ├── public/                           # Original public (tidak dipakai langsung)
+    ├── resources/
+    ├── routes/
+    ├── storage/                          # PERLU WRITE PERMISSION
+    │   ├── app/
+    │   ├── framework/
+    │   │   ├── cache/                    # PERLU WRITE PERMISSION
+    │   │   ├── sessions/
+    │   │   └── views/
+    │   └── logs/                         # PERLU WRITE PERMISSION
+    ├── vendor/                           # Composer packages
+    ├── .env                              # PRODUCTION CONFIG
+    ├── vite.config.js                    # Vite configuration
+    ├── composer.json
+    ├── artisan
+    └── ...
 ```
 
 ---
